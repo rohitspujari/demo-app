@@ -1,0 +1,45 @@
+[
+  {
+    "name": "Word Insights",
+    "navigation": "/wordinsights",
+    "description": "This project transcribes data from various movies, and video clips to provide insights into words and spoken contructs"
+  },
+  {
+    "name": "Comprehend",
+    "navigation": "/comprehend",
+    "description": "Amazon Comprehend is a natural language processing (NLP) service that uses machine learning to find insights and relationships in text."
+  },
+  {
+    "name": "Reckognition",
+    "description": "The easy-to-use Rekognition API allows you to automatically identify objects, people, text, scenes, and activities, as well as detect any inappropriate content. "
+  },
+  {
+    "name": "Trasncribe",
+    "description": "Amazon Transcribe is an automatic speech recognition (ASR) service that makes it easy for developers to add speech-to-text capability to their applications. "
+  },
+  {
+    "name": "Translate",
+    "description": "Amazon Translate is a neural machine translation service that delivers fast, high-quality, and affordable language translation."
+  },
+  {
+    "name": "Personalize",
+    "description": "Amazon Personalize is a machine learning service that makes it easy for developers to add individualized recommendations to customers using their applications. It reflects the over 20 years of experience that Amazon has in building personalization systems."
+  },
+  {
+    "name": "Forecast",
+    "description": "Amazon Forecast, a fully managed service that uses machine learning to highly accurate forecasts"
+  },
+  {
+    "name": "Polly",
+    "description": "Amazon Polly is a service that turns text into lifelike speech, allowing you to create applications that talk, and build entirely new categories of speech-enabled products. "
+  },
+  {
+    "name": "Sagemaker",
+    "navigation": "/sagemaker",
+    "description": "Amazon SageMaker provides every developer and data scientist with the ability to build, train, and deploy machine learning models quickly. "
+  },
+  {
+    "name": "Kinesis",
+    "description": "Amazon Kinesis makes it easy to collect, process, and analyze real-time, streaming data so you can get timely insights and react quickly to new information. "
+  }
+]

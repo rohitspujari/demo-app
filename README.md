@@ -1,5 +1,13 @@
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
+## Add New Project
+
+- Edit projects.json file in top level Projects folder. Add name [MyProject], navigation [/myproject], and description.
+- Create a new folder [MyProject] under Projects.
+- Create index.js file, create a react component named [MyProject] (using rcc)
+- Edit App.js file, import [MyPreoject] component created in above step.
+- Register new route with [/myproject] path
+
 ## Available Scripts
 
 In the project directory, you can run:
