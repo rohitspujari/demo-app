@@ -1,0 +1,13 @@
+{
+    "AppSyncApiName": "demoapp",
+    "AuthCognitoUserPoolId": {
+        "Fn::GetAtt": [
+            "authCognito",
+            "Outputs.UserPoolId"
+        ]
+    },
+    "schemaGraphql": "s3://demoapp-20181206165647-deployment/amplify-appsync-files/schema.graphql.1544297840985",
+    "ResolverBucket": "demoapp-20181206165647-deployment",
+    "ResolverRootKey": "amplify-appsync-files",
+    "DeploymentTimestamp": "1544297840985"
+}

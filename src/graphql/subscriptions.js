@@ -1,27 +1,33 @@
 // eslint-disable
 // this is an auto generated file. This will be overwritten
 
-export const onCreateTodo = `subscription OnCreateTodo {
-  onCreateTodo {
+export const onCreateTask = `subscription OnCreateTask {
+  onCreateTask {
     id
     name
     description
+    notes
+    date
   }
 }
 `;
-export const onUpdateTodo = `subscription OnUpdateTodo {
-  onUpdateTodo {
+export const onUpdateTask = `subscription OnUpdateTask {
+  onUpdateTask {
     id
     name
     description
+    notes
+    date
   }
 }
 `;
-export const onDeleteTodo = `subscription OnDeleteTodo {
-  onDeleteTodo {
+export const onDeleteTask = `subscription OnDeleteTask {
+  onDeleteTask {
     id
     name
     description
+    notes
+    date
   }
 }
 `;
