@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { API } from 'aws-amplify';
-import { throws } from 'assert';
 
 export default class SplunkPricing extends Component {
   componentDidMount() {
@@ -25,6 +24,14 @@ export default class SplunkPricing extends Component {
       productFamily: 'Storage'
     };
 
+    this.describeService('AmazonS3', '100', (data, err) => {
+      console.log(data);
+    });
+
+    this.getAttributes('volumeType', 'AmazonS3', '100', (data, err) => {
+      console.log(data);
+    });
+
     this.getEc2Price(ec2Instance, billingOption, (price, err) => {
       console.log({
         instance: ec2Instance,
@@ -33,10 +40,63 @@ export default class SplunkPricing extends Component {
       });
     });
 
+    this.getS3Price(
+      10000000,
+      'Standard',
+      'US East (N. Virginia)',
+      (price, err) => {
+        console.log('s3-price', price);
+      }
+    );
+
     this.getEbsPrice(ebsVolume, (price, err) => {
       console.log(price);
     });
   }
+
+  describeService = (ServiceCode, MaxResults, result) => {
+    var params = {
+      // FormatVersion: 'aws_v1',
+      MaxResults,
+      ServiceCode
+    };
+    let apiName = 'AWSPricing'; // replace this with your api name.
+    let path = '/services'; //replace this with the path you have configured on your API
+    let myInit = {
+      body: { params } // replace this with attributes you need
+    };
+
+    API.post(apiName, path, myInit)
+      .then(response => {
+        result(response, null);
+      })
+      .catch(error => {
+        console.log(error.response);
+        result(null, error.response);
+      });
+  };
+
+  getAttributes = (AttributeName, ServiceCode, MaxResults, result) => {
+    var params = {
+      AttributeName,
+      MaxResults,
+      ServiceCode
+    };
+    let apiName = 'AWSPricing'; // replace this with your api name.
+    let path = '/attributes'; //replace this with the path you have configured on your API
+    let myInit = {
+      body: { params } // replace this with attributes you need
+    };
+
+    API.post(apiName, path, myInit)
+      .then(response => {
+        result(response, null);
+      })
+      .catch(error => {
+        console.log(error.response);
+        result(null, error.response);
+      });
+  };
 
   createFilters = serviceObject => {
     return Object.keys(serviceObject).map(k => ({
@@ -60,7 +120,7 @@ export default class SplunkPricing extends Component {
     };
 
     let apiName = 'AWSPricing';
-    let path = '/ec2';
+    let path = '/products';
     let myInit = {
       body: { params }
     };
@@ -138,7 +198,7 @@ export default class SplunkPricing extends Component {
       Filters: this.createFilters(ebsVolume)
     };
     let apiName = 'AWSPricing'; // replace this with your api name.
-    let path = '/ebs'; //replace this with the path you have configured on your API
+    let path = '/products'; //replace this with the path you have configured on your API
     let myInit = {
       body: { params } // replace this with attributes you need
     };
@@ -163,6 +223,93 @@ export default class SplunkPricing extends Component {
 
         //console.log(price);
         result(price, null);
+      })
+      .catch(error => {
+        console.log(error.response);
+        result(null, error.response);
+      });
+  };
+
+  getS3Price = (sizeInGB, volumeType, location, result) => {
+    const params = {
+      ServiceCode: 'AmazonS3',
+      FormatVersion: 'aws_v1',
+      MaxResults: 100,
+      Filters: this.createFilters({ volumeType, location })
+    };
+    let apiName = 'AWSPricing'; // replace this with your api name.
+    let path = '/products'; //replace this with the path you have configured on your API
+    let myInit = {
+      body: { params } // replace this with attributes you need
+    };
+
+    API.post(apiName, path, myInit)
+      .then(response => {
+        const sku = response[0];
+        const onDemandKey = Object.keys(sku.terms.OnDemand)[0];
+        const priceDimensionKeys = Object.keys(
+          sku.terms.OnDemand[onDemandKey].priceDimensions
+        );
+
+        const priceRange = priceDimensionKeys.map(pd => {
+          return {
+            beginRange: Number(
+              sku.terms.OnDemand[onDemandKey].priceDimensions[pd].beginRange
+            ),
+            endRange:
+              sku.terms.OnDemand[onDemandKey].priceDimensions[pd].endRange ===
+              'Inf'
+                ? Number.POSITIVE_INFINITY
+                : Number(
+                    sku.terms.OnDemand[onDemandKey].priceDimensions[pd].endRange
+                  ),
+            price: Number(
+              sku.terms.OnDemand[onDemandKey].priceDimensions[pd].pricePerUnit
+                .USD
+            ),
+            description:
+              sku.terms.OnDemand[onDemandKey].priceDimensions[pd].description
+          };
+        });
+        //priceRange.sort(r => r.beginRange);
+        priceRange.sort((a, b) => a.beginRange - b.beginRange);
+
+        console.log(priceRange);
+
+        var size = Number(sizeInGB); //Value in GB
+        console.log(size);
+
+        const priceStructure = priceRange
+          .map(range => {
+            const slab = range.endRange - range.beginRange;
+            if (size > 0) {
+              if (size - slab < 0) {
+                const remainingSize = size;
+                size = size - slab;
+                return {
+                  remainder: Number(0),
+                  slab: remainingSize,
+                  price: range.price,
+                  description: range.description
+                };
+              }
+              size = size - slab;
+              return {
+                remainder: size,
+                slab,
+                price: range.price,
+                description: range.description
+              };
+            }
+          })
+          .filter(f => f != null);
+
+        const price = priceStructure.reduce((prev, current) => {
+          return prev + current.slab * current.price;
+        }, 0);
+
+        //console.log(price);
+        result({ sku, priceStructure, price }, null);
       })
       .catch(error => {
         console.log(error.response);

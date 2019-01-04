@@ -25,13 +25,13 @@
     "Resources": {
         
         
-        "PolicyAPIGWdemoapp1ef28a2cauth": {
+        "PolicyAPIGWdemoapp9a976e36auth": {
             "DependsOn": [
-              "demoapp1ef28a2c"
+              "demoapp9a976e36"
             ],
             "Type": "AWS::IAM::Policy",
             "Properties": {
-              "PolicyName": "PolicyAPIGWdemoapp1ef28a2cauth",
+              "PolicyName": "PolicyAPIGWdemoapp9a976e36auth",
               "Roles": [
                 "demoapp-20181206165647-authRole"
               ],
@@ -61,10 +61,10 @@
                             },
                             ":",
                             {
-                              "Ref": "demoapp1ef28a2c"
+                              "Ref": "demoapp9a976e36"
                             },
                             "/Prod/*",
-                            "/ec2/*"
+                            "/products/*"
                           ]
                         ]
                       },
@@ -82,10 +82,10 @@
                             },
                             ":",
                             {
-                              "Ref": "demoapp1ef28a2c"
+                              "Ref": "demoapp9a976e36"
                             },
                             "/Prod/*",
-                            "/ec2"
+                            "/products"
                           ]
                         ]
                       }
@@ -113,10 +113,10 @@
                             },
                             ":",
                             {
-                              "Ref": "demoapp1ef28a2c"
+                              "Ref": "demoapp9a976e36"
                             },
                             "/Prod/*",
-                            "/ebs/*"
+                            "/attributes/*"
                           ]
                         ]
                       },
@@ -134,10 +134,10 @@
                             },
                             ":",
                             {
-                              "Ref": "demoapp1ef28a2c"
+                              "Ref": "demoapp9a976e36"
                             },
                             "/Prod/*",
-                            "/ebs"
+                            "/attributes"
                           ]
                         ]
                       }
@@ -165,10 +165,10 @@
                             },
                             ":",
                             {
-                              "Ref": "demoapp1ef28a2c"
+                              "Ref": "demoapp9a976e36"
                             },
                             "/Prod/*",
-                            "/s3/*"
+                            "/services/*"
                           ]
                         ]
                       },
@@ -186,10 +186,10 @@
                             },
                             ":",
                             {
-                              "Ref": "demoapp1ef28a2c"
+                              "Ref": "demoapp9a976e36"
                             },
                             "/Prod/*",
-                            "/s3"
+                            "/services"
                           ]
                         ]
                       }
@@ -207,16 +207,16 @@
           },
         
         
-      "demoapp1ef28a2c": {
+      "demoapp9a976e36": {
         "Type": "AWS::ApiGateway::RestApi",
         "Properties": {
           "Description": "",
-          "Name": "demoapp1ef28a2c",
+          "Name": "demoapp9a976e36",
           "Body": {
             "swagger": "2.0",
             "info": {
               "version": "2018-05-24T17:52:00Z",
-              "title": "demoapp1ef28a2c"
+              "title": "demoapp9a976e36"
             },
             "host": {
                 "Fn::Join": [
@@ -236,7 +236,7 @@
             ],
             "paths": {
               
-              "/ec2": {
+              "/products": {
                 "options": {
                   "consumes": [
                     "application/json"
@@ -341,7 +341,7 @@
                   }
                 }
               },
-              "/ec2/{proxy+}": {
+              "/products/{proxy+}": {
                 "options": {
                   "consumes": [
                     "application/json"
@@ -447,7 +447,7 @@
                 }
               },   
               
-              "/ebs": {
+              "/attributes": {
                 "options": {
                   "consumes": [
                     "application/json"
@@ -552,7 +552,7 @@
                   }
                 }
               },
-              "/ebs/{proxy+}": {
+              "/attributes/{proxy+}": {
                 "options": {
                   "consumes": [
                     "application/json"
@@ -658,7 +658,7 @@
                 }
               },   
               
-              "/s3": {
+              "/services": {
                 "options": {
                   "consumes": [
                     "application/json"
@@ -763,7 +763,7 @@
                   }
                 }
               },
-              "/s3/{proxy+}": {
+              "/services/{proxy+}": {
                 "options": {
                   "consumes": [
                     "application/json"
@@ -912,7 +912,7 @@
                   
         
         
-        "functionAWSPricingPermissiondemoapp1ef28a2c": {
+        "functionAWSPricingPermissiondemoapp9a976e36": {
             "Type": "AWS::Lambda::Permission",
             "Properties": {
                 "FunctionName": 
@@ -936,7 +936,7 @@
                             },
                             ":",
                             {
-                                "Ref": "demoapp1ef28a2c"
+                                "Ref": "demoapp9a976e36"
                             },
                             "/*/*/*"
                         ]
@@ -949,13 +949,13 @@
         
         
         
-      "DeploymentAPIGWdemoapp1ef28a2c": {
+      "DeploymentAPIGWdemoapp9a976e36": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
           "Description": "The Development stage deployment of your API.",
           "StageName": "Prod",
           "RestApiId": {
-            "Ref": "demoapp1ef28a2c"
+            "Ref": "demoapp9a976e36"
           }
         }
       }
@@ -963,7 +963,7 @@
     "Outputs": {
         "RootUrl": {
             "Description": "Root URL of the API gateway",
-            "Value": {"Fn::Join": ["", ["https://", {"Ref": "demoapp1ef28a2c"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/Prod"]]}
+            "Value": {"Fn::Join": ["", ["https://", {"Ref": "demoapp9a976e36"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/Prod"]]}
         },
         "ApiName": {
           "Description": "API Friendly name",

@@ -31,12 +31,12 @@ app.use(function(req, res, next) {
  * Example get method *
  **********************/
 
-app.get('/ec2', function(req, res) {
+app.get('/products', function(req, res) {
   //Add your code here
   res.json({ success: 'get call succeed!', url: req.url });
 });
 
-app.get('/ec2/*', function(req, res) {
+app.get('/products/*', function(req, res) {
   // Add your code here
   res.json({ success: 'get call succeed!', url: req.url });
 });
@@ -45,7 +45,7 @@ app.get('/ec2/*', function(req, res) {
  * Example post method *
  ****************************/
 
-app.post('/ec2', function(req, res) {
+app.post('/products', function(req, res) {
   // Add your code here
   //res.json({ success: 'post call succeed!', url: req.url, body: req.body });
   pricing.getProducts(req.body.params, function(err, data) {
@@ -57,19 +57,26 @@ app.post('/ec2', function(req, res) {
   });
 });
 
-app.post('/ebs', function(req, res) {
-  pricing.getProducts(req.body.params, function(err, data) {
-    if (err) console.log(err, err.stack);
+app.post('/attributes', function(req, res) {
+  pricing.getAttributeValues(req.body.params, function(err, data) {
+    if (err) res.json({ error: err, url: req.url });
     // an error occurred
-    else {
-      res.json(data.PriceList);
-    }
+    else res.json(data); // successful response
+  });
+  //res.json({ success: 'ebs post call succeed!', url: req.url, body: req.body });
+});
+
+app.post('/services', function(req, res) {
+  pricing.describeServices(req.body.params, function(err, data) {
+    if (err) res.json({ error: err, url: req.url });
+    // an error occurred
+    else res.json(data); // successful response
   });
 
   //res.json({ success: 'ebs post call succeed!', url: req.url, body: req.body });
 });
 
-app.post('/ec2/*', function(req, res) {
+app.post('/products/*', function(req, res) {
   // Add your code here
   res.json({ success: 'post call succeed!', url: req.url, body: req.body });
 });
@@ -78,12 +85,12 @@ app.post('/ec2/*', function(req, res) {
  * Example post method *
  ****************************/
 
-app.put('/ec2', function(req, res) {
+app.put('/products', function(req, res) {
   // Add your code here
   res.json({ success: 'put call succeed!', url: req.url, body: req.body });
 });
 
-app.put('/ec2/*', function(req, res) {
+app.put('/products/*', function(req, res) {
   // Add your code here
   res.json({ success: 'put call succeed!', url: req.url, body: req.body });
 });
@@ -92,12 +99,12 @@ app.put('/ec2/*', function(req, res) {
  * Example delete method *
  ****************************/
 
-app.delete('/ec2', function(req, res) {
+app.delete('/products', function(req, res) {
   // Add your code here
   res.json({ success: 'delete call succeed!', url: req.url });
 });
 
-app.delete('/ec2/*', function(req, res) {
+app.delete('/products/*', function(req, res) {
   // Add your code here
   res.json({ success: 'delete call succeed!', url: req.url });
 });

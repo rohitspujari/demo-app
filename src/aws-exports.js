@@ -19,7 +19,7 @@ const awsmobile =  {
     "aws_cloud_logic_custom": [
         {
             "name": "AWSPricing",
-            "endpoint": "https://q3jvlvs5a2.execute-api.us-east-1.amazonaws.com/Prod",
+            "endpoint": "https://52emjepgy7.execute-api.us-east-1.amazonaws.com/Prod",
             "region": "us-east-1"
         }
     ]
