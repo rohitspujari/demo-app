@@ -17,7 +17,7 @@
 				"Timeout": "25",
 				"Code": {
 					"S3Bucket": "demoapp-20181206165647-deployment",
-					"S3Key": "amplify-builds/AWSPricing-1546567488-latest-build.zip"
+					"S3Key": "amplify-builds/AWSPricing-1546612733-latest-build.zip"
 				}
 			}
 		},

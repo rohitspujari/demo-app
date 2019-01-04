@@ -7,17 +7,33 @@
                 "private": true,
                 "auth": "rw"
             }
+        },
+        {
+            "name": "/ebs",
+            "lambdaFunction": "AWSPricing",
+            "privacy": {
+                "private": true,
+                "auth": "rw"
+            }
+        },
+        {
+            "name": "/s3",
+            "lambdaFunction": "AWSPricing",
+            "privacy": {
+                "private": true,
+                "auth": "rw"
+            }
         }
     ],
     "resourceName": "AWSPricing",
-    "apiName": "demoappb618504a",
+    "apiName": "demoapp1ef28a2c",
     "functionArns": [
         {
             "lambdaFunction": "AWSPricing"
         }
     ],
     "privacy": {
-        "auth": 1,
+        "auth": 3,
         "unauth": 0,
         "authRoleName": "demoapp-20181206165647-authRole",
         "unAuthRoleName": "demoapp-20181206165647-unauthRole"

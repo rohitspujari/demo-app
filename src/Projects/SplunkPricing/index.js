@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { API } from 'aws-amplify';
+import { throws } from 'assert';
 
 export default class SplunkPricing extends Component {
   componentDidMount() {
@@ -18,26 +19,44 @@ export default class SplunkPricing extends Component {
       OfferingClass: 'standard', // "standard", "convertible"
       PurchaseOption: 'Partial Upfront' // "No Upfront" , "All Upfront"
     };
-    const price = this.getEc2Price(ec2Instance, billingOption);
-    console.log({
-      instance: ec2Instance,
-      billing: billingOption,
-      price
+    const ebsVolume = {
+      volumeType: 'Throughput Optimized HDD', // Magnetic, Provisioned IOPS, Cold HDD, Throughput Optimized HDD, General Purpose
+      location: 'US East (N. Virginia)',
+      productFamily: 'Storage'
+    };
+
+    this.getEc2Price(ec2Instance, billingOption, (price, err) => {
+      console.log({
+        instance: ec2Instance,
+        billing: billingOption,
+        price
+      });
+    });
+
+    this.getEbsPrice(ebsVolume, (price, err) => {
+      console.log(price);
     });
   }
 
-  getEc2Price = (ec2Instance, billingOption) => {
-    const price = { upfront: 0, hourly: 0 };
-    const filters = Object.keys(ec2Instance).map(k => ({
+  createFilters = serviceObject => {
+    return Object.keys(serviceObject).map(k => ({
       Type: 'TERM_MATCH',
       Field: k,
-      Value: ec2Instance[k]
+      Value: serviceObject[k]
     }));
+  };
+
+  getEc2Price = (ec2Instance, billingOption, result) => {
+    // const filters = Object.keys(ec2Instance).map(k => ({
+    //   Type: 'TERM_MATCH',
+    //   Field: k,
+    //   Value: ec2Instance[k]
+    // }));
     const params = {
       ServiceCode: 'AmazonEC2',
       FormatVersion: 'aws_v1',
-      MaxResults: 100,
-      Filters: filters
+      MaxResults: 10,
+      Filters: this.createFilters(ec2Instance)
     };
 
     let apiName = 'AWSPricing';
@@ -79,6 +98,8 @@ export default class SplunkPricing extends Component {
 
         const priceDimensions = Object.keys(sku.priceDimensions);
 
+        const price = { upfront: 0, hourly: 0 };
+
         priceDimensions.forEach(pd => {
           if (sku.priceDimensions[pd].unit === 'Quantity')
             price.upfront = Number(sku.priceDimensions[pd].pricePerUnit.USD);
@@ -89,6 +110,7 @@ export default class SplunkPricing extends Component {
         if (term === 'OnDemand') {
           price.cost3Years = Number(price.hourly * 8760 * 3);
           price.cost3Years = Number(price.cost3Years.toFixed(2));
+          result(price, null);
         } else if (term === 'Reserved') {
           price.cost3Years =
             Number(
@@ -99,20 +121,53 @@ export default class SplunkPricing extends Component {
             price.cost3Years = price.cost3Years * 3;
           }
           price.cost3Years = Number(price.cost3Years.toFixed(2));
+          result(price, null);
         }
-
-        ///console.log(priceDimensions);
-
-        ////const sku = sku[Object.keys(sku.priceDimensions)[0]];
-
-        ////8760 hours in year * 3 years * 0.644/hr
-
-        ////console.log(options.map(o => o.offerTermCode));
       })
       .catch(error => {
         console.log(error.response);
+        result(null, error.response);
       });
-    return price;
+  };
+
+  getEbsPrice = (ebsVolume, result) => {
+    const params = {
+      ServiceCode: 'AmazonEC2',
+      FormatVersion: 'aws_v1',
+      MaxResults: 100,
+      Filters: this.createFilters(ebsVolume)
+    };
+    let apiName = 'AWSPricing'; // replace this with your api name.
+    let path = '/ebs'; //replace this with the path you have configured on your API
+    let myInit = {
+      body: { params } // replace this with attributes you need
+    };
+
+    API.post(apiName, path, myInit)
+      .then(response => {
+        const sku = response[0];
+        //console.log(response);
+
+        const onDemandKey = Object.keys(sku.terms.OnDemand)[0];
+        const priceDimensionKey = Object.keys(
+          sku.terms.OnDemand[onDemandKey].priceDimensions
+        )[0];
+
+        const price = {};
+        price.GbPerMonth = Number(
+          Number(
+            sku.terms.OnDemand[onDemandKey].priceDimensions[priceDimensionKey]
+              .pricePerUnit.USD
+          ).toFixed(4)
+        );
+
+        //console.log(price);
+        result(price, null);
+      })
+      .catch(error => {
+        console.log(error.response);
+        result(null, error.response);
+      });
   };
 
   render() {

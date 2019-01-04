@@ -57,6 +57,18 @@ app.post('/ec2', function(req, res) {
   });
 });
 
+app.post('/ebs', function(req, res) {
+  pricing.getProducts(req.body.params, function(err, data) {
+    if (err) console.log(err, err.stack);
+    // an error occurred
+    else {
+      res.json(data.PriceList);
+    }
+  });
+
+  //res.json({ success: 'ebs post call succeed!', url: req.url, body: req.body });
+});
+
 app.post('/ec2/*', function(req, res) {
   // Add your code here
   res.json({ success: 'post call succeed!', url: req.url, body: req.body });
