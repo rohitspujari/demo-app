@@ -189,6 +189,33 @@
 					"DeploymentTimestamp": "1544297840985"
 				}
 			}
+		},
+		"apiAWSPricing": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/api/AWSPricing-cloudformation-template.json",
+				"Parameters": {
+					"functionAWSPricingName": {
+						"Fn::GetAtt": [
+							"functionAWSPricing",
+							"Outputs.Name"
+						]
+					},
+					"functionAWSPricingArn": {
+						"Fn::GetAtt": [
+							"functionAWSPricing",
+							"Outputs.Arn"
+						]
+					}
+				}
+			}
+		},
+		"functionAWSPricing": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/function/AWSPricing-cloudformation-template.json",
+				"Parameters": {}
+			}
 		}
 	},
 	"Outputs": {

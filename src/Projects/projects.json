@@ -1,8 +1,18 @@
 [
   {
+    "name": "Splunk Pricing",
+    "navigation": "/splunkpricing",
+    "description": "Size your Splunk Environment"
+  },
+  {
     "name": "Word Insights",
     "navigation": "/wordinsights",
     "description": "This project transcribes data from various movies, and video clips to provide insights into words and spoken contructs"
+  },
+  {
+    "name": "GraphQLDemo",
+    "navigation": "/graphqldemo",
+    "description": "This project is the sandbox for AWS App Sync and GraphQL"
   },
   {
     "name": "Comprehend",

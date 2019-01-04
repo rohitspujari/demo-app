@@ -1,6 +1,6 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app) and [AWS Amplify](https://aws-amplify.github.io/docs/js/start?platform=react).
 
-## Add New Project
+### Add New Project
 
 - Edit projects.json file in top level Projects folder. Add name [MyProject], navigation [/myproject], and description.
 - Create a new folder [MyProject] under Projects.

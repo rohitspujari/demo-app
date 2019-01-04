@@ -1,12 +1,6 @@
 import React, { Component } from 'react';
 import './App.css';
-import Amplify, {
-  Analytics,
-  Storage,
-  API,
-  graphqlOperation,
-  Auth
-} from 'aws-amplify';
+import Amplify, { Analytics, Storage, Auth } from 'aws-amplify';
 import aws_exports from './aws-exports';
 import { withAuthenticator } from 'aws-amplify-react';
 
@@ -24,8 +18,22 @@ import projectList from './Projects/projects.json';
 import WordInsightsApp from './Projects/WordInsights';
 import Comprehend from './Projects/Comprehend';
 import Sagemaker from './Projects/Sagemaker';
-
+import GraphQLDemo from './Projects/GraphQLDemo';
+import SplunkPricing from './Projects/SplunkPricing';
 Amplify.configure(aws_exports);
+
+//Amplify CLI doesn't automatically configure AWS_IAM authentication mode for graphql. The defualt auth mode is cognito user pool.
+//Congnito user pool restricts the graphql endpoint access through web apps only. To enable accessing graphql
+//endpoint from other services like lambda, we need to customize the authentication, and set the authRole on cognito identity pool.
+//the auth role should have permission to invoke required graphql api
+//http://sandny.com/2018/09/24/appsync-graphql-amplify-iam/
+
+let myAppConfig = {
+  aws_appsync_authenticationType: 'AWS_IAM'
+};
+
+Amplify.configure(myAppConfig);
+
 Storage.configure({ level: 'private' });
 
 const theme = createMuiTheme({
@@ -94,6 +102,8 @@ class App extends Component {
               <Route path="/wordinsights" component={WordInsightsApp} />
               <Route path="/comprehend" component={Comprehend} />
               <Route path="/sagemaker" component={Sagemaker} />
+              <Route path="/graphqldemo" component={GraphQLDemo} />
+              <Route path="/splunkpricing" component={SplunkPricing} />
             </div>
           </MuiThemeProvider>
         </Router>

@@ -19,7 +19,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/hosting/template.json",
 				"logicalId": "hostingS3AndCloudFront"
 			},
-			"lastPushTimeStamp": "2018-12-08T19:39:14.012Z",
+			"lastPushTimeStamp": "2019-01-04T02:05:56.386Z",
 			"output": {
 				"CloudFrontSecureURL": "https://d2kbx0q3krjptx.cloudfront.net",
 				"S3BucketSecureURL": "https://demoapp-20181207231438-hostingbucket.s3.amazonaws.com",
@@ -40,7 +40,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/auth/Cognito-cloudformation-template.yml",
 				"logicalId": "authCognito"
 			},
-			"lastPushTimeStamp": "2018-12-08T19:39:14.015Z",
+			"lastPushTimeStamp": "2019-01-04T02:05:56.387Z",
 			"output": {
 				"GoogleWebClient": "277830869306-6qj1p3mep3utio2c9a3lgudfgga9sd2j.apps.googleusercontent.com",
 				"CreatedSNSRole": "arn:aws:iam::465541050084:role/Cognito_sns-role",
@@ -64,7 +64,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/analytics/pinpoint-cloudformation-template.json",
 				"logicalId": "analyticsDemoApp"
 			},
-			"lastPushTimeStamp": "2018-12-08T19:39:14.019Z",
+			"lastPushTimeStamp": "2019-01-04T02:05:56.393Z",
 			"output": {
 				"appName": "DemoApp",
 				"Region": "us-east-1",
@@ -81,7 +81,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
 				"logicalId": "storageDemoApp"
 			},
-			"lastPushTimeStamp": "2018-12-08T19:39:14.020Z",
+			"lastPushTimeStamp": "2019-01-04T02:05:56.394Z",
 			"output": {
 				"BucketName": "demo-app-storage",
 				"Region": "us-east-1"
@@ -106,8 +106,54 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"logicalId": "apidemoapp"
 			},
-			"lastPushTimeStamp": "2018-12-08T19:39:15.196Z",
+			"lastPushTimeStamp": "2019-01-04T02:05:56.394Z",
 			"lastPushDirHash": "WK2ZGT6pAsFKOcvhD/sW1qWqPk4="
+		},
+		"AWSPricing": {
+			"service": "API Gateway",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": [
+				{
+					"category": "function",
+					"resourceName": "AWSPricing",
+					"attributes": [
+						"Name",
+						"Arn"
+					]
+				}
+			],
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/api/AWSPricing-cloudformation-template.json",
+				"logicalId": "apiAWSPricing"
+			},
+			"lastPushTimeStamp": "2019-01-04T02:05:56.395Z",
+			"output": {
+				"ApiName": "AWSPricing",
+				"RootUrl": "https://lptmgytzyd.execute-api.us-east-1.amazonaws.com/Prod"
+			},
+			"lastPushDirHash": "xzuYqnrwdGR0pV8YGlvde6wKQuc="
+		}
+	},
+	"function": {
+		"AWSPricing": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [],
+			"lastBuildTimeStamp": "2019-01-03T23:37:38.119Z",
+			"lastPackageTimeStamp": "2019-01-04T02:04:49.000Z",
+			"distZipFilename": "AWSPricing-1546567488-latest-build.zip",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/function/AWSPricing-cloudformation-template.json",
+				"logicalId": "functionAWSPricing"
+			},
+			"lastPushTimeStamp": "2019-01-04T02:05:56.396Z",
+			"output": {
+				"Region": "us-east-1",
+				"Arn": "arn:aws:lambda:us-east-1:465541050084:function:AWSPricing",
+				"Name": "AWSPricing"
+			},
+			"lastPushDirHash": "c2Km7In8KdHOO5fjDv+xZkIrWgg="
 		}
 	}
 }
