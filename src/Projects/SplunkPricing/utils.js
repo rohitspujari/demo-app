@@ -1,6 +1,6 @@
 import { API } from 'aws-amplify';
 
-export function getAttributes(AttributeName, ServiceCode, MaxResults, result) {
+export async function getAttributes(AttributeName, ServiceCode, MaxResults) {
   var params = {
     AttributeName,
     MaxResults,
@@ -11,15 +11,10 @@ export function getAttributes(AttributeName, ServiceCode, MaxResults, result) {
   let myInit = {
     body: { params } // replace this with attributes you need
   };
-
-  API.post(apiName, path, myInit)
-    .then(response => {
-      result(response, null);
-    })
-    .catch(error => {
-      console.log(error.response);
-      result(null, error.response);
-    });
+  return await API.post(apiName, path, myInit).then(
+    response => response.AttributeValues.map(av => av.Value),
+    error => error
+  );
 }
 
 export function describeService(ServiceCode, MaxResults, result) {
@@ -135,7 +130,7 @@ export async function getEc2Price(
         price.hourly = Number(sku.priceDimensions[pd].pricePerUnit.USD);
     });
 
-    console.log('quantity', quantity);
+    //console.log(product, price.upfront, price.hourly);
 
     if (term === 'OnDemand') {
       price.cost3Years = Number(price.hourly * 8760 * 3 * quantity);
@@ -143,13 +138,16 @@ export async function getEc2Price(
       return price; //result(price, null);
     } else if (term === 'Reserved') {
       price.cost3Years =
-        Number(price.hourly * 8760 * LeaseContractLength.replace('yr', '')) +
-        Number(price.upfront);
+        Number(
+          price.hourly *
+            8760 *
+            Number(LeaseContractLength.replace('yr', '') * quantity)
+        ) + Number(price.upfront);
 
       if (LeaseContractLength === '1yr') {
         price.cost3Years = price.cost3Years * 3;
       }
-      price.cost3Years = Number((price.cost3Years * quantity).toFixed(2));
+      price.cost3Years = Number(price.cost3Years.toFixed(2));
       return price; //result(price, null);
     }
   } catch (error) {
@@ -165,7 +163,7 @@ export async function getEc2Price(
   // });
 }
 
-export function getEbsPrice(sizeInGB, volumeType, location, result) {
+export async function getEbsPrice(sizeInGB, volumeType, location) {
   const params = {
     ServiceCode: 'AmazonEC2',
     FormatVersion: 'aws_v1',
@@ -177,23 +175,23 @@ export function getEbsPrice(sizeInGB, volumeType, location, result) {
   let myInit = {
     body: { params } // replace this with attributes you need
   };
-  API.post(apiName, path, myInit)
-    .then(response => {
+  return await API.post(apiName, path, myInit).then(
+    response => {
       const sku = response[0];
       //console.log(response);
       const { price, priceStructure } = calculateMontlyStoragePrice(
         sku,
         sizeInGB
       );
-      result({ sku, priceStructure, price }, null);
-    })
-    .catch(error => {
-      console.log(error.response);
-      result(null, error.response);
-    });
+      return { sku, priceStructure, price };
+    },
+    error => {
+      return error;
+    }
+  );
 }
 
-export function getS3Price(sizeInGB, volumeType, location, result) {
+export async function getS3Price(sizeInGB, volumeType, location) {
   const params = {
     ServiceCode: 'AmazonS3',
     FormatVersion: 'aws_v1',
@@ -205,19 +203,20 @@ export function getS3Price(sizeInGB, volumeType, location, result) {
   let myInit = {
     body: { params } // replace this with attributes you need
   };
-  API.post(apiName, path, myInit)
-    .then(response => {
+
+  return await API.post(apiName, path, myInit).then(
+    response => {
       const sku = response[0];
       const { price, priceStructure } = calculateMontlyStoragePrice(
         sku,
         sizeInGB
       );
-      result({ sku, priceStructure, price }, null);
-    })
-    .catch(error => {
-      console.log(error.response);
-      result(null, error.response);
-    });
+      return { sku, priceStructure, price };
+    },
+    error => {
+      return error;
+    }
+  );
 }
 
 function createFilters(serviceObject) {
@@ -287,25 +286,24 @@ function calculateMontlyStoragePrice(sku, sizeInGB) {
   }, 0);
 
   return {
-    price,
+    price: Number(price.toFixed(2)),
     priceStructure
   };
 }
 
 export async function priceSplunkDeployment(params) {
+  const storageResources = [];
   const {
     volumePerDay,
-    compressionPercent,
     splunkArchitecture,
     splunkES,
-    splunkITSI,
     clusterIndexers,
     clusterSearchHeads,
     coreIndexerRate,
     esIndexerRate
   } = params;
 
-  console.log('params', params);
+  //    console.log('params', params);
 
   var indexerCount = 1;
 
@@ -340,6 +338,49 @@ export async function priceSplunkDeployment(params) {
     esSearchHeadCount += 1;
   }
 
+  // volume per day * compression * rf * hot retention days
+  const dataRetentionHot =
+    volumePerDay *
+    (params.compressionPercent / 100) *
+    params.replicationFactor *
+    params.retentionHot;
+
+  const hotStoragePerIndexer = dataRetentionHot / indexerCount;
+
+  const dataRetentionCold =
+    volumePerDay *
+    (params.compressionPercent / 100) *
+    params.replicationFactor *
+    params.retentionCold;
+  //console.log(dataRetentionCold);
+
+  const coldStoragePerIndexer = dataRetentionCold / indexerCount;
+
+  const dataRetention = dataRetentionHot + dataRetentionCold;
+
+  var s3Price = 0;
+  if (splunkArchitecture === 'Smart Store (S2)') {
+    s3Price = await getS3Price(
+      dataRetention,
+      params.s3VolumeType,
+      params.location
+    );
+
+    const storageResource = {
+      name: 'S3',
+      type: s3Price.sku.product.attributes.volumeType,
+      category: 'Warm / Cold',
+      size:
+        dataRetention / 1000 > 1
+          ? dataRetention / 1000 + ' TB'
+          : dataRetention + ' GB',
+      monthly: s3Price.price
+    };
+    storageResources.push(storageResource);
+  }
+
+  const computeResources = [];
+
   const indexerPrice = await getEc2Price(
     indexerCount,
     indexerInstanceType,
@@ -347,6 +388,14 @@ export async function priceSplunkDeployment(params) {
     params.location,
     params.billingOption
   );
+  computeResources.push({
+    name: 'Indexer',
+    count: indexerCount,
+    price: indexerPrice,
+    hotStoragePerIndexer,
+    coldStoragePerIndexer,
+    rootVolume: 100
+  });
 
   const coreSearchHeadPrice = await getEc2Price(
     coreSearchHeadCount,
@@ -355,14 +404,28 @@ export async function priceSplunkDeployment(params) {
     params.location,
     params.billingOption
   );
+  computeResources.push({
+    name: 'Core Search Head',
+    count: coreSearchHeadCount,
+    price: coreSearchHeadPrice,
+    rootVolume: 300
+  });
 
-  const esSearchHeadPrice = await getEc2Price(
-    esSearchHeadCount,
-    params.esSearchHeadInstanceType,
-    params.operatingSystem,
-    params.location,
-    params.billingOption
-  );
+  if (params.splunkES === true) {
+    const esSearchHeadPrice = await getEc2Price(
+      esSearchHeadCount,
+      params.esSearchHeadInstanceType,
+      params.operatingSystem,
+      params.location,
+      params.billingOption
+    );
+    computeResources.push({
+      name: 'ES Search Head',
+      count: esSearchHeadCount,
+      price: esSearchHeadPrice,
+      rootVolume: 1000
+    });
+  }
 
   var clusterMasterCount = 1;
   const clusterMasterPrice = await getEc2Price(
@@ -372,6 +435,12 @@ export async function priceSplunkDeployment(params) {
     params.location,
     params.billingOption
   );
+  computeResources.push({
+    name: 'Cluster Master',
+    count: clusterMasterCount,
+    price: clusterMasterPrice,
+    rootVolume: 30
+  });
 
   var licenseMasterCount = 1;
   const licenseMasterPrice = await getEc2Price(
@@ -381,6 +450,12 @@ export async function priceSplunkDeployment(params) {
     params.location,
     params.billingOption
   );
+  computeResources.push({
+    name: 'License Master',
+    count: licenseMasterCount,
+    price: licenseMasterPrice,
+    rootVolume: 30
+  });
 
   var awsCollectorNodeCount = 1;
   const awsCollectorNodePrice = await getEc2Price(
@@ -390,69 +465,69 @@ export async function priceSplunkDeployment(params) {
     params.location,
     params.billingOption
   );
+  computeResources.push({
+    name: 'AWS Collector Node',
+    count: awsCollectorNodeCount,
+    price: awsCollectorNodePrice,
+    rootVolume: 30
+  });
 
-  // const indxerPrice = await getEc2Price(
-  //   indexerCount,
-  //   ec2IndexerInstance,
-  //   params.billingOption
-  // );
+  const ebsRootVolumeSize = computeResources.reduce(
+    (prev, curr) => prev + curr.rootVolume,
+    0
+  );
 
-  // if (clusterIndexers) {
-  //   indexerCount = 3;
-  // }
+  const ebsRootVolumePrice = await getEbsPrice(
+    ebsRootVolumeSize,
+    params.rootVolumeType,
+    params.location
+  );
+
+  storageResources.push({
+    name: 'EBS',
+    type: ebsRootVolumePrice.sku.product.attributes.volumeType,
+    category: 'Root Volume',
+    size: ebsRootVolumeSize + ' GB',
+    monthly: ebsRootVolumePrice.price
+  });
+
+  if (splunkArchitecture !== 'Smart Store (S2)') {
+    const ebsHotVolumePrice = await getEbsPrice(
+      dataRetentionHot,
+      params.hotEbsVolumeType,
+      params.location
+    );
+    storageResources.push({
+      name: 'EBS',
+      type: ebsHotVolumePrice.sku.product.attributes.volumeType,
+      category: 'Hot Volumes',
+      size:
+        dataRetentionHot / 1000 > 1
+          ? dataRetentionHot / 1000 + ' TB'
+          : dataRetentionHot + ' GB',
+      monthly: ebsHotVolumePrice.price
+    });
+
+    const ebsColdVolumePrice = await getEbsPrice(
+      dataRetentionCold,
+      params.coldEbsVolumeType,
+      params.location
+    );
+    storageResources.push({
+      name: 'EBS',
+      type: ebsColdVolumePrice.sku.product.attributes.volumeType,
+      category: 'Hot Volumes',
+      size:
+        dataRetentionCold / 1000 > 1
+          ? dataRetentionCold / 1000 + ' TB'
+          : dataRetentionCold + ' GB',
+      monthly: ebsColdVolumePrice.price
+    });
+  }
 
   const result = {
-    summary: {
-      upfront: 10000,
-      monthly: 3440,
-      cost3Years: 100000
-    },
-    details: {
-      ec2Cost: {
-        upfront: 10000,
-        monthly: 3440,
-        cost3Years: 100000
-      },
-      ebsCost: {
-        monthly: 2200
-      },
-      s3Cost: {
-        monthly: 2232
-      }
-    },
-    computeResources: [
-      {
-        name: 'Indexer',
-        count: indexerCount,
-        price: indexerPrice
-      },
-      {
-        name: 'Core Search Head',
-        count: coreSearchHeadCount,
-        price: coreSearchHeadPrice
-      },
-      {
-        name: 'Cluster Master',
-        count: clusterMasterCount,
-        price: clusterMasterPrice
-      },
-      {
-        name: 'AWS Collector Node',
-        count: awsCollectorNodeCount,
-        price: awsCollectorNodePrice
-      },
-      {
-        name: 'License Master',
-        count: licenseMasterCount,
-        price: licenseMasterPrice
-      },
-
-      {
-        name: 'ES Search Head',
-        count: esSearchHeadCount,
-        price: esSearchHeadPrice
-      }
-    ]
+    storageResources,
+    computeResources
   };
   console.log(result);
   return result;

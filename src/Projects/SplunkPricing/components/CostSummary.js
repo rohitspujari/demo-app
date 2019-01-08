@@ -22,7 +22,7 @@ const CustomTableCell = withStyles(theme => ({
 const styles = theme => ({
   root: {
     width: '100%',
-    marginTop: theme.spacing.unit * 3,
+    //marginTop: theme.spacing.unit * 3,
     overflowX: 'auto'
   },
   table: {
@@ -35,7 +35,7 @@ const styles = theme => ({
 });
 
 function CostSummary(props) {
-  const { classes, datasource } = props;
+  const { classes, computeResources, storageResources } = props;
 
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -43,20 +43,32 @@ function CostSummary(props) {
     minimumFractionDigits: 2
   });
 
-  const upfront = datasource.reduce(
+  const upfront = computeResources.reduce(
     (prev, current) => prev + current.price.upfront,
     0
   );
 
-  const ec2Monthly = datasource.reduce(
+  const ec2Monthly = computeResources.reduce(
     (prev, current) => prev + current.price.hourly * 24 * 30,
     0
   );
 
-  const ec2Cost3Years = datasource.reduce(
+  const storageMonthly = storageResources.reduce(
+    (prev, current) => prev + current.monthly,
+    0
+  );
+
+  const totalMonthly = ec2Monthly + storageMonthly;
+
+  const ec2Cost3Years = computeResources.reduce(
     (prev, current) => prev + current.price.cost3Years,
     0
   );
+
+  const storageCost3Years = storageMonthly * 36;
+
+  const totalCost3Years = ec2Cost3Years + storageCost3Years;
+
   return (
     <Paper className={classes.root}>
       <Table className={classes.table}>
@@ -76,12 +88,12 @@ function CostSummary(props) {
             </CustomTableCell>
             <CustomTableCell>
               <Typography className={classes.heading}>
-                {formatter.format(ec2Monthly)}
+                {formatter.format(totalMonthly)}
               </Typography>
             </CustomTableCell>
             <CustomTableCell>
               <Typography className={classes.heading}>
-                {formatter.format(ec2Cost3Years)}
+                {formatter.format(totalCost3Years)}
               </Typography>
             </CustomTableCell>
           </TableRow>
@@ -96,10 +108,11 @@ function CostSummary(props) {
             <CustomTableCell>vCores</CustomTableCell>
             <CustomTableCell>RAM</CustomTableCell>
             <CustomTableCell>Instance Storage</CustomTableCell>
+            <CustomTableCell>Root Volume (EBS)</CustomTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
-          {datasource.map(row => {
+          {computeResources.map(row => {
             const product = row.price.product;
             return (
               <TableRow key={row.name}>
@@ -109,6 +122,7 @@ function CostSummary(props) {
                 <CustomTableCell>{product.vcpu}</CustomTableCell>
                 <CustomTableCell>{product.memory}</CustomTableCell>
                 <CustomTableCell>{product.storage}</CustomTableCell>
+                <CustomTableCell>{row.rootVolume + ' GB'}</CustomTableCell>
               </TableRow>
             );
           })}
@@ -124,30 +138,16 @@ function CostSummary(props) {
           </TableRow>
         </TableHead>
         <TableBody>
-          <TableRow>
-            <CustomTableCell>Object Store</CustomTableCell>
-            <CustomTableCell>S3 Standard</CustomTableCell>
-            <CustomTableCell>Warm</CustomTableCell>
-            <CustomTableCell>100 TB</CustomTableCell>
-          </TableRow>
-          <TableRow>
-            <CustomTableCell>EBS</CustomTableCell>
-            <CustomTableCell>General Purpose (SSD)</CustomTableCell>
-            <CustomTableCell>Hot/Warm</CustomTableCell>
-            <CustomTableCell>1000 TB</CustomTableCell>
-          </TableRow>
-          <TableRow>
-            <CustomTableCell>EBS</CustomTableCell>
-            <CustomTableCell>HDD</CustomTableCell>
-            <CustomTableCell>Cold</CustomTableCell>
-            <CustomTableCell>10000 TB</CustomTableCell>
-          </TableRow>
-          <TableRow>
-            <CustomTableCell>EBS</CustomTableCell>
-            <CustomTableCell>HDD</CustomTableCell>
-            <CustomTableCell>RootVolumes</CustomTableCell>
-            <CustomTableCell>10000 TB</CustomTableCell>
-          </TableRow>
+          {storageResources.map((row, i) => {
+            return (
+              <TableRow key={i}>
+                <CustomTableCell>{row.name}</CustomTableCell>
+                <CustomTableCell>{row.type}</CustomTableCell>
+                <CustomTableCell>{row.category}</CustomTableCell>
+                <CustomTableCell>{row.size}</CustomTableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </Paper>

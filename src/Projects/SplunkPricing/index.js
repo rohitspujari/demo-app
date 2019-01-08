@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import * as utils from './utils.js';
 import Grid from '@material-ui/core/Grid';
-//import Paper from '@material-ui/core/Paper';
+import Paper from '@material-ui/core/Paper';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -152,6 +152,9 @@ const styles = theme => ({
   select: {
     display: 'flex'
   },
+  heading: {
+    marginTop: 20
+  },
   expansionPanelHeading: {
     fontSize: theme.typography.pxToRem(15)
   }
@@ -179,11 +182,19 @@ class SplunkPricing extends Component {
 
   state = {
     billingOptions: BILLING_OPTIONS,
-    billingOption: BILLING_OPTIONS[5],
+    billingOption: BILLING_OPTIONS[6],
+    locations: [],
     location: 'US East (N. Virginia)',
+    s3VolumeTypes: [],
+    s3VolumeType: 'Standard',
+    ebsVolumeTypes: [],
+    hotEbsVolumeType: 'General Purpose',
+    coldEbsVolumeType: 'Cold HDD',
+    rootVolumeType: 'General Purpose',
     volumePerDay: 100,
     compressionPercent: 50,
     coreIndexerRate: 250,
+    operatingSystems: [],
     operatingSystem: 'Linux',
     s2IndexerInstanceType: 'i3.8xlarge',
     idrIndexerInstanceType: 'c5.9xlarge',
@@ -194,7 +205,7 @@ class SplunkPricing extends Component {
     awsCollectorNodeInstanceType: 'c5.4xlarge',
     esIndexerRate: 100,
     retentionHot: 30,
-    retentionCold: 0,
+    retentionCold: 90,
     replicationFactor: 2,
     searchFactor: 2,
     splunkArchitecture: 'Smart Store (S2)',
@@ -204,7 +215,7 @@ class SplunkPricing extends Component {
     clusterSearchHeads: true,
     deploymentOptions: DEPLOYMENT_OPTIONS,
     deploymentOption: DEPLOYMENT_OPTIONS[0],
-    locations: [],
+
     result: '',
     //Component Sate
     labelWidth: 0,
@@ -213,22 +224,47 @@ class SplunkPricing extends Component {
   async componentDidMount() {
     this.setState({
       result: await utils.priceSplunkDeployment(this.state),
+      locations: await utils.getAttributes('location', 'AmazonS3', '100'),
+      operatingSystems: await utils.getAttributes(
+        'operatingSystem',
+        'AmazonEc2',
+        '100'
+      ),
+      s3VolumeTypes: await utils.getAttributes('volumeType', 'AmazonS3', '100'),
+      ebsVolumeTypes: await utils.getAttributes(
+        'volumeType',
+        'AmazonEC2',
+        '100'
+      ),
+
       labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
       inProgress: false
     });
 
-    utils.getAttributes('location', 'AmazonS3', '100', (data, err) => {
-      console.log(data);
+    // const x = await utils.getAttributes('location', 'AmazonEC2', '1000');
+    // console.log(x);
 
-      this.setState({
-        locations: data.AttributeValues.map(r => r.Value)
-          .sort()
-          .reverse()
-      });
-    });
+    // utils.getAttributes('location', 'AmazonS3', '100', (data, err) => {
+    //   //console.log(data);
 
-    // utils.getAttributes('group', 'AmazonEC2', '100', (data, err) => {
+    //   this.setState({
+    //     locations: data.AttributeValues.map(r => r.Value)
+    //       .sort()
+    //       .reverse()
+    //   });
+    // });
+
+    // console.log(
+    //   await utils.getAttributes('operatingSystem', 'AmazonEc2', '100')
+    // );
+
+    // utils.describeService('AmazonEc2', '100', (data, err) => {
     //   console.log(data);
+    // });
+
+    // utils.getAttributes('volumeType', 'AmazonS3', '100', (data, err) => {
+    //   console.log(data.AttributeValues.map(av => av.Value));
+    // });
 
     //   // this.setState({
     //   //   regions: data.AttributeValues.map(r => r.Value)
@@ -314,7 +350,7 @@ class SplunkPricing extends Component {
       location
     } = this.state;
 
-    console.log('render', this.state.result);
+    //console.log('render', this.state.result);
 
     return (
       <div className={classes.container}>
@@ -322,7 +358,9 @@ class SplunkPricing extends Component {
         <div className={classes.root}>
           <Grid container spacing={24}>
             <Grid item xs={12} sm={6}>
-              {/* <Paper className={classes.paper}>AWS Assumptions</Paper> */}
+              <Typography variant="h5" gutterBottom className={classes.heading}>
+                Splunk Influenced Revenue Calculator
+              </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
               {/* <Paper className={classes.paper}>AWS Assumptions</Paper> */}
@@ -331,7 +369,7 @@ class SplunkPricing extends Component {
               <TextField
                 required
                 id="outlined-required"
-                label="Index Volume/Splunk License"
+                label="Index Volume / Splunk License"
                 value={this.state.volumePerDay}
                 onChange={handleChange('volumePerDay')}
                 className={classes.textField}
@@ -339,7 +377,7 @@ class SplunkPricing extends Component {
                 variant="outlined"
                 InputProps={{
                   endAdornment: (
-                    <InputAdornment position="end">GBs/Day</InputAdornment>
+                    <InputAdornment position="end">GB/day</InputAdornment>
                   )
                 }}
               />
@@ -351,7 +389,7 @@ class SplunkPricing extends Component {
               <TextField
                 required
                 id="outlined-required"
-                label="Hot Retention"
+                label="Hot Retention (IDR) / Cache (S2)"
                 value={this.state.retentionHot}
                 onChange={handleChange('retentionHot')}
                 //defaultValue="30 days"
@@ -360,7 +398,7 @@ class SplunkPricing extends Component {
                 variant="outlined"
                 InputProps={{
                   endAdornment: (
-                    <InputAdornment position="end">Days</InputAdornment>
+                    <InputAdornment position="end">days</InputAdornment>
                   )
                 }}
               />
@@ -378,7 +416,7 @@ class SplunkPricing extends Component {
                 variant="outlined"
                 InputProps={{
                   endAdornment: (
-                    <InputAdornment position="end">Days</InputAdornment>
+                    <InputAdornment position="end">days</InputAdornment>
                   )
                 }}
               />
@@ -449,6 +487,7 @@ class SplunkPricing extends Component {
 
                       <Grid item xs={12} sm={4}>
                         <FormControl
+                          disabled
                           variant="outlined"
                           className={classes.select}
                         >
@@ -526,6 +565,105 @@ class SplunkPricing extends Component {
                             }}
                             htmlFor="outlined-age-simple"
                           >
+                            S3 Volume
+                          </InputLabel>
+                          <Select
+                            value={this.state.s3VolumeType}
+                            onChange={handleChange('s3VolumeType')}
+                            input={
+                              <OutlinedInput
+                                labelWidth={this.state.labelWidth}
+                                name="age"
+                                id="outlined-age-simple"
+                              />
+                            }
+                          >
+                            {this.state.s3VolumeTypes.map((value, i) => (
+                              <MenuItem key={i} value={value}>
+                                {value}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        {/* <Paper className={classes.paper}>S3 Volumes</Paper> */}
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <FormControl
+                          variant="outlined"
+                          className={classes.select}
+                        >
+                          <InputLabel
+                            ref={ref => {
+                              this.InputLabelRef = ref;
+                            }}
+                            htmlFor="outlined-age-simple"
+                          >
+                            Hot Volume
+                          </InputLabel>
+                          <Select
+                            value={this.state.hotEbsVolumeType}
+                            onChange={handleChange('hotEbsVolumeType')}
+                            input={
+                              <OutlinedInput
+                                labelWidth={this.state.labelWidth}
+                                name="age"
+                                id="outlined-age-simple"
+                              />
+                            }
+                          >
+                            {this.state.ebsVolumeTypes.map((value, i) => (
+                              <MenuItem key={i} value={value}>
+                                {value}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        {/* <Paper className={classes.paper}>Hot EBS Volumes</Paper> */}
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <FormControl
+                          variant="outlined"
+                          className={classes.select}
+                        >
+                          <InputLabel
+                            ref={ref => {
+                              this.InputLabelRef = ref;
+                            }}
+                            htmlFor="outlined-age-simple"
+                          >
+                            Cold Volume
+                          </InputLabel>
+                          <Select
+                            value={this.state.coldEbsVolumeType}
+                            onChange={handleChange('coldEbsVolumeType')}
+                            input={
+                              <OutlinedInput
+                                labelWidth={this.state.labelWidth}
+                                name="age"
+                                id="outlined-age-simple"
+                              />
+                            }
+                          >
+                            {this.state.ebsVolumeTypes.map((value, i) => (
+                              <MenuItem key={i} value={value}>
+                                {value}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        {/* <Paper className={classes.paper}>Cold EBS Volumes</Paper> */}
+                      </Grid>
+                      <Grid item xs={12} sm={4}>
+                        <FormControl
+                          variant="outlined"
+                          className={classes.select}
+                        >
+                          <InputLabel
+                            ref={ref => {
+                              this.InputLabelRef = ref;
+                            }}
+                            htmlFor="outlined-age-simple"
+                          >
                             Billing Option
                           </InputLabel>
                           <Select
@@ -560,37 +698,7 @@ class SplunkPricing extends Component {
                           <Divider />
                         </div>
                       </Grid>
-                      <Grid item xs={6} sm={3}>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={this.state.clusterIndexers}
-                              onChange={toggleChange('clusterIndexers')}
-                              value={this.state.clusterIndexers.toString()}
-                              color="primary"
-                            />
-                          }
-                          label="Cluster Indexers"
-                        />
-
-                        {/* <Paper className={classes.paper}>Indexer Cluster</Paper> */}
-                      </Grid>
-
-                      <Grid item xs={6} sm={3}>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              checked={this.state.clusterSearchHeads}
-                              onChange={toggleChange('clusterSearchHeads')}
-                              value={this.state.clusterSearchHeads.toString()}
-                              color="primary"
-                            />
-                          }
-                          label="Cluster Search Heads"
-                        />
-                      </Grid>
-
-                      <Grid item xs={12} sm={4}>
+                      <Grid item xs={12} sm={3}>
                         <FormControl
                           variant="outlined"
                           className={classes.select}
@@ -624,7 +732,76 @@ class SplunkPricing extends Component {
                           </Select>
                         </FormControl>
                       </Grid>
-                      <Grid item sm={1} xs={6}>
+                      <Grid item xs={12} sm={3}>
+                        <FormControl
+                          variant="outlined"
+                          className={classes.select}
+                        >
+                          <InputLabel
+                            ref={ref => {
+                              this.InputLabelRef = ref;
+                            }}
+                            htmlFor="outlined-age-simple"
+                          >
+                            Compression
+                          </InputLabel>
+                          <Select
+                            value={this.state.compressionPercent}
+                            onChange={handleChange('compressionPercent')}
+                            input={
+                              <OutlinedInput
+                                labelWidth={this.state.labelWidth}
+                                id="outlined-age-simple"
+                              />
+                            }
+                          >
+                            <MenuItem key={1} value={50}>
+                              {'50 %'}
+                            </MenuItem>
+                            <MenuItem key={2} value={40}>
+                              {'40 %'}
+                            </MenuItem>
+                            <MenuItem key={3} value={30}>
+                              {'30 %'}
+                            </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        {/* <Paper className={classes.paper}>
+                          Compresssion
+                        </Paper> */}
+                      </Grid>
+                      <Grid item xs={6} sm={3}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={this.state.clusterIndexers}
+                              onChange={toggleChange('clusterIndexers')}
+                              value={this.state.clusterIndexers.toString()}
+                              color="primary"
+                            />
+                          }
+                          label="Cluster Indexers"
+                        />
+
+                        {/* <Paper className={classes.paper}>Indexer Cluster</Paper> */}
+                      </Grid>
+
+                      <Grid item xs={6} sm={3}>
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              checked={this.state.clusterSearchHeads}
+                              onChange={toggleChange('clusterSearchHeads')}
+                              value={this.state.clusterSearchHeads.toString()}
+                              color="primary"
+                            />
+                          }
+                          label="Cluster Search Heads"
+                        />
+                      </Grid>
+
+                      <Grid item sm={3} xs={6}>
                         <TextField
                           required
                           id="outlined-required"
@@ -637,7 +814,7 @@ class SplunkPricing extends Component {
                           variant="outlined"
                         />
                       </Grid>
-                      <Grid item sm={1} xs={6}>
+                      <Grid item sm={3} xs={6}>
                         <TextField
                           required
                           id="outlined-required"
@@ -650,15 +827,88 @@ class SplunkPricing extends Component {
                           variant="outlined"
                         />
                       </Grid>
+
+                      <Grid item xs={12} sm={3}>
+                        <TextField
+                          required
+                          id="outlined-required"
+                          label="Core Indexer Rate"
+                          value={this.state.coreIndexerRate}
+                          onChange={handleChange('coreIndexerRate')}
+                          className={classes.textField}
+                          variant="outlined"
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                GB/day
+                              </InputAdornment>
+                            )
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={3}>
+                        <TextField
+                          required
+                          id="outlined-required"
+                          label="ES Indexer Rate"
+                          value={this.state.esIndexerRate}
+                          onChange={handleChange('esIndexerRate')}
+                          className={classes.textField}
+                          variant="outlined"
+                          InputProps={{
+                            endAdornment: (
+                              <InputAdornment position="end">
+                                GB/day
+                              </InputAdornment>
+                            )
+                          }}
+                        />
+                      </Grid>
+                      <Grid item xs={12} sm={3}>
+                        <FormControl
+                          variant="outlined"
+                          className={classes.select}
+                        >
+                          <InputLabel
+                            ref={ref => {
+                              this.InputLabelRef = ref;
+                            }}
+                            htmlFor="outlined-age-simple"
+                          >
+                            Operating System
+                          </InputLabel>
+                          <Select
+                            disabled
+                            value={this.state.operatingSystem}
+                            onChange={handleChange('operatingSystem')}
+                            input={
+                              <OutlinedInput
+                                labelWidth={this.state.labelWidth}
+                                name="age"
+                                id="outlined-age-simple"
+                              />
+                            }
+                          >
+                            {this.state.operatingSystems.map((value, i) => (
+                              <MenuItem key={i} value={value}>
+                                {value}
+                              </MenuItem>
+                            ))}
+                          </Select>
+                        </FormControl>
+                        {/* <Paper className={classes.paper}>AWS Region</Paper> */}
+                      </Grid>
                     </Grid>
                   </div>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
             </Grid>
-
             <Grid item xs={12}>
               {!this.state.inProgress ? (
-                <CostSummary datasource={this.state.result.computeResources} />
+                <CostSummary
+                  computeResources={this.state.result.computeResources}
+                  storageResources={this.state.result.storageResources}
+                />
               ) : (
                 <CircularProgress className={classes.progress} />
               )}
