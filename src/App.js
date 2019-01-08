@@ -5,7 +5,7 @@ import aws_exports from './aws-exports';
 import { withAuthenticator } from 'aws-amplify-react';
 
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
-import orange from '@material-ui/core/colors/orange';
+//import orange from '@material-ui/core/colors/orange';
 
 import AppBar from './Components/NavigationBar';
 import ProjectGrid from './Components/ProjectGrid';
@@ -38,11 +38,15 @@ Storage.configure({ level: 'private' });
 
 const theme = createMuiTheme({
   palette: {
-    primary: { main: orange[400] },
+    //primary: { main: orange[400] },
+    primary: { main: '#232f3e' },
     secondary: { main: '#11cb5f' } // This is just green.A700 as hex.
   },
   typography: {
     useNextVariants: true
+  },
+  root: {
+    padding: 20
   }
 });
 
@@ -75,8 +79,9 @@ class App extends Component {
         <Router>
           <MuiThemeProvider theme={theme}>
             <div
+              //className={theme.container}
               style={{
-                padding: 10
+                padding: 20
               }}
             >
               {/* NAVIGATION BAR ROUTE - ALWAYS ON */}
@@ -113,6 +118,11 @@ class App extends Component {
 }
 
 export default props => {
-  const AppComponent = withAuthenticator(App);
+  const MyTheme = {
+    //signInButtonIcon: { display: 'none' },
+    //googleSignInButton: { backgroundColor: 'red', borderColor: 'red' },
+    button: { backgroundColor: '#232f3e' }
+  };
+  const AppComponent = withAuthenticator(App, false, [], null, MyTheme);
   return <AppComponent {...props} />;
 };
