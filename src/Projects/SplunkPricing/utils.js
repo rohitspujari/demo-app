@@ -177,6 +177,10 @@ export async function getEbsPrice(sizeInGB, volumeType, location) {
   };
   return await API.post(apiName, path, myInit).then(
     response => {
+      if (response[0] == null) {
+        return;
+        console.log('when sku is null', sizeInGB, volumeType, location);
+      }
       const sku = response[0];
       //console.log(response);
       const { price, priceStructure } = calculateMontlyStoragePrice(

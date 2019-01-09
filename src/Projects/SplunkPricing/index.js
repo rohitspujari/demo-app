@@ -180,6 +180,8 @@ class SplunkPricing extends Component {
   //   splunkITSI: false
   // };
 
+  //this.onFocusText = '';
+
   state = {
     billingOptions: BILLING_OPTIONS,
     billingOption: BILLING_OPTIONS[6],
@@ -194,6 +196,7 @@ class SplunkPricing extends Component {
     volumePerDay: 100,
     compressionPercent: 50,
     coreIndexerRate: 250,
+    esIndexerRate: 100,
     operatingSystems: [],
     operatingSystem: 'Linux',
     s2IndexerInstanceType: 'i3.8xlarge',
@@ -203,7 +206,7 @@ class SplunkPricing extends Component {
     clusterMasterInstanceType: 'c5.4xlarge',
     licenseMasterInstanceType: 'c5.2xlarge',
     awsCollectorNodeInstanceType: 'c5.4xlarge',
-    esIndexerRate: 100,
+
     retentionHot: 30,
     retentionCold: 90,
     replicationFactor: 2,
@@ -221,6 +224,7 @@ class SplunkPricing extends Component {
     labelWidth: 0,
     inProgress: 'true'
   };
+
   async componentDidMount() {
     this.setState({
       result: await utils.priceSplunkDeployment(this.state),
@@ -301,22 +305,72 @@ class SplunkPricing extends Component {
     //
   }
 
-  handleChange = name => event => {
-    utils
-      .priceSplunkDeployment({ ...this.state, [name]: event.target.value })
-      .then(result => {
-        //console.log(result);
-        this.setState({
-          result,
-          inProgress: false
-        });
-      });
+  isValidInput = (name, value) => {
+    if (name === 'volumePerDay') {
+      if (isNaN(value)) return false;
+      if (value > 50000) return false;
+      if (value < 0) return false;
+    }
+    if (name === 'retentionHot' || name === 'retentionCold') {
+      if (value > 2000) return false;
+    }
 
-    this.setState({
-      ...this.state,
-      [name]: event.target.value,
-      inProgress: true
+    if (name === 'replicationFactor' || name === 'searchFactor') {
+      if (value > 5) return false;
+    }
+
+    if (name === 'coreIndexerRate' || name === 'esIndexerRate') {
+      if (value > 1000) return false;
+    }
+
+    return true;
+  };
+
+  handleRefresh = e => {
+    if (this.onFocusText === e.target.value) {
+      return;
+    }
+    this.setState({ inProgress: true });
+    utils.priceSplunkDeployment({ ...this.state }).then(result => {
+      //console.log(result);
+      this.setState({
+        result,
+        inProgress: false
+      });
     });
+  };
+
+  handleChange = name => event => {
+    if (!this.isValidInput(name, event.target.value)) {
+      return;
+    }
+
+    ////console.log(event.target.type);
+
+    if (event.target.type === 'text') {
+      //Don't make network for text componenets
+      this.setState({
+        ...this.state,
+        [name]: event.target.value
+      });
+    } else {
+      // make network calls for other components
+      utils
+        .priceSplunkDeployment({ ...this.state, [name]: event.target.value })
+        .then(result => {
+          //console.log(result);
+          this.setState({
+            result,
+            inProgress: false
+          });
+        });
+
+      this.setState({
+        ...this.state,
+        [name]: event.target.value,
+        inProgress: true
+      });
+    }
   };
 
   toggleChange = name => event => {
@@ -372,6 +426,8 @@ class SplunkPricing extends Component {
                 label="Index Volume / Splunk License"
                 value={this.state.volumePerDay}
                 onChange={handleChange('volumePerDay')}
+                onFocus={e => (this.onFocusText = e.target.value)}
+                onBlur={this.handleRefresh}
                 className={classes.textField}
                 margin="normal"
                 variant="outlined"
@@ -392,6 +448,8 @@ class SplunkPricing extends Component {
                 label="Hot Retention (IDR) / Cache (S2)"
                 value={this.state.retentionHot}
                 onChange={handleChange('retentionHot')}
+                onFocus={e => (this.onFocusText = e.target.value)}
+                onBlur={this.handleRefresh}
                 //defaultValue="30 days"
                 className={classes.textField}
                 margin="normal"
@@ -410,6 +468,8 @@ class SplunkPricing extends Component {
                 label="Cold Retention"
                 value={this.state.retentionCold}
                 onChange={handleChange('retentionCold')}
+                onFocus={e => (this.onFocusText = e.target.value)}
+                onBlur={this.handleRefresh}
                 //defaultValue="90 days"
                 className={classes.textField}
                 margin="normal"
@@ -808,6 +868,8 @@ class SplunkPricing extends Component {
                           label="Replication Factor"
                           value={this.state.replicationFactor}
                           onChange={handleChange('replicationFactor')}
+                          onFocus={e => (this.onFocusText = e.target.value)}
+                          onBlur={this.handleRefresh}
                           //defaultValue="30 days"
                           className={classes.textField}
                           //margin="normal"
@@ -821,6 +883,8 @@ class SplunkPricing extends Component {
                           label="Search Factor"
                           value={this.state.searchFactor}
                           onChange={handleChange('searchFactor')}
+                          onFocus={e => (this.onFocusText = e.target.value)}
+                          onBlur={this.handleRefresh}
                           //defaultValue="30 days"
                           className={classes.textField}
                           //margin="normal"
@@ -835,6 +899,8 @@ class SplunkPricing extends Component {
                           label="Core Indexer Rate"
                           value={this.state.coreIndexerRate}
                           onChange={handleChange('coreIndexerRate')}
+                          onFocus={e => (this.onFocusText = e.target.value)}
+                          onBlur={this.handleRefresh}
                           className={classes.textField}
                           variant="outlined"
                           InputProps={{
@@ -853,6 +919,8 @@ class SplunkPricing extends Component {
                           label="ES Indexer Rate"
                           value={this.state.esIndexerRate}
                           onChange={handleChange('esIndexerRate')}
+                          onFocus={e => (this.onFocusText = e.target.value)}
+                          onBlur={this.handleRefresh}
                           className={classes.textField}
                           variant="outlined"
                           InputProps={{

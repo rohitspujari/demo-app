@@ -9,7 +9,7 @@
     "openIdLogPolicy": "Cognito_openid_lambda_log_policy",
     "userPoolName": "CognitoUserPool",
     "autoVerifiedAttributes": [
-        "email"
+        "phone_number"
     ],
     "mfaConfiguration": "OPTIONAL",
     "mfaTypes": [
