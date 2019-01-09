@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 
 import * as utils from './utils.js';
 import Grid from '@material-ui/core/Grid';
+import Hidden from '@material-ui/core/Hidden';
 //import Paper from '@material-ui/core/Paper';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
@@ -26,6 +27,7 @@ import SettingsIcon from '@material-ui/icons/Settings';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import CostSummary from './components/CostSummary.js';
+import ArchitecturePanel from './components/ArchitecturePanel.js';
 
 const BILLING_OPTIONS = [
   {
@@ -412,7 +414,7 @@ class SplunkPricing extends Component {
       <div className={classes.container}>
         {/* <h3 className="Title">Welcome to Splunk Pricing Page</h3> */}
         <div className={classes.root}>
-          <Grid container spacing={24}>
+          <Grid alignItems="center" container spacing={24}>
             <Grid item xs={12} sm={12}>
               <Typography variant="h5" gutterBottom className={classes.heading}>
                 Splunk Influenced AWS Revenue Estimator
@@ -496,24 +498,26 @@ class SplunkPricing extends Component {
               </Button> */}
               {/* <Paper className={classes.paper}>Retention (Cold)</Paper> */}
             </Grid>
-            <Grid item xs={12} sm={6}>
-              <Grid container justify="center" alignItems="center">
-                <Grid item>
-                  <img
-                    src={require('./awslogo.jpg')}
-                    height="200"
-                    width="300"
-                    alt="aws logo"
-                  />
-                  <img
-                    src={require('./splunklogo.png')}
-                    height="200"
-                    width="300"
-                    alt="splunk logo"
-                  />
+            <Hidden smDown>
+              <Grid item xs={12} sm={6}>
+                <Grid container justify="center" alignItems="center">
+                  <Grid item>
+                    {/* <img
+                      src={require('./awslogo.jpg')}
+                      height="150"
+                      width="200"
+                      alt="aws logo"
+                    /> */}
+                    <img
+                      src={require('./splunk_aws.png')}
+                      height="150"
+                      width="200"
+                      alt="splunk logo"
+                    />
+                  </Grid>
                 </Grid>
               </Grid>
-            </Grid>
+            </Hidden>
             <Grid item xs={6} sm={3}>
               <FormControlLabel
                 control={
@@ -990,6 +994,9 @@ class SplunkPricing extends Component {
                   </div>
                 </ExpansionPanelDetails>
               </ExpansionPanel>
+            </Grid>
+            <Grid item xs={12}>
+              <ArchitecturePanel />
             </Grid>
             <Grid item xs={12}>
               {!this.state.inProgress ? (
