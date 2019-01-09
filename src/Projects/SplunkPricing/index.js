@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 
 import * as utils from './utils.js';
 import Grid from '@material-ui/core/Grid';
-import Paper from '@material-ui/core/Paper';
+//import Paper from '@material-ui/core/Paper';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
@@ -497,6 +497,17 @@ class SplunkPricing extends Component {
               {/* <Paper className={classes.paper}>Retention (Cold)</Paper> */}
             </Grid>
             {/* <Grid item xs={12} sm={6} /> */}
+            <Grid
+              container
+              justify="center"
+              alignItems="center"
+              item
+              xs={12}
+              sm={6}
+            >
+              <img src={require('./awslogo.jpg')} height="200" width="300" />
+              <img src={require('./splunklogo.png')} height="200" width="300" />
+            </Grid>
             <Grid item xs={6} sm={3}>
               <FormControlLabel
                 control={

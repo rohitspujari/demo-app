@@ -75,7 +75,7 @@ function CostSummary(props) {
         <TableHead>
           <TableRow>
             <CustomTableCell>Upfront</CustomTableCell>
-            <CustomTableCell>Montly</CustomTableCell>
+            <CustomTableCell>Monthly</CustomTableCell>
             <CustomTableCell>3 Year Cost</CustomTableCell>
           </TableRow>
         </TableHead>
