@@ -224,7 +224,7 @@ class SplunkPricing extends Component {
     result: '',
     //Component Sate
     labelWidth: 0,
-    inProgress: 'true'
+    inProgress: true
   };
 
   async componentDidMount() {
@@ -413,14 +413,12 @@ class SplunkPricing extends Component {
         {/* <h3 className="Title">Welcome to Splunk Pricing Page</h3> */}
         <div className={classes.root}>
           <Grid container spacing={24}>
-            <Grid item xs={12} sm={6}>
+            <Grid item xs={12} sm={12}>
               <Typography variant="h5" gutterBottom className={classes.heading}>
                 Splunk Influenced AWS Revenue Estimator
               </Typography>
             </Grid>
-            <Grid item xs={12} sm={6}>
-              {/* <Paper className={classes.paper}>AWS Assumptions</Paper> */}
-            </Grid>
+
             <Grid item xs={12} sm={6}>
               <TextField
                 required
@@ -498,17 +496,23 @@ class SplunkPricing extends Component {
               </Button> */}
               {/* <Paper className={classes.paper}>Retention (Cold)</Paper> */}
             </Grid>
-            {/* <Grid item xs={12} sm={6} /> */}
-            <Grid
-              container
-              justify="center"
-              alignItems="center"
-              item
-              xs={12}
-              sm={6}
-            >
-              <img src={require('./awslogo.jpg')} height="200" width="300" />
-              <img src={require('./splunklogo.png')} height="200" width="300" />
+            <Grid item xs={12} sm={6}>
+              <Grid container justify="center" alignItems="center">
+                <Grid item>
+                  <img
+                    src={require('./awslogo.jpg')}
+                    height="200"
+                    width="300"
+                    alt="aws logo"
+                  />
+                  <img
+                    src={require('./splunklogo.png')}
+                    height="200"
+                    width="300"
+                    alt="splunk logo"
+                  />
+                </Grid>
+              </Grid>
             </Grid>
             <Grid item xs={6} sm={3}>
               <FormControlLabel

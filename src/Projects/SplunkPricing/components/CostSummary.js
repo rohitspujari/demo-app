@@ -105,8 +105,8 @@ function CostSummary(props) {
             <CustomTableCell>Components</CustomTableCell>
             <CustomTableCell>Qty.</CustomTableCell>
             <CustomTableCell>Instance Type</CustomTableCell>
-            <CustomTableCell>vCores</CustomTableCell>
-            <CustomTableCell>RAM</CustomTableCell>
+            <CustomTableCell>vCPU</CustomTableCell>
+            <CustomTableCell>Memory</CustomTableCell>
             <CustomTableCell>Instance Storage</CustomTableCell>
             <CustomTableCell>Root Volume (EBS)</CustomTableCell>
           </TableRow>
@@ -132,7 +132,7 @@ function CostSummary(props) {
         <TableHead>
           <TableRow>
             <CustomTableCell>Storage</CustomTableCell>
-            <CustomTableCell>Type</CustomTableCell>
+            <CustomTableCell>Volume Type</CustomTableCell>
             <CustomTableCell>Category</CustomTableCell>
             <CustomTableCell>Size</CustomTableCell>
           </TableRow>
