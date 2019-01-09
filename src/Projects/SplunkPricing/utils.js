@@ -516,7 +516,7 @@ export async function priceSplunkDeployment(params) {
     storageResources.push({
       name: 'EBS',
       type: ebsColdVolumePrice.sku.product.attributes.volumeType,
-      category: 'Hot Volumes',
+      category: 'Cold Volumes',
       size:
         dataRetentionCold / 1000 > 1
           ? dataRetentionCold / 1000 + ' TB'

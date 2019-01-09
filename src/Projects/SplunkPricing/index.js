@@ -22,6 +22,7 @@ import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
 import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
 import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import SettingsIcon from '@material-ui/icons/Settings';
 import CircularProgress from '@material-ui/core/CircularProgress';
 
 import CostSummary from './components/CostSummary.js';
@@ -156,6 +157,7 @@ const styles = theme => ({
     marginTop: 20
   },
   expansionPanelHeading: {
+    marginLeft: 10,
     fontSize: theme.typography.pxToRem(15)
   }
 });
@@ -413,7 +415,7 @@ class SplunkPricing extends Component {
           <Grid container spacing={24}>
             <Grid item xs={12} sm={6}>
               <Typography variant="h5" gutterBottom className={classes.heading}>
-                Splunk Influenced Revenue Calculator
+                Splunk Influenced AWS Revenue Estimator
               </Typography>
             </Grid>
             <Grid item xs={12} sm={6}>
@@ -512,6 +514,7 @@ class SplunkPricing extends Component {
               <FormControlLabel
                 control={
                   <Checkbox
+                    disabled={this.state.inProgress}
                     checked={this.state.splunkES}
                     onChange={toggleChange('splunkES')}
                     value={this.state.splunkES.toString()}
@@ -525,6 +528,7 @@ class SplunkPricing extends Component {
               <FormControlLabel
                 control={
                   <Checkbox
+                    disabled={this.state.inProgress}
                     checked={this.state.splunkITSI}
                     onChange={toggleChange('splunkITSI')}
                     value={this.state.splunkITSI.toString()}
@@ -538,11 +542,10 @@ class SplunkPricing extends Component {
             <Grid item xs={12}>
               <ExpansionPanel>
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                  <div>
-                    <Typography className={classes.expansionPanelHeading}>
-                      Advanced Settings
-                    </Typography>
-                  </div>
+                  <SettingsIcon fontSize="small" />
+                  <Typography className={classes.expansionPanelHeading}>
+                    Advanced Settings
+                  </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>
                   <div className={classes.root}>
@@ -846,6 +849,7 @@ class SplunkPricing extends Component {
                         <FormControlLabel
                           control={
                             <Checkbox
+                              disabled={this.state.inProgress}
                               checked={this.state.clusterIndexers}
                               onChange={toggleChange('clusterIndexers')}
                               value={this.state.clusterIndexers.toString()}
@@ -862,6 +866,7 @@ class SplunkPricing extends Component {
                         <FormControlLabel
                           control={
                             <Checkbox
+                              disabled={this.state.inProgress}
                               checked={this.state.clusterSearchHeads}
                               onChange={toggleChange('clusterSearchHeads')}
                               value={this.state.clusterSearchHeads.toString()}
