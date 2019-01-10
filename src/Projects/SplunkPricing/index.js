@@ -502,14 +502,14 @@ class SplunkPricing extends Component {
               <Grid item xs={12} sm={6}>
                 <Grid container justify="center" alignItems="center">
                   <Grid item>
-                    {/* <img
+                    <img
                       src={require('./awslogo.jpg')}
                       height="150"
                       width="200"
                       alt="aws logo"
-                    /> */}
+                    />
                     <img
-                      src={require('./splunk_aws.png')}
+                      src={require('./splunklogo.png')}
                       height="150"
                       width="200"
                       alt="splunk logo"
