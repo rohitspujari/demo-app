@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import ExpansionPanel from '@material-ui/core/ExpansionPanel';
@@ -43,7 +42,7 @@ function ArchitecturePanel(props) {
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <DescriptionIcon fontSize="small" />
           <Typography className={classes.expansionPanelHeading}>
-            Splunk Architecture
+            Architecture on AWS
           </Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
@@ -56,7 +55,7 @@ function ArchitecturePanel(props) {
                   variant="contained"
                   className={classes.button}
                 >
-                  Deploy Quickstart
+                  Deploy
                 </Button>
               </div>
             </Grid>

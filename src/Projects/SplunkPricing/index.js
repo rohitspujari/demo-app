@@ -552,7 +552,7 @@ class SplunkPricing extends Component {
                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                   <SettingsIcon fontSize="small" />
                   <Typography className={classes.expansionPanelHeading}>
-                    Advanced Settings
+                    Change Default Settings
                   </Typography>
                 </ExpansionPanelSummary>
                 <ExpansionPanelDetails>

@@ -358,10 +358,12 @@ export async function priceSplunkDeployment(params) {
 
   const dataRetention = dataRetentionHot + dataRetentionCold;
 
+  const s3DataRetention = dataRetention / params.replicationFactor; // removing replication
+
   var s3Price = 0;
   if (splunkArchitecture === 'Smart Store (S2)') {
     s3Price = await getS3Price(
-      dataRetention,
+      s3DataRetention, // removing replication factor
       params.s3VolumeType,
       params.location
     );
@@ -371,9 +373,9 @@ export async function priceSplunkDeployment(params) {
       type: s3Price.sku.product.attributes.volumeType,
       category: 'Warm / Cold',
       size:
-        dataRetention / 1000 > 1
-          ? dataRetention / 1000 + ' TB'
-          : dataRetention + ' GB',
+        s3DataRetention / 1000 > 1
+          ? s3DataRetention / 1000 + ' TB'
+          : s3DataRetention + ' GB',
       monthly: s3Price.price
     };
     storageResources.push(storageResource);
@@ -454,6 +456,21 @@ export async function priceSplunkDeployment(params) {
     name: 'License Master',
     count: licenseMasterCount,
     price: licenseMasterPrice,
+    rootVolume: 30
+  });
+
+  var deployerCount = 1;
+  const deployerPrice = await getEc2Price(
+    deployerCount,
+    params.licenseMasterInstanceType,
+    params.operatingSystem,
+    params.location,
+    params.billingOption
+  );
+  computeResources.push({
+    name: 'Search Head Deployer',
+    count: deployerCount,
+    price: deployerPrice,
     rootVolume: 30
   });
 
