@@ -57,23 +57,7 @@
 			"[object Object]": {}
 		}
 	},
-	"analytics": {
-		"DemoApp": {
-			"service": "Pinpoint",
-			"providerPlugin": "awscloudformation",
-			"providerMetadata": {
-				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/analytics/pinpoint-cloudformation-template.json",
-				"logicalId": "analyticsDemoApp"
-			},
-			"lastPushTimeStamp": "2019-01-08T21:18:04.970Z",
-			"output": {
-				"appName": "DemoApp",
-				"Region": "us-east-1",
-				"Id": "4949f5a0d8fb4bb99b3faf15546c2e4a"
-			},
-			"lastPushDirHash": "jTkwgRCZ5Oe2YY2Ykdn04kLlsX0="
-		}
-	},
+	"analytics": {},
 	"storage": {
 		"DemoApp": {
 			"service": "S3",

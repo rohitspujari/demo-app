@@ -327,9 +327,18 @@ export async function priceSplunkDeployment(params) {
   }
 
   var coreSearchHeadCount = 1;
-  if (clusterSearchHeads === true) {
+
+  if (params.noOfConcurrentUsers <= 8) {
+    params.coreSearchHeadInstanceType = 'c5.4xlarge';
+  } else {
+    params.coreSearchHeadInstanceType = 'c5.9xlarge';
+    coreSearchHeadCount = Math.ceil(params.noOfConcurrentUsers / 16);
+  }
+
+  if (clusterSearchHeads === true && coreSearchHeadCount < 3) {
     coreSearchHeadCount = 3;
   }
+
   //add one search head in 1 TB increments up to 10 TB
   coreSearchHeadCount += Math.floor(volumePerDay / 1000);
 
@@ -363,7 +372,7 @@ export async function priceSplunkDeployment(params) {
   var s3Price = 0;
   if (splunkArchitecture === 'Smart Store (S2)') {
     s3Price = await getS3Price(
-      s3DataRetention, // removing replication factor
+      s3DataRetention,
       params.s3VolumeType,
       params.location
     );
@@ -428,21 +437,22 @@ export async function priceSplunkDeployment(params) {
       rootVolume: 1000
     });
   }
-
-  var clusterMasterCount = 1;
-  const clusterMasterPrice = await getEc2Price(
-    clusterMasterCount,
-    params.clusterMasterInstanceType,
-    params.operatingSystem,
-    params.location,
-    params.billingOption
-  );
-  computeResources.push({
-    name: 'Cluster Master',
-    count: clusterMasterCount,
-    price: clusterMasterPrice,
-    rootVolume: 30
-  });
+  if (params.clusterIndexers === true) {
+    var clusterMasterCount = 1;
+    const clusterMasterPrice = await getEc2Price(
+      clusterMasterCount,
+      params.clusterMasterInstanceType,
+      params.operatingSystem,
+      params.location,
+      params.billingOption
+    );
+    computeResources.push({
+      name: 'Cluster Master',
+      count: clusterMasterCount,
+      price: clusterMasterPrice,
+      rootVolume: 30
+    });
+  }
 
   var licenseMasterCount = 1;
   const licenseMasterPrice = await getEc2Price(
@@ -471,6 +481,21 @@ export async function priceSplunkDeployment(params) {
     name: 'Search Head Deployer',
     count: deployerCount,
     price: deployerPrice,
+    rootVolume: 30
+  });
+
+  var deploymentServerCount = 1;
+  const deploymentServerPrice = await getEc2Price(
+    deploymentServerCount,
+    params.licenseMasterInstanceType,
+    params.operatingSystem,
+    params.location,
+    params.billingOption
+  );
+  computeResources.push({
+    name: 'Deployment Server',
+    count: deploymentServerCount,
+    price: deploymentServerPrice,
     rootVolume: 30
   });
 

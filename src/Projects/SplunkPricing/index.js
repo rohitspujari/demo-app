@@ -197,7 +197,7 @@ class SplunkPricing extends Component {
     hotEbsVolumeType: 'General Purpose',
     coldEbsVolumeType: 'Cold HDD',
     rootVolumeType: 'General Purpose',
-    volumePerDay: 100,
+    volumePerDay: 1000,
     compressionPercent: 50,
     coreIndexerRate: 250,
     esIndexerRate: 100,
@@ -222,8 +222,9 @@ class SplunkPricing extends Component {
     clusterSearchHeads: true,
     deploymentOptions: DEPLOYMENT_OPTIONS,
     deploymentOption: DEPLOYMENT_OPTIONS[0],
+    noOfConcurrentUsers: '16',
 
-    result: '',
+    result: [],
     //Component Sate
     labelWidth: 0,
     inProgress: true
@@ -262,13 +263,11 @@ class SplunkPricing extends Component {
     //   });
     // });
 
-    // console.log(
-    //   await utils.getAttributes('operatingSystem', 'AmazonEc2', '100')
-    // );
+    console.log(await utils.getAttributes('locationType', 'AmazonEc2', '100'));
 
-    // utils.describeService('AmazonEc2', '100', (data, err) => {
-    //   console.log(data);
-    // });
+    utils.describeService('Route53', '100', (data, err) => {
+      console.log(data);
+    });
 
     // utils.getAttributes('volumeType', 'AmazonS3', '100', (data, err) => {
     //   console.log(data.AttributeValues.map(av => av.Value));
@@ -332,8 +331,9 @@ class SplunkPricing extends Component {
 
   handleRefresh = e => {
     if (this.onFocusText === e.target.value) {
-      return;
+      return; // if the value in the text box in unchanged return
     }
+
     this.setState({ inProgress: true });
     utils.priceSplunkDeployment({ ...this.state }).then(result => {
       //console.log(result);
@@ -352,11 +352,38 @@ class SplunkPricing extends Component {
     ////console.log(event.target.type);
 
     if (event.target.type === 'text') {
-      //Don't make network for text componenets
-      this.setState({
-        ...this.state,
-        [name]: event.target.value
-      });
+      //Don't make network request for text componenets
+      // debugger;
+      if (name === 'volumePerDay') {
+        var s2IdxInstanceType = '';
+        var idrIdxInstanceType = '';
+        var coreIdxRate = 0;
+        var esIdxRate = 0;
+        if (event.target.value < 500) {
+          coreIdxRate = 100;
+          esIdxRate = 50;
+          s2IdxInstanceType = 'i3.4xlarge';
+          idrIdxInstanceType = 'c5.4xlarge';
+        } else {
+          coreIdxRate = 250;
+          esIdxRate = 100;
+          s2IdxInstanceType = 'i3.8xlarge';
+          idrIdxInstanceType = 'c5.9xlarge';
+        }
+        this.setState({
+          ...this.state,
+          [name]: event.target.value,
+          coreIndexerRate: coreIdxRate,
+          esIndexerRate: esIdxRate,
+          s2IndexerInstanceType: s2IdxInstanceType,
+          idrIndexerInstanceType: idrIdxInstanceType
+        });
+      } else {
+        this.setState({
+          ...this.state,
+          [name]: event.target.value
+        });
+      }
     } else {
       // make network calls for other components
       utils
@@ -956,6 +983,20 @@ class SplunkPricing extends Component {
                           }}
                         />
                       </Grid>
+                      <Grid item sm={3} xs={6}>
+                        <TextField
+                          id="outlined-required"
+                          label="Concurrent Users"
+                          value={this.state.noOfConcurrentUsers}
+                          onChange={handleChange('noOfConcurrentUsers')}
+                          onFocus={e => (this.onFocusText = e.target.value)}
+                          onBlur={this.handleRefresh}
+                          //defaultValue="30 days"
+                          className={classes.textField}
+                          //margin="normal"
+                          variant="outlined"
+                        />
+                      </Grid>
                       <Grid item xs={12} sm={3}>
                         <FormControl
                           variant="outlined"
@@ -996,7 +1037,10 @@ class SplunkPricing extends Component {
               </ExpansionPanel>
             </Grid>
             <Grid item xs={12}>
-              <ArchitecturePanel />
+              <ArchitecturePanel
+                architecture={this.state.splunkArchitecture}
+                {...this.state}
+              />
             </Grid>
             <Grid item xs={12}>
               {!this.state.inProgress ? (

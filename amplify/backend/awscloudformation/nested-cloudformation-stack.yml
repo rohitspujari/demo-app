@@ -139,23 +139,6 @@
 				}
 			}
 		},
-		"analyticsDemoApp": {
-			"Type": "AWS::CloudFormation::Stack",
-			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/analytics/pinpoint-cloudformation-template.json",
-				"Parameters": {
-					"appName": "DemoApp",
-					"roleName": "pinpointLambdaRole144a1452",
-					"cloudWatchPolicyName": "cloudWatchPolicy144a1452",
-					"pinpointPolicyName": "pinpointPolicy144a1452",
-					"authPolicyName": "pinpoint_amplify_144a1452",
-					"unauthPolicyName": "pinpoint_amplify_144a1452",
-					"authRoleName": "demoapp-20181206165647-authRole",
-					"unauthRoleName": "demoapp-20181206165647-unauthRole",
-					"IAMPrefix": "465541050084"
-				}
-			}
-		},
 		"storageDemoApp": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {

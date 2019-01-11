@@ -19,7 +19,9 @@ const styles = theme => ({
 function FullWidthGrid(props) {
   const { classes, projectList } = props;
 
-  const projects = projectList.map(p => (
+  const filteredProjectList = projectList.filter(f => f.env === 'prod');
+
+  const projects = filteredProjectList.map(p => (
     <Grid key={p.name} item xs={6} sm={3}>
       <ProjectCard
         {...props}
