@@ -515,7 +515,7 @@ export async function priceSplunkDeployment(params) {
   });
 
   const ebsRootVolumeSize = computeResources.reduce(
-    (prev, curr) => prev + curr.rootVolume,
+    (prev, curr) => prev + curr.rootVolume * curr.count,
     0
   );
 

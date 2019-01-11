@@ -263,11 +263,11 @@ class SplunkPricing extends Component {
     //   });
     // });
 
-    console.log(await utils.getAttributes('locationType', 'AmazonEc2', '100'));
+    // console.log(await utils.getAttributes('locationType', 'AmazonEc2', '100'));
 
-    utils.describeService('Route53', '100', (data, err) => {
-      console.log(data);
-    });
+    // utils.describeService('Route53', '100', (data, err) => {
+    //   console.log(data);
+    // });
 
     // utils.getAttributes('volumeType', 'AmazonS3', '100', (data, err) => {
     //   console.log(data.AttributeValues.map(av => av.Value));
@@ -311,7 +311,7 @@ class SplunkPricing extends Component {
   isValidInput = (name, value) => {
     if (name === 'volumePerDay') {
       if (isNaN(value)) return false;
-      if (value > 50000) return false;
+      if (value > 1000000) return false;
       if (value < 0) return false;
     }
     if (name === 'retentionHot' || name === 'retentionCold') {
@@ -444,7 +444,7 @@ class SplunkPricing extends Component {
           <Grid alignItems="center" container spacing={24}>
             <Grid item xs={12} sm={12}>
               <Typography variant="h5" gutterBottom className={classes.heading}>
-                Splunk Influenced AWS Revenue Estimator
+                AWS Infrastructure Costs for Splunk
               </Typography>
             </Grid>
 
@@ -532,13 +532,13 @@ class SplunkPricing extends Component {
                     <img
                       src={require('./awslogo.jpg')}
                       height="150"
-                      width="200"
+                      width="250"
                       alt="aws logo"
                     />
                     <img
                       src={require('./splunklogo.png')}
                       height="150"
-                      width="200"
+                      width="250"
                       alt="splunk logo"
                     />
                   </Grid>
@@ -1036,12 +1036,15 @@ class SplunkPricing extends Component {
                 </ExpansionPanelDetails>
               </ExpansionPanel>
             </Grid>
-            <Grid item xs={12}>
-              <ArchitecturePanel
-                architecture={this.state.splunkArchitecture}
-                {...this.state}
-              />
-            </Grid>
+            <Hidden smDown>
+              <Grid item xs={12}>
+                <ArchitecturePanel
+                  architecture={this.state.splunkArchitecture}
+                  {...this.state}
+                />
+              </Grid>
+            </Hidden>
+
             <Grid item xs={12}>
               {!this.state.inProgress ? (
                 <CostSummary

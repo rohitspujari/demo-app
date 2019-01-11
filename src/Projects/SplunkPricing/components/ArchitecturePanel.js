@@ -71,7 +71,7 @@ function buildQSUrl(props) {
   if (result.length === 0) {
     return;
   }
-  const shcEnabled = clusteredSearchHeads === true ? 'yes' : 'no';
+
   const noOfIndexers = result.computeResources.filter(
     f => f.name === 'Indexer'
   )[0].count;

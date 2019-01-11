@@ -74,24 +74,24 @@ function CostSummary(props) {
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <CustomTableCell>Upfront</CustomTableCell>
-            <CustomTableCell>Monthly</CustomTableCell>
-            <CustomTableCell>3 Year Cost</CustomTableCell>
+            <CustomTableCell align="right">Upfront</CustomTableCell>
+            <CustomTableCell align="right">Monthly</CustomTableCell>
+            <CustomTableCell align="right">3 Year Cost</CustomTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           <TableRow>
-            <CustomTableCell>
+            <CustomTableCell align="right">
               <Typography className={classes.heading}>
                 {formatter.format(upfront)}
               </Typography>
             </CustomTableCell>
-            <CustomTableCell>
+            <CustomTableCell align="right">
               <Typography className={classes.heading}>
                 {formatter.format(totalMonthly)}
               </Typography>
             </CustomTableCell>
-            <CustomTableCell>
+            <CustomTableCell align="right">
               <Typography className={classes.heading}>
                 {formatter.format(totalCost3Years)}
               </Typography>
