@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import ProjectCard from './ProjectCard';
+import { Auth } from 'aws-amplify';
 
 const styles = theme => ({
   root: {
@@ -17,9 +18,15 @@ const styles = theme => ({
 });
 
 function FullWidthGrid(props) {
+  console.log(Auth);
+  const username = Auth.user.username;
+
   const { classes, projectList } = props;
 
-  const filteredProjectList = projectList.filter(f => f.env === 'prod');
+  var filteredProjectList = projectList;
+  if (username !== 'rohitspujari') {
+    filteredProjectList = projectList.filter(f => f.env === 'prod');
+  }
 
   const projects = filteredProjectList.map(p => (
     <Grid key={p.name} item xs={6} sm={3}>

@@ -193,6 +193,26 @@
 				}
 			}
 		},
+		"apiSendEmail": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/api/SendEmail-cloudformation-template.json",
+				"Parameters": {
+					"functionAWSPricingName": {
+						"Fn::GetAtt": [
+							"functionAWSPricing",
+							"Outputs.Name"
+						]
+					},
+					"functionAWSPricingArn": {
+						"Fn::GetAtt": [
+							"functionAWSPricing",
+							"Outputs.Arn"
+						]
+					}
+				}
+			}
+		},
 		"functionAWSPricing": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {

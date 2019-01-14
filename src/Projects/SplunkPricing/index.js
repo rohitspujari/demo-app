@@ -9,7 +9,7 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import FormControl from '@material-ui/core/FormControl';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import TextField from '@material-ui/core/TextField';
-//import Button from '@material-ui/core/Button';
+import Button from '@material-ui/core/Button';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
@@ -28,6 +28,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 
 import CostSummary from './components/CostSummary.js';
 import ArchitecturePanel from './components/ArchitecturePanel.js';
+import ContactForm from './components/ContactForm.js';
 
 const BILLING_OPTIONS = [
   {
@@ -441,8 +442,8 @@ class SplunkPricing extends Component {
       <div className={classes.container}>
         {/* <h3 className="Title">Welcome to Splunk Pricing Page</h3> */}
         <div className={classes.root}>
-          <Grid alignItems="center" container spacing={24}>
-            <Grid item xs={12} sm={12}>
+          <Grid container spacing={24}>
+            <Grid item xs={12}>
               <Typography variant="h5" gutterBottom className={classes.heading}>
                 AWS Infrastructure Costs for Splunk
               </Typography>
@@ -458,7 +459,7 @@ class SplunkPricing extends Component {
                 onFocus={e => (this.onFocusText = e.target.value)}
                 onBlur={this.handleRefresh}
                 className={classes.textField}
-                margin="normal"
+                //margin="normal"
                 variant="outlined"
                 InputProps={{
                   endAdornment: (
@@ -466,11 +467,7 @@ class SplunkPricing extends Component {
                   )
                 }}
               />
-              {/* <Paper className={classes.paper}>Volume Per Day</Paper> */}
-              {/* </Grid>
-            <Grid item xs={12} sm={6} />
 
-            <Grid item xs={12} sm={3}> */}
               <TextField
                 required
                 id="outlined-required"
@@ -489,9 +486,7 @@ class SplunkPricing extends Component {
                   )
                 }}
               />
-              {/* <Paper className={classes.paper}>Retention (Hot)</Paper> */}
-              {/* </Grid> */}
-              {/* <Grid item xs={12} sm={3}> */}
+
               <TextField
                 id="outlined-uncontrolled"
                 label="Cold Retention"
@@ -509,42 +504,42 @@ class SplunkPricing extends Component {
                   )
                 }}
               />
-              {/* <Button
-                size="large"
-                variant="outlined"
-                color="primary"
-                className={classes.button}
-                onClick={() => {
-                  this.setState({
-                    //...this.state,
-                    result: utils.priceSplunkDeployment(this.state)
-                  });
-                }}
-              >
-                Calculate
-              </Button> */}
-              {/* <Paper className={classes.paper}>Retention (Cold)</Paper> */}
             </Grid>
-            <Hidden smDown>
-              <Grid item xs={12} sm={6}>
-                <Grid container justify="center" alignItems="center">
-                  <Grid item>
-                    <img
-                      src={require('./awslogo.jpg')}
-                      height="150"
-                      width="250"
-                      alt="aws logo"
-                    />
-                    <img
-                      src={require('./splunklogo.png')}
-                      height="150"
-                      width="250"
-                      alt="splunk logo"
-                    />
-                  </Grid>
+            {/* <Hidden smDown> */}
+            <Grid
+              item
+              container
+              justify="center"
+              alignItems="center"
+              xs={12}
+              sm={6}
+            >
+              <Hidden smDown>
+                <Grid item>
+                  {/* <Grid container> */}
+                  {/* <Grid item xs={12}> */}
+                  <img
+                    src={require('./awslogo.jpg')}
+                    height="150"
+                    width="250"
+                    alt="aws logo"
+                  />
+                  {/* </Grid> */}
+                  {/* <Grid item xs={12}> */}
+                  <img
+                    src={require('./splunklogo.png')}
+                    height="150"
+                    width="250"
+                    alt="splunk logo"
+                  />
                 </Grid>
+              </Hidden>
+              <Grid container justify="center" alignItems="center" item sm={12}>
+                <ContactForm />
               </Grid>
-            </Hidden>
+            </Grid>
+            {/* </Hidden> */}
+
             <Grid item xs={6} sm={3}>
               <FormControlLabel
                 control={

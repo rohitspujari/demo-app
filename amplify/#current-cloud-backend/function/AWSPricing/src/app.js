@@ -11,6 +11,7 @@ var bodyParser = require('body-parser');
 var awsServerlessExpressMiddleware = require('aws-serverless-express/middleware');
 const AWS = require('aws-sdk');
 var pricing = new AWS.Pricing();
+var ses = new AWS.SES();
 
 // declare a new express app
 var app = express();
@@ -76,9 +77,51 @@ app.post('/services', function(req, res) {
   //res.json({ success: 'ebs post call succeed!', url: req.url, body: req.body });
 });
 
-app.post('/products/*', function(req, res) {
+app.post('/email', function(req, res) {
+  const { contact, reason, customer, message } = req.body.params;
+
+  var params = {
+    Destination: {
+      BccAddresses: [],
+      CcAddresses: ['ropujari@amazon.com'],
+      ToAddresses: ['ropujari@amazon.com']
+    },
+    Message: {
+      Body: {
+        Html: {
+          Charset: 'UTF-8',
+          Data: `<p>${customer}, ${contact}</p>
+          <p>Message:</p>
+          <p>${message}</p>
+          <p>&nbsp;</p>
+          <p>--</p>
+          <p>Thank You,</p>
+          <p>AWS Partner Team</p>`
+        }
+        // Text: {
+        //   Charset: 'UTF-8',
+        //   Data: 'This is the message body in text format.'
+        // }
+      },
+      Subject: {
+        Charset: 'UTF-8',
+        Data: `Splunk Page - ${reason}`
+      }
+    },
+
+    Source: 'ropujari@amazon.com'
+  };
+  ses.sendEmail(params, function(err, data) {
+    if (err) res.json({ error: err, url: req.url });
+    // an error occurred
+    else res.json(data); // successful response
+    /*
+     data = {
+      MessageId: "EXAMPLE78603177f-7a5433e7-8edb-42ae-af10-f0181f34d6ee-000000"
+     }
+     */
+  });
   // Add your code here
-  res.json({ success: 'post call succeed!', url: req.url, body: req.body });
 });
 
 /****************************

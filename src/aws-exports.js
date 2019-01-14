@@ -19,6 +19,11 @@ const awsmobile =  {
             "name": "AWSPricing",
             "endpoint": "https://52emjepgy7.execute-api.us-east-1.amazonaws.com/Prod",
             "region": "us-east-1"
+        },
+        {
+            "name": "SendEmail",
+            "endpoint": "https://bgis11wqii.execute-api.us-east-1.amazonaws.com/Prod",
+            "region": "us-east-1"
         }
     ]
 };

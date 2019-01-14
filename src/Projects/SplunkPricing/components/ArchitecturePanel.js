@@ -78,7 +78,7 @@ function buildQSUrl(props) {
 
   const region = LOCATIONS.filter(f => f.regionName === location)[0].region;
 
-  debugger;
+  //debugger;
   let url = '';
   url =
     `https://${region}.console.aws.amazon.com/cloudformation/home?` +
