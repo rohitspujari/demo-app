@@ -91,12 +91,12 @@ const styles = theme => ({
 class ContactForm extends React.Component {
   state = {
     open: false,
-    contact: `From: ${
-      Auth.user.attributes.email
-    }, Phone: ${Auth.user.attributes.phone_number.replace(
-      /(\+\d)(\d\d\d)(\d\d\d)(\d\d\d\d)/,
-      '$1-$2.$3.$4'
-    )}`,
+    // contact: `From: ${
+    //   Auth.user.attributes.email
+    // }, Phone: ${Auth.user.attributes.phone_number.replace(
+    //   /(\+\d)(\d\d\d)(\d\d\d)(\d\d\d\d)/,
+    //   '$1-$2.$3.$4'
+    // )}`,
     reason: 'Ask Splunk/AWS Engineer',
     customer: '',
     message: '',
@@ -125,7 +125,16 @@ class ContactForm extends React.Component {
   };
 
   handleSend = () => {
-    const { contact, reason, customer, message } = this.state;
+    const { reason, customer, message } = this.state;
+    const { user } = this.props;
+
+    const contact = `From: ${
+      user.attributes.email
+    }, Phone: ${user.attributes.phone_number.replace(
+      /(\+\d)(\d\d\d)(\d\d\d)(\d\d\d\d)/,
+      '$1-$2.$3.$4'
+    )}`;
+
     var params = {
       contact,
       reason,
@@ -133,7 +142,7 @@ class ContactForm extends React.Component {
       message
     };
 
-    if (customer === '' && message === '') {
+    if (customer === '' || message === '') {
       return;
     }
 

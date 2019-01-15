@@ -25,7 +25,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import SettingsIcon from '@material-ui/icons/Settings';
 import CircularProgress from '@material-ui/core/CircularProgress';
-
+import { Auth } from 'aws-amplify';
 import CostSummary from './components/CostSummary.js';
 import ArchitecturePanel from './components/ArchitecturePanel.js';
 import ContactForm from './components/ContactForm.js';
@@ -227,12 +227,16 @@ class SplunkPricing extends Component {
 
     result: [],
     //Component Sate
+    user: '',
     labelWidth: 0,
     inProgress: true
   };
 
   async componentDidMount() {
     this.setState({
+      user: await Auth.currentAuthenticatedUser({
+        bypassCache: true // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+      }),
       result: await utils.priceSplunkDeployment(this.state),
       locations: await utils.getAttributes('location', 'AmazonS3', '100'),
       operatingSystems: await utils.getAttributes(
@@ -424,6 +428,7 @@ class SplunkPricing extends Component {
   };
 
   render() {
+    // console.log(this.state);
     const { classes } = this.props;
     const { handleChange, toggleChange } = this;
     const {
@@ -535,7 +540,7 @@ class SplunkPricing extends Component {
                 </Grid>
               </Hidden>
               <Grid container justify="center" alignItems="center" item sm={12}>
-                <ContactForm />
+                <ContactForm user={this.state.user} />
               </Grid>
             </Grid>
             {/* </Hidden> */}
