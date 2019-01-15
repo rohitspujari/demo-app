@@ -92,7 +92,7 @@ app.post('/email', function(req, res) {
           Charset: 'UTF-8',
           Data: `<p>${customer}, ${contact}</p>
           <p>Message:</p>
-          <p>${message}</p>
+          <div class="multiline">${message}</div>
           <p>&nbsp;</p>
           <p>--</p>
           <p>Thank You,</p>
