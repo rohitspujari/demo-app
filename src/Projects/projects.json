@@ -25,6 +25,7 @@
   },
   {
     "name": "Reckognition",
+    "navigation": "/rekognition",
     "description": "The easy-to-use Rekognition API allows you to automatically identify objects, people, text, scenes, and activities, as well as detect any inappropriate content. ",
     "env": "dev"
   },

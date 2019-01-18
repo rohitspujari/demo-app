@@ -228,7 +228,7 @@ class SplunkPricing extends Component {
     result: [],
     //Component Sate
     user: '',
-    labelWidth: 0,
+    labelWidth: 100,
     inProgress: true
   };
 
@@ -251,7 +251,7 @@ class SplunkPricing extends Component {
         '100'
       ),
 
-      labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
+      //labelWidth: ReactDOM.findDOMNode(this.InputLabelRef).offsetWidth,
       inProgress: false
     });
 

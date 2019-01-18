@@ -18,7 +18,7 @@ const styles = theme => ({
 });
 
 function FullWidthGrid(props) {
-  console.log(Auth);
+  //console.log(Auth);
   const username = Auth.user.username;
 
   const { classes, projectList } = props;

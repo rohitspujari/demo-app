@@ -340,7 +340,10 @@ export async function priceSplunkDeployment(params) {
   }
 
   //add one search head in 1 TB increments up to 10 TB
-  coreSearchHeadCount += Math.floor(volumePerDay / 1000);
+  coreSearchHeadCount +=
+    Math.floor(volumePerDay / 1000) <= 10
+      ? Math.floor(volumePerDay / 1000)
+      : 10;
 
   var esSearchHeadCount = 0;
   if (splunkES === true) {

@@ -7,6 +7,7 @@ import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import HomeIcon from '@material-ui/icons/Home';
 import LogOutIcon from '@material-ui/icons/PowerSettingsNew';
+import Grid from '@material-ui/core/Grid';
 
 const styles = {
   root: {
@@ -26,6 +27,7 @@ function NavigationBar(props) {
 
   return (
     <div className={classes.root}>
+      {/* <Grid container item xs={12}> */}
       <AppBar position="static">
         <Toolbar>
           <IconButton
@@ -50,6 +52,7 @@ function NavigationBar(props) {
           </IconButton>
         </Toolbar>
       </AppBar>
+      {/* </Grid> */}
     </div>
   );
 }

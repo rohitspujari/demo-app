@@ -11,7 +11,8 @@ class AuthWrapper extends React.Component {
     return <MainApp rerender={this.rerender} />;
   }
 }
-
+//Amplify React Native auth.signout() does not return to Sign In page
+//https://github.com/aws-amplify/amplify-js/issues/1529
 ReactDOM.render(<AuthWrapper />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change

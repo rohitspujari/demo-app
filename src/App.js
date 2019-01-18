@@ -20,6 +20,7 @@ import Comprehend from './Projects/Comprehend';
 import Sagemaker from './Projects/Sagemaker';
 import GraphQLDemo from './Projects/GraphQLDemo';
 import SplunkPricing from './Projects/SplunkPricing';
+import Rekognition from './Projects/Rekognition';
 Amplify.configure(aws_exports);
 
 //Amplify CLI doesn't automatically configure AWS_IAM authentication mode for graphql. The defualt auth mode is cognito user pool.
@@ -109,6 +110,7 @@ class App extends Component {
               <Route path="/sagemaker" component={Sagemaker} />
               <Route path="/graphqldemo" component={GraphQLDemo} />
               <Route path="/splunkpricing" component={SplunkPricing} />
+              <Route path="/rekognition" component={Rekognition} />
             </div>
           </MuiThemeProvider>
         </Router>
