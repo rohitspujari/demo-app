@@ -49,7 +49,7 @@ function CostSummary(props) {
   );
 
   const ec2Monthly = computeResources.reduce(
-    (prev, current) => prev + current.price.hourly * 24 * 30,
+    (prev, current) => prev + current.price.hourly * current.count * 730,
     0
   );
 
@@ -143,7 +143,7 @@ function CostSummary(props) {
                 </CustomTableCell>
                 <CustomTableCell>
                   {row.price.hourly > 0
-                    ? formatter.format(row.price.hourly * 24 * 30)
+                    ? formatter.format(row.price.hourly * row.count * 730)
                     : '-'}
                 </CustomTableCell>
                 <CustomTableCell>
