@@ -74,30 +74,30 @@ function CostSummary(props) {
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <CustomTableCell align="right">EC2 Billing Option</CustomTableCell>
-            <CustomTableCell align="right">Total Upfront</CustomTableCell>
-            <CustomTableCell align="right">Total Monthly</CustomTableCell>
-            <CustomTableCell align="right">Total 3 Year Cost</CustomTableCell>
+            <CustomTableCell>EC2 Billing Option</CustomTableCell>
+            <CustomTableCell>Total Upfront</CustomTableCell>
+            <CustomTableCell>Total Monthly</CustomTableCell>
+            <CustomTableCell>Total 3 Year Cost</CustomTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           <TableRow>
-            <CustomTableCell align="right">
+            <CustomTableCell>
               <Typography className={classes.heading}>
                 {billingOption.description}
               </Typography>
             </CustomTableCell>
-            <CustomTableCell align="right">
+            <CustomTableCell>
               <Typography className={classes.heading}>
                 {formatter.format(upfront)}
               </Typography>
             </CustomTableCell>
-            <CustomTableCell align="right">
+            <CustomTableCell>
               <Typography className={classes.heading}>
                 {formatter.format(totalMonthly)}
               </Typography>
             </CustomTableCell>
-            <CustomTableCell align="right">
+            <CustomTableCell>
               <Typography className={classes.heading}>
                 {formatter.format(totalCost3Years)}
               </Typography>
@@ -111,6 +111,7 @@ function CostSummary(props) {
             <CustomTableCell>Components</CustomTableCell>
             <CustomTableCell>Qty.</CustomTableCell>
             <CustomTableCell>Instance Type</CustomTableCell>
+            {/* <CustomTableCell>vCPU | Mem | Instance Store</CustomTableCell> */}
             <CustomTableCell>vCPU</CustomTableCell>
             <CustomTableCell>Memory</CustomTableCell>
             <CustomTableCell>Instance Storage</CustomTableCell>
@@ -128,6 +129,9 @@ function CostSummary(props) {
                 <CustomTableCell>{row.name}</CustomTableCell>
                 <CustomTableCell>{row.count}</CustomTableCell>
                 <CustomTableCell>{product.instanceType}</CustomTableCell>
+                {/* <CustomTableCell>{`${product.vcpu} | ${product.memory} | ${
+                  product.storage
+                }`}</CustomTableCell> */}
                 <CustomTableCell>{product.vcpu}</CustomTableCell>
                 <CustomTableCell>{product.memory}</CustomTableCell>
                 <CustomTableCell>{product.storage}</CustomTableCell>
@@ -157,6 +161,7 @@ function CostSummary(props) {
             <CustomTableCell>Volume Type</CustomTableCell>
             <CustomTableCell>Category</CustomTableCell>
             <CustomTableCell>Size</CustomTableCell>
+            <CustomTableCell>Upfront</CustomTableCell>
             <CustomTableCell>Monthly</CustomTableCell>
             <CustomTableCell>3 Year Cost</CustomTableCell>
           </TableRow>
@@ -169,6 +174,7 @@ function CostSummary(props) {
                 <CustomTableCell>{row.type}</CustomTableCell>
                 <CustomTableCell>{row.category}</CustomTableCell>
                 <CustomTableCell>{row.size}</CustomTableCell>
+                <CustomTableCell>{'-'}</CustomTableCell>
                 <CustomTableCell>
                   {formatter.format(row.monthly)}
                 </CustomTableCell>
