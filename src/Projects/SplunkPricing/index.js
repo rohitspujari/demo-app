@@ -1050,6 +1050,7 @@ class SplunkPricing extends Component {
                 <CostSummary
                   computeResources={this.state.result.computeResources}
                   storageResources={this.state.result.storageResources}
+                  billingOption={this.state.billingOption}
                 />
               ) : (
                 <CircularProgress className={classes.progress} />

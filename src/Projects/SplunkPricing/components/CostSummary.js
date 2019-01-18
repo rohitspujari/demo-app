@@ -35,7 +35,7 @@ const styles = theme => ({
 });
 
 function CostSummary(props) {
-  const { classes, computeResources, storageResources } = props;
+  const { classes, computeResources, storageResources, billingOption } = props;
 
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -74,13 +74,19 @@ function CostSummary(props) {
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
-            <CustomTableCell align="right">Upfront</CustomTableCell>
-            <CustomTableCell align="right">Monthly</CustomTableCell>
-            <CustomTableCell align="right">3 Year Cost</CustomTableCell>
+            <CustomTableCell align="right">EC2 Billing Option</CustomTableCell>
+            <CustomTableCell align="right">Total Upfront</CustomTableCell>
+            <CustomTableCell align="right">Total Monthly</CustomTableCell>
+            <CustomTableCell align="right">Total 3 Year Cost</CustomTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           <TableRow>
+            <CustomTableCell align="right">
+              <Typography className={classes.heading}>
+                {billingOption.description}
+              </Typography>
+            </CustomTableCell>
             <CustomTableCell align="right">
               <Typography className={classes.heading}>
                 {formatter.format(upfront)}
@@ -109,6 +115,9 @@ function CostSummary(props) {
             <CustomTableCell>Memory</CustomTableCell>
             <CustomTableCell>Instance Storage</CustomTableCell>
             <CustomTableCell>Root Volume (EBS)</CustomTableCell>
+            <CustomTableCell>Upfront</CustomTableCell>
+            <CustomTableCell>Monthly</CustomTableCell>
+            <CustomTableCell>3 Year Cost</CustomTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -123,6 +132,19 @@ function CostSummary(props) {
                 <CustomTableCell>{product.memory}</CustomTableCell>
                 <CustomTableCell>{product.storage}</CustomTableCell>
                 <CustomTableCell>{row.rootVolume + ' GB'}</CustomTableCell>
+                <CustomTableCell>
+                  {row.price.upfront > 0
+                    ? formatter.format(row.price.upfront)
+                    : '-'}
+                </CustomTableCell>
+                <CustomTableCell>
+                  {row.price.hourly > 0
+                    ? formatter.format(row.price.hourly * 24 * 30)
+                    : '-'}
+                </CustomTableCell>
+                <CustomTableCell>
+                  {formatter.format(row.price.cost3Years)}
+                </CustomTableCell>
               </TableRow>
             );
           })}
@@ -135,6 +157,8 @@ function CostSummary(props) {
             <CustomTableCell>Volume Type</CustomTableCell>
             <CustomTableCell>Category</CustomTableCell>
             <CustomTableCell>Size</CustomTableCell>
+            <CustomTableCell>Monthly</CustomTableCell>
+            <CustomTableCell>3 Year Cost</CustomTableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -145,6 +169,12 @@ function CostSummary(props) {
                 <CustomTableCell>{row.type}</CustomTableCell>
                 <CustomTableCell>{row.category}</CustomTableCell>
                 <CustomTableCell>{row.size}</CustomTableCell>
+                <CustomTableCell>
+                  {formatter.format(row.monthly)}
+                </CustomTableCell>
+                <CustomTableCell>
+                  {formatter.format(row.monthly * 36)}
+                </CustomTableCell>
               </TableRow>
             );
           })}
