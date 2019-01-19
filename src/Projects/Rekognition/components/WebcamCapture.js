@@ -40,7 +40,6 @@ export default class WebcamCapture extends Component {
             <Button variant="contained">Default</Button>
           </Grid>
           <Grid item xs={6}>
-            <p>Hello</p>
             {/* <Webcam
               audio={false}
               //   height={350}

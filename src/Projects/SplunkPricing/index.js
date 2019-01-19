@@ -188,6 +188,7 @@ class SplunkPricing extends Component {
   //this.onFocusText = '';
 
   state = {
+    awsSupportTier: 'Business',
     billingOptions: BILLING_OPTIONS,
     billingOption: BILLING_OPTIONS[6],
     locations: [],
@@ -593,8 +594,7 @@ class SplunkPricing extends Component {
                           <Divider />
                         </div>
                       </Grid>
-
-                      <Grid item xs={12} sm={4}>
+                      <Grid item xs={12} sm={3}>
                         <FormControl
                           disabled
                           variant="outlined"
@@ -630,7 +630,7 @@ class SplunkPricing extends Component {
                           Deployment Option
                         </Paper> */}
                       </Grid>
-                      <Grid item xs={12} sm={4}>
+                      <Grid item xs={12} sm={3}>
                         <FormControl
                           variant="outlined"
                           className={classes.select}
@@ -663,7 +663,38 @@ class SplunkPricing extends Component {
                         </FormControl>
                         {/* <Paper className={classes.paper}>AWS Region</Paper> */}
                       </Grid>
-                      <Grid item xs={12} sm={4}>
+                      <Grid item xs={12} sm={3}>
+                        <FormControl
+                          variant="outlined"
+                          className={classes.select}
+                        >
+                          <InputLabel
+                            ref={ref => {
+                              this.InputLabelRef = ref;
+                            }}
+                            htmlFor="outlined-age-simple"
+                          >
+                            AWS Support
+                          </InputLabel>
+                          <Select
+                            value={this.state.awsSupportTier}
+                            onChange={handleChange('awsSupportTier')}
+                            input={
+                              <OutlinedInput
+                                labelWidth={this.state.labelWidth}
+                                name="age"
+                                id="outlined-age-simple"
+                                //value={'US East 1'}
+                              />
+                            }
+                          >
+                            <MenuItem value={'Developer'}>Developer</MenuItem>
+                            <MenuItem value={'Business'}>Business</MenuItem>
+                            <MenuItem value={'Enterprise'}>Enterprise</MenuItem>
+                          </Select>
+                        </FormControl>
+                      </Grid>
+                      <Grid item xs={12} sm={3}>
                         <FormControl
                           variant="outlined"
                           className={classes.select}
@@ -696,6 +727,7 @@ class SplunkPricing extends Component {
                         </FormControl>
                         {/* <Paper className={classes.paper}>S3 Volumes</Paper> */}
                       </Grid>
+
                       <Grid item xs={12} sm={4}>
                         <FormControl
                           variant="outlined"
@@ -1051,6 +1083,7 @@ class SplunkPricing extends Component {
                   computeResources={this.state.result.computeResources}
                   storageResources={this.state.result.storageResources}
                   billingOption={this.state.billingOption}
+                  awsSupportTier={this.state.awsSupportTier}
                 />
               ) : (
                 <CircularProgress className={classes.progress} />

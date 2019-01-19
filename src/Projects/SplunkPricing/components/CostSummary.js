@@ -9,11 +9,68 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 
+//https://aws.amazon.com/premiumsupport/pricing/
+
+const BUSINESS_SUPPORT = [
+  {
+    percent: 0.1,
+    beginRange: 0,
+    endRange: 10000 // 10K,
+  },
+  {
+    percent: 0.07,
+    beginRange: 10000, //10K
+    endRange: 80000 // 80K,
+  },
+  {
+    percent: 0.05,
+    beginRange: 80000, //80K
+    endRange: 250000 // 250K,
+  },
+  {
+    percent: 0.03,
+    beginRange: 250000, // 250K
+    endRange: Number.POSITIVE_INFINITY // 10K,
+  }
+];
+
+const ENTERPRISE_SUPPORT = [
+  {
+    percent: 0.1,
+    beginRange: 0,
+    endRange: 150000 // 10K,
+  },
+  {
+    percent: 0.07,
+    beginRange: 150000, //10K
+    endRange: 500000 // 80K,
+  },
+  {
+    percent: 0.05,
+    beginRange: 500000, //80K
+    endRange: 1000000 // 250K,
+  },
+  {
+    percent: 0.03,
+    beginRange: 1000000, // 250K
+    endRange: Number.POSITIVE_INFINITY // 10K,
+  }
+];
+
+const DEVELOPER_SUPPORT = [
+  {
+    percent: 0.03,
+    beginRange: 0,
+    endRange: Number.POSITIVE_INFINITY // 10K,
+  }
+];
+
 const CustomTableCell = withStyles(theme => ({
   head: {
     backgroundColor: '#232f3e',
     color: theme.palette.common.white
   },
+
   body: {
     fontSize: 15
   }
@@ -26,7 +83,7 @@ const styles = theme => ({
     overflowX: 'auto'
   },
   table: {
-    minWidth: 700
+    // minWidth: 700
   },
   heading: {
     fontSize: theme.typography.pxToRem(20)
@@ -34,8 +91,68 @@ const styles = theme => ({
   }
 });
 
+const supportPrice = (awsSupportTier, amount, applyMinFee) => {
+  //console.log('aws support', awsSupportTier);
+  var minFee = 0;
+  var priceRange = [];
+  if (awsSupportTier === 'Business') {
+    priceRange = BUSINESS_SUPPORT;
+    minFee = 100;
+  } else if (awsSupportTier === 'Enterprise') {
+    priceRange = ENTERPRISE_SUPPORT;
+    minFee = 15000;
+  } else if (awsSupportTier === 'Developer') {
+    priceRange = DEVELOPER_SUPPORT;
+    minFee = 29;
+  }
+
+  var size = Number(amount);
+  //console.log(size);
+  const priceStructure = priceRange
+    .map(range => {
+      const slab = range.endRange - range.beginRange;
+      if (size > 0) {
+        if (size - slab < 0) {
+          const remainingSize = size;
+          size = size - slab;
+          return {
+            remainder: Number(0),
+            slab: remainingSize,
+            percent: range.percent
+            //description: range.description
+          };
+        }
+        size = size - slab;
+        return {
+          remainder: size,
+          slab,
+          percent: range.percent
+          // description: range.description
+        };
+      }
+      return null;
+    })
+    .filter(f => f != null);
+
+  const price = priceStructure.reduce((prev, current) => {
+    return prev + current.slab * current.percent;
+  }, 0);
+
+  return {
+    amount,
+    priceStructure,
+    price: price < minFee && applyMinFee === true ? minFee : price
+  };
+};
+
 function CostSummary(props) {
-  const { classes, computeResources, storageResources, billingOption } = props;
+  const {
+    classes,
+    computeResources,
+    storageResources,
+    billingOption,
+    awsSupportTier
+  } = props;
 
   const formatter = new Intl.NumberFormat('en-US', {
     style: 'currency',
@@ -65,9 +182,33 @@ function CostSummary(props) {
     0
   );
 
-  const storageCost3Years = storageMonthly * 36;
+  // console.log(supportPrice(awsSupportTier, 1200000));
+  console.log(supportPrice(awsSupportTier, 0, false));
 
+  const storageCost3Years = storageMonthly * 36;
   const totalCost3Years = ec2Cost3Years + storageCost3Years;
+
+  let upfrontSupportFee = 0;
+  let monthlySupportFee = 0;
+  let threeYearSupportFee = 0;
+
+  if (upfront > 0) {
+    // combine upfront with 1st months support
+    upfrontSupportFee = supportPrice(
+      awsSupportTier,
+      totalMonthly + upfront,
+      true
+    ).price;
+    monthlySupportFee = supportPrice(awsSupportTier, totalMonthly, true).price;
+    threeYearSupportFee = upfrontSupportFee + monthlySupportFee * 35;
+  } else {
+    monthlySupportFee = supportPrice(awsSupportTier, totalMonthly, true).price;
+    threeYearSupportFee = upfrontSupportFee + monthlySupportFee * 36;
+  }
+
+  const upfrontGrandTotal = upfront + upfrontSupportFee;
+  const monthlyGrandTotal = totalMonthly + monthlySupportFee;
+  const threeYearGrandTotal = totalCost3Years + threeYearSupportFee;
 
   return (
     <Paper className={classes.root}>
@@ -89,17 +230,17 @@ function CostSummary(props) {
             </CustomTableCell>
             <CustomTableCell>
               <Typography className={classes.heading}>
-                {formatter.format(upfront)}
+                {formatter.format(upfrontGrandTotal)}
               </Typography>
             </CustomTableCell>
             <CustomTableCell>
               <Typography className={classes.heading}>
-                {formatter.format(totalMonthly)}
+                {formatter.format(monthlyGrandTotal)}
               </Typography>
             </CustomTableCell>
             <CustomTableCell>
               <Typography className={classes.heading}>
-                {formatter.format(totalCost3Years)}
+                {`${formatter.format(threeYearGrandTotal)}`}
               </Typography>
             </CustomTableCell>
           </TableRow>
@@ -152,6 +293,26 @@ function CostSummary(props) {
               </TableRow>
             );
           })}
+          <TableRow>
+            <CustomTableCell rowSpan={3} />
+            <CustomTableCell rowSpan={3} />
+            <CustomTableCell rowSpan={3} />
+            <CustomTableCell rowSpan={3} />
+            <CustomTableCell rowSpan={3} />
+            <CustomTableCell rowSpan={3} />
+            <CustomTableCell>
+              <b>Subtotal</b>
+            </CustomTableCell>
+            <CustomTableCell>
+              <b>{upfront === 0 ? '-' : formatter.format(upfront)}</b>
+            </CustomTableCell>
+            <CustomTableCell>
+              <b>{ec2Monthly === 0 ? '-' : formatter.format(ec2Monthly)}</b>
+            </CustomTableCell>
+            <CustomTableCell>
+              <b>{formatter.format(ec2Cost3Years)}</b>
+            </CustomTableCell>
+          </TableRow>
         </TableBody>
       </Table>
       <Table>
@@ -184,6 +345,46 @@ function CostSummary(props) {
               </TableRow>
             );
           })}
+          <TableRow>
+            <CustomTableCell rowSpan={3} />
+            <CustomTableCell rowSpan={3} />
+            <CustomTableCell rowSpan={3} />
+            <CustomTableCell rowSpan={3} />
+
+            <CustomTableCell>
+              <b>Subtotal</b>
+            </CustomTableCell>
+            <CustomTableCell>
+              <b>{formatter.format(storageMonthly)}</b>
+            </CustomTableCell>
+            <CustomTableCell>
+              <b>{formatter.format(storageCost3Years)}</b>
+            </CustomTableCell>
+          </TableRow>
+        </TableBody>
+      </Table>
+      <Table>
+        <TableHead>
+          <TableRow>
+            <CustomTableCell>AWS Support Tier</CustomTableCell>
+            <CustomTableCell>Upfront</CustomTableCell>
+            <CustomTableCell>Monthly</CustomTableCell>
+            <CustomTableCell>3 Year Cost</CustomTableCell>
+          </TableRow>
+        </TableHead>
+        <TableBody>
+          <TableRow>
+            <CustomTableCell>{awsSupportTier}</CustomTableCell>
+            <CustomTableCell>
+              {formatter.format(upfrontSupportFee)}
+            </CustomTableCell>
+            <CustomTableCell>
+              {formatter.format(monthlySupportFee)}
+            </CustomTableCell>
+            <CustomTableCell>
+              {formatter.format(threeYearSupportFee)}
+            </CustomTableCell>
+          </TableRow>
         </TableBody>
       </Table>
     </Paper>
