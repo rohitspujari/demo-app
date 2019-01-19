@@ -151,7 +151,8 @@ function CostSummary(props) {
     computeResources,
     storageResources,
     billingOption,
-    awsSupportTier
+    awsSupportTier,
+    location
   } = props;
 
   const formatter = new Intl.NumberFormat('en-US', {
@@ -215,6 +216,7 @@ function CostSummary(props) {
       <Table className={classes.table}>
         <TableHead>
           <TableRow>
+            <CustomTableCell>Region</CustomTableCell>
             <CustomTableCell>EC2 Billing Option</CustomTableCell>
             <CustomTableCell>Total Upfront</CustomTableCell>
             <CustomTableCell>Total Monthly</CustomTableCell>
@@ -223,6 +225,9 @@ function CostSummary(props) {
         </TableHead>
         <TableBody>
           <TableRow>
+            <CustomTableCell>
+              <Typography className={classes.heading}>{location}</Typography>
+            </CustomTableCell>
             <CustomTableCell>
               <Typography className={classes.heading}>
                 {billingOption.description}

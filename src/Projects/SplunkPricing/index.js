@@ -1084,6 +1084,7 @@ class SplunkPricing extends Component {
                   storageResources={this.state.result.storageResources}
                   billingOption={this.state.billingOption}
                   awsSupportTier={this.state.awsSupportTier}
+                  location={this.state.location}
                 />
               ) : (
                 <CircularProgress className={classes.progress} />
