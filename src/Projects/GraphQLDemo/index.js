@@ -66,12 +66,16 @@ export default class GraphQLDemo extends Component {
     );
 
     return (
-      <div className="App">
-        <Connect mutation={graphqlOperation(mutations.createTask)}>
+      <div className="GraphQL App">
+        <Connect
+          className="mutation"
+          mutation={graphqlOperation(mutations.createTask)}
+        >
           {({ mutation }) => <AddTodo onCreate={mutation} />}
         </Connect>
 
         <Connect
+          className="subscription"
           query={graphqlOperation(queries.listTasks)}
           subscription={graphqlOperation(subscriptions.onCreateTask)}
           onSubscriptionMsg={(prevQuery, newData) => {

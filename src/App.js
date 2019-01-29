@@ -3,7 +3,8 @@ import './App.css';
 import Amplify, { Analytics, Storage, Auth } from 'aws-amplify';
 import aws_exports from './aws-exports';
 import { withAuthenticator } from 'aws-amplify-react';
-
+//https://codesandbox.io/s/zr1mjxxpq4
+import { ThemeProvider } from '@material-ui/styles';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 //import orange from '@material-ui/core/colors/orange';
 
@@ -39,7 +40,6 @@ Storage.configure({ level: 'private' });
 
 const theme = createMuiTheme({
   palette: {
-    //primary: { main: orange[400] },
     primary: { main: '#232f3e' },
     secondary: { main: '#11cb5f' } // This is just green.A700 as hex.
   },
@@ -110,7 +110,7 @@ class App extends Component {
               <Route path="/sagemaker" component={Sagemaker} />
               <Route path="/graphqldemo" component={GraphQLDemo} />
               <Route path="/splunkpricing" component={SplunkPricing} />
-              <Route path="/rekognition" component={Rekognition} />
+              <Route path="/rekognition" render={props => <Rekognition />} />
             </div>
           </MuiThemeProvider>
         </Router>
