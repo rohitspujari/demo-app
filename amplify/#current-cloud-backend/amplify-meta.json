@@ -19,7 +19,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/hosting/template.json",
 				"logicalId": "hostingS3AndCloudFront"
 			},
-			"lastPushTimeStamp": "2019-01-15T13:10:36.953Z",
+			"lastPushTimeStamp": "2019-01-29T05:42:41.366Z",
 			"output": {
 				"CloudFrontSecureURL": "https://d2kbx0q3krjptx.cloudfront.net",
 				"S3BucketSecureURL": "https://demoapp-20181207231438-hostingbucket.s3.amazonaws.com",
@@ -40,9 +40,9 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/auth/Cognito-cloudformation-template.yml",
 				"logicalId": "authCognito"
 			},
-			"lastPushTimeStamp": "2019-01-15T13:10:36.953Z",
+			"lastPushTimeStamp": "2019-01-29T05:42:41.370Z",
 			"output": {
-				"GoogleWebClient": "277830869306-6qj1p3mep3utio2c9a3lgudfgga9sd2j.apps.googleusercontent.com",
+				"GoogleWebClient": "277830869306-2c0r1esgjnjauug9koe5sodvh97uv419.apps.googleusercontent.com",
 				"CreatedSNSRole": "arn:aws:iam::465541050084:role/Cognito_sns-role",
 				"AppClientSecret": "p9ocgiseaf1d846ecrdpes7ofadgm9pl2dp3tnurjg4snuv61e3",
 				"UserPoolId": "us-east-1_rjtzrY6yb",
@@ -53,7 +53,7 @@
 				"IdentityPoolName": "CognitoIdentityPool",
 				"UserPoolName": "CognitoUserPool"
 			},
-			"lastPushDirHash": "R9wAULvRgjVOHpHADCsIx7zMVlY=",
+			"lastPushDirHash": "nbBfmNxRWOMFmJbyzFlPtPF84zM=",
 			"[object Object]": {}
 		}
 	},
@@ -66,7 +66,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
 				"logicalId": "storageDemoApp"
 			},
-			"lastPushTimeStamp": "2019-01-15T13:10:36.954Z",
+			"lastPushTimeStamp": "2019-01-29T05:42:41.367Z",
 			"output": {
 				"BucketName": "demo-app-storage",
 				"Region": "us-east-1"
@@ -91,8 +91,8 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"logicalId": "apidemoapp"
 			},
-			"lastPushTimeStamp": "2019-01-15T13:10:36.955Z",
-			"lastPushDirHash": "WK2ZGT6pAsFKOcvhD/sW1qWqPk4="
+			"lastPushTimeStamp": "2019-01-29T05:42:41.367Z",
+			"lastPushDirHash": "aXDmPYKs4I76JYZzx7/06O3qpKY="
 		},
 		"AWSPricing": {
 			"service": "API Gateway",
@@ -111,7 +111,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/api/AWSPricing-cloudformation-template.json",
 				"logicalId": "apiAWSPricing"
 			},
-			"lastPushTimeStamp": "2019-01-15T13:10:36.957Z",
+			"lastPushTimeStamp": "2019-01-29T05:42:41.368Z",
 			"output": {
 				"ApiName": "AWSPricing",
 				"RootUrl": "https://52emjepgy7.execute-api.us-east-1.amazonaws.com/Prod"
@@ -135,7 +135,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/api/SendEmail-cloudformation-template.json",
 				"logicalId": "apiSendEmail"
 			},
-			"lastPushTimeStamp": "2019-01-15T13:10:36.958Z",
+			"lastPushTimeStamp": "2019-01-29T05:42:41.368Z",
 			"output": {
 				"ApiName": "SendEmail",
 				"RootUrl": "https://bgis11wqii.execute-api.us-east-1.amazonaws.com/Prod"
@@ -156,7 +156,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/function/AWSPricing-cloudformation-template.json",
 				"logicalId": "functionAWSPricing"
 			},
-			"lastPushTimeStamp": "2019-01-15T13:10:36.959Z",
+			"lastPushTimeStamp": "2019-01-29T05:42:41.369Z",
 			"output": {
 				"Region": "us-east-1",
 				"Arn": "arn:aws:lambda:us-east-1:465541050084:function:AWSPricing",

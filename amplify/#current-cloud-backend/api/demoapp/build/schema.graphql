@@ -6,6 +6,26 @@ type Task {
   date: String
 }
 
+enum objectType {
+  VIDEO
+  AUDIO
+  IMAGE
+  TXT
+}
+
+type Object {
+  id: ID!
+  name: String!
+  objectType: objectType!
+  createdBy: User
+}
+
+type User {
+  id: ID!
+  name: String!
+  objects(filter: ModelObjectFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelObjectConnection
+}
+
 enum ModelSortDirection {
   ASC
   DESC
@@ -85,6 +105,12 @@ input ModelTaskFilterInput {
 type Query {
   getTask(id: ID!): Task
   listTasks(filter: ModelTaskFilterInput, limit: Int, nextToken: String): ModelTaskConnection
+  getObject(id: ID!): Object
+  listObjects(filter: ModelObjectFilterInput, limit: Int, nextToken: String): ModelObjectConnection
+  getUser(id: ID!): User
+  listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection
+  searchObjects(filter: SearchableObjectFilterInput, sort: SearchableObjectSortInput, limit: Int, nextToken: Int): SearchableObjectConnection
+  searchUsers(filter: SearchableUserFilterInput, sort: SearchableUserSortInput, limit: Int, nextToken: Int): SearchableUserConnection
 }
 
 input CreateTaskInput {
@@ -111,10 +137,180 @@ type Mutation {
   createTask(input: CreateTaskInput!): Task
   updateTask(input: UpdateTaskInput!): Task
   deleteTask(input: DeleteTaskInput!): Task
+  createObject(input: CreateObjectInput!): Object
+  updateObject(input: UpdateObjectInput!): Object
+  deleteObject(input: DeleteObjectInput!): Object
+  createUser(input: CreateUserInput!): User
+  updateUser(input: UpdateUserInput!): User
+  deleteUser(input: DeleteUserInput!): User
 }
 
 type Subscription {
   onCreateTask: Task @aws_subscribe(mutations: ["createTask"])
   onUpdateTask: Task @aws_subscribe(mutations: ["updateTask"])
   onDeleteTask: Task @aws_subscribe(mutations: ["deleteTask"])
+  onCreateObject: Object @aws_subscribe(mutations: ["createObject"])
+  onUpdateObject: Object @aws_subscribe(mutations: ["updateObject"])
+  onDeleteObject: Object @aws_subscribe(mutations: ["deleteObject"])
+  onCreateUser: User @aws_subscribe(mutations: ["createUser"])
+  onUpdateUser: User @aws_subscribe(mutations: ["updateUser"])
+  onDeleteUser: User @aws_subscribe(mutations: ["deleteUser"])
+}
+
+type ModelObjectConnection {
+  items: [Object]
+  nextToken: String
+}
+
+input ModelObjectFilterInput {
+  id: ModelIDFilterInput
+  name: ModelStringFilterInput
+  and: [ModelObjectFilterInput]
+  or: [ModelObjectFilterInput]
+  not: ModelObjectFilterInput
+}
+
+input CreateObjectInput {
+  id: ID
+  name: String!
+  objectType: objectType!
+  objectCreatedById: ID
+}
+
+input UpdateObjectInput {
+  id: ID!
+  name: String
+  objectType: objectType
+  objectCreatedById: ID
+}
+
+input DeleteObjectInput {
+  id: ID
+}
+
+type ModelUserConnection {
+  items: [User]
+  nextToken: String
+}
+
+input ModelUserFilterInput {
+  id: ModelIDFilterInput
+  name: ModelStringFilterInput
+  and: [ModelUserFilterInput]
+  or: [ModelUserFilterInput]
+  not: ModelUserFilterInput
+}
+
+input CreateUserInput {
+  id: ID
+  name: String!
+}
+
+input UpdateUserInput {
+  id: ID!
+  name: String
+}
+
+input DeleteUserInput {
+  id: ID
+}
+
+input SearchableStringFilterInput {
+  ne: String
+  eq: String
+  match: String
+  matchPhrase: String
+  matchPhrasePrefix: String
+  multiMatch: String
+  exists: Boolean
+  wildcard: String
+  regexp: String
+}
+
+input SearchableIDFilterInput {
+  ne: ID
+  eq: ID
+  match: ID
+  matchPhrase: ID
+  matchPhrasePrefix: ID
+  multiMatch: ID
+  exists: Boolean
+  wildcard: ID
+  regexp: ID
+}
+
+input SearchableIntFilterInput {
+  ne: Int
+  gt: Int
+  lt: Int
+  gte: Int
+  lte: Int
+  eq: Int
+  range: [Int]
+}
+
+input SearchableFloatFilterInput {
+  ne: Float
+  gt: Float
+  lt: Float
+  gte: Float
+  lte: Float
+  eq: Float
+  range: [Float]
+}
+
+input SearchableBooleanFilterInput {
+  eq: Boolean
+  ne: Boolean
+}
+
+input SearchableObjectFilterInput {
+  id: SearchableIDFilterInput
+  name: SearchableStringFilterInput
+  and: [SearchableObjectFilterInput]
+  or: [SearchableObjectFilterInput]
+  not: SearchableObjectFilterInput
+}
+
+enum SearchableSortDirection {
+  asc
+  desc
+}
+
+enum SearchableObjectSortableFields {
+  id
+  name
+}
+
+input SearchableObjectSortInput {
+  field: SearchableObjectSortableFields
+  direction: SearchableSortDirection
+}
+
+type SearchableObjectConnection {
+  items: [Object]
+  nextToken: String
+}
+
+input SearchableUserFilterInput {
+  id: SearchableIDFilterInput
+  name: SearchableStringFilterInput
+  and: [SearchableUserFilterInput]
+  or: [SearchableUserFilterInput]
+  not: SearchableUserFilterInput
+}
+
+enum SearchableUserSortableFields {
+  id
+  name
+}
+
+input SearchableUserSortInput {
+  field: SearchableUserSortableFields
+  direction: SearchableSortDirection
+}
+
+type SearchableUserConnection {
+  items: [User]
+  nextToken: String
 }

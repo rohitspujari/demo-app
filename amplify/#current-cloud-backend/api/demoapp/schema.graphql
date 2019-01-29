@@ -5,3 +5,23 @@ type Task @model {
   notes: String
   date: String
 }
+
+enum objectType {
+  VIDEO
+  AUDIO
+  IMAGE
+  TXT
+}
+
+type Object @model @searchable {
+  id: ID!
+  name: String!
+  objectType: objectType!
+  createdBy: User @connection(name: "UserObjects")
+}
+
+type User @model @searchable {
+  id: ID!
+  name: String!
+  objects: [Object]! @connection(name: "UserObjects")
+}

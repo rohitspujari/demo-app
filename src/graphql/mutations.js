@@ -31,3 +31,81 @@ export const deleteTask = `mutation DeleteTask($input: DeleteTaskInput!) {
   }
 }
 `;
+export const createObject = `mutation CreateObject($input: CreateObjectInput!) {
+  createObject(input: $input) {
+    id
+    name
+    objectType
+    createdBy {
+      id
+      name
+    }
+  }
+}
+`;
+export const updateObject = `mutation UpdateObject($input: UpdateObjectInput!) {
+  updateObject(input: $input) {
+    id
+    name
+    objectType
+    createdBy {
+      id
+      name
+    }
+  }
+}
+`;
+export const deleteObject = `mutation DeleteObject($input: DeleteObjectInput!) {
+  deleteObject(input: $input) {
+    id
+    name
+    objectType
+    createdBy {
+      id
+      name
+    }
+  }
+}
+`;
+export const createUser = `mutation CreateUser($input: CreateUserInput!) {
+  createUser(input: $input) {
+    id
+    name
+    objects {
+      items {
+        id
+        name
+      }
+      nextToken
+    }
+  }
+}
+`;
+export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
+  updateUser(input: $input) {
+    id
+    name
+    objects {
+      items {
+        id
+        name
+      }
+      nextToken
+    }
+  }
+}
+`;
+export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
+  deleteUser(input: $input) {
+    id
+    name
+    objects {
+      items {
+        id
+        name
+      }
+      nextToken
+    }
+  }
+}
+`;

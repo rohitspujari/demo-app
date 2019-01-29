@@ -188,6 +188,9 @@ Resources:
       
       AutoVerifiedAttributes: !Ref autoVerifiedAttributes
       
+      
+      EmailVerificationMessage: !Ref emailVerificationMessage
+      EmailVerificationSubject: !Ref emailVerificationSubject
             
       Policies:
         PasswordPolicy:
@@ -480,7 +483,7 @@ Resources:
           graph.facebook.com: '133718410632322'
                   
           
-          accounts.google.com: '277830869306-6qj1p3mep3utio2c9a3lgudfgga9sd2j.apps.googleusercontent.com'
+          accounts.google.com: '277830869306-2c0r1esgjnjauug9koe5sodvh97uv419.apps.googleusercontent.com'
                    
       
       AllowUnauthenticatedIdentities: !Ref allowUnauthenticatedIdentities
@@ -530,7 +533,7 @@ Outputs :
   
   
   GoogleWebClient:
-    Value: 277830869306-6qj1p3mep3utio2c9a3lgudfgga9sd2j.apps.googleusercontent.com
+    Value: 277830869306-2c0r1esgjnjauug9koe5sodvh97uv419.apps.googleusercontent.com
    
    
   

@@ -65,7 +65,12 @@ class App extends Component {
   };
 
   componentDidMount() {
-    Analytics.record('Amplify_CLI');
+    Auth.currentAuthenticatedUser({
+      bypassCache: false // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+    })
+      .then(user => console.log(user))
+      .catch(err => console.log(err));
+    //Analytics.record('Amplify_CLI');
   }
 
   logOut = async () => {
@@ -90,7 +95,7 @@ class App extends Component {
                 path="/"
                 render={props => (
                   <AppBar
-                    username={Auth.user.username}
+                    username={Auth.user.username || Auth.user.name}
                     logout={this.logOut}
                     {...props}
                   />
@@ -125,6 +130,15 @@ export default props => {
     //googleSignInButton: { backgroundColor: 'red', borderColor: 'red' },
     button: { backgroundColor: '#232f3e' }
   };
+
+  const federated = {
+    google_client_id:
+      '277830869306-2c0r1esgjnjauug9koe5sodvh97uv419.apps.googleusercontent.com' // Enter your google_client_id here
+    //facebook_app_id: '', // Enter your facebook_app_id here
+    //amazon_client_id: '' // Enter your amazon_client_id here
+  };
+
   const AppComponent = withAuthenticator(App, false, [], null, MyTheme);
-  return <AppComponent {...props} />;
+
+  return <AppComponent federated={federated} {...props} />;
 };
