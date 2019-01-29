@@ -76,7 +76,7 @@ function Rekognition({ theme }) {
             onClick={() => {
               console.log('Im clicked');
             }}
-            accept="image/*"
+            accept="*/*"
           />
 
           <Fab
