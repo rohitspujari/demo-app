@@ -39,6 +39,8 @@ export const onCreateObject = `subscription OnCreateObject {
     createdBy {
       id
       name
+      email
+      type
     }
   }
 }
@@ -51,6 +53,8 @@ export const onUpdateObject = `subscription OnUpdateObject {
     createdBy {
       id
       name
+      email
+      type
     }
   }
 }
@@ -63,6 +67,8 @@ export const onDeleteObject = `subscription OnDeleteObject {
     createdBy {
       id
       name
+      email
+      type
     }
   }
 }
@@ -71,6 +77,8 @@ export const onCreateUser = `subscription OnCreateUser {
   onCreateUser {
     id
     name
+    email
+    type
     objects {
       items {
         id
@@ -85,6 +93,8 @@ export const onUpdateUser = `subscription OnUpdateUser {
   onUpdateUser {
     id
     name
+    email
+    type
     objects {
       items {
         id
@@ -99,6 +109,8 @@ export const onDeleteUser = `subscription OnDeleteUser {
   onDeleteUser {
     id
     name
+    email
+    type
     objects {
       items {
         id

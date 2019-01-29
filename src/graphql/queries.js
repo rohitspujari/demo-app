@@ -36,6 +36,8 @@ export const getObject = `query GetObject($id: ID!) {
     createdBy {
       id
       name
+      email
+      type
     }
   }
 }
@@ -53,6 +55,8 @@ export const listObjects = `query ListObjects(
       createdBy {
         id
         name
+        email
+        type
       }
     }
     nextToken
@@ -63,6 +67,8 @@ export const getUser = `query GetUser($id: ID!) {
   getUser(id: $id) {
     id
     name
+    email
+    type
     objects {
       items {
         id
@@ -82,6 +88,8 @@ export const listUsers = `query ListUsers(
     items {
       id
       name
+      email
+      type
       objects {
         items {
           id
@@ -113,6 +121,8 @@ export const searchObjects = `query SearchObjects(
       createdBy {
         id
         name
+        email
+        type
       }
     }
     nextToken
@@ -134,6 +144,8 @@ export const searchUsers = `query SearchUsers(
     items {
       id
       name
+      email
+      type
       objects {
         items {
           id

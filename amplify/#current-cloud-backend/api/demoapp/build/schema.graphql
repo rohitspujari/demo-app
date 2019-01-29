@@ -23,6 +23,8 @@ type Object {
 type User {
   id: ID!
   name: String!
+  email: String!
+  type: String!
   objects(filter: ModelObjectFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelObjectConnection
 }
 
@@ -196,6 +198,8 @@ type ModelUserConnection {
 input ModelUserFilterInput {
   id: ModelIDFilterInput
   name: ModelStringFilterInput
+  email: ModelStringFilterInput
+  type: ModelStringFilterInput
   and: [ModelUserFilterInput]
   or: [ModelUserFilterInput]
   not: ModelUserFilterInput
@@ -204,11 +208,15 @@ input ModelUserFilterInput {
 input CreateUserInput {
   id: ID
   name: String!
+  email: String!
+  type: String!
 }
 
 input UpdateUserInput {
   id: ID!
   name: String
+  email: String
+  type: String
 }
 
 input DeleteUserInput {
@@ -295,6 +303,8 @@ type SearchableObjectConnection {
 input SearchableUserFilterInput {
   id: SearchableIDFilterInput
   name: SearchableStringFilterInput
+  email: SearchableStringFilterInput
+  type: SearchableStringFilterInput
   and: [SearchableUserFilterInput]
   or: [SearchableUserFilterInput]
   not: SearchableUserFilterInput
@@ -303,6 +313,8 @@ input SearchableUserFilterInput {
 enum SearchableUserSortableFields {
   id
   name
+  email
+  type
 }
 
 input SearchableUserSortInput {

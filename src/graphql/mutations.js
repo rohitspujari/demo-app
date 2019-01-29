@@ -39,6 +39,8 @@ export const createObject = `mutation CreateObject($input: CreateObjectInput!) {
     createdBy {
       id
       name
+      email
+      type
     }
   }
 }
@@ -51,6 +53,8 @@ export const updateObject = `mutation UpdateObject($input: UpdateObjectInput!) {
     createdBy {
       id
       name
+      email
+      type
     }
   }
 }
@@ -63,6 +67,8 @@ export const deleteObject = `mutation DeleteObject($input: DeleteObjectInput!) {
     createdBy {
       id
       name
+      email
+      type
     }
   }
 }
@@ -71,6 +77,8 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
   createUser(input: $input) {
     id
     name
+    email
+    type
     objects {
       items {
         id
@@ -85,6 +93,8 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
   updateUser(input: $input) {
     id
     name
+    email
+    type
     objects {
       items {
         id
@@ -99,6 +109,8 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
   deleteUser(input: $input) {
     id
     name
+    email
+    type
     objects {
       items {
         id

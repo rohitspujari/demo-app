@@ -1,6 +1,12 @@
 import React, { Component } from 'react';
 import './App.css';
-import Amplify, { Analytics, Storage, Auth } from 'aws-amplify';
+import Amplify, {
+  Analytics,
+  Storage,
+  Auth,
+  API,
+  graphqlOperation
+} from 'aws-amplify';
 import aws_exports from './aws-exports';
 import { withAuthenticator } from 'aws-amplify-react';
 //https://codesandbox.io/s/zr1mjxxpq4
@@ -10,6 +16,8 @@ import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 
 import AppBar from './Components/NavigationBar';
 import ProjectGrid from './Components/ProjectGrid';
+import * as queries from './graphql/queries';
+import * as mutations from './graphql/mutations';
 
 import { BrowserRouter as Router, Route } from 'react-router-dom';
 //import { Redirect } from 'react-router';
@@ -64,13 +72,43 @@ class App extends Component {
     });
   };
 
-  componentDidMount() {
-    Auth.currentAuthenticatedUser({
+  checkAndAddUser = async () => {
+    const authenticatedUser = await Auth.currentAuthenticatedUser({
       bypassCache: false // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-    })
-      .then(user => console.log(user))
-      .catch(err => console.log(err));
-    //Analytics.record('Amplify_CLI');
+    });
+    var user = {};
+    if (authenticatedUser.username) {
+      // cognito User
+      user.name = authenticatedUser.username;
+      user.id = authenticatedUser.attributes.sub;
+      user.email = authenticatedUser.attributes.email;
+      user.type = 'cognito';
+    } else if (authenticatedUser.name) {
+      // federated user
+      user.name = authenticatedUser.name;
+      user.id = authenticatedUser.id;
+      user.email = authenticatedUser.email;
+      user.type = 'federated';
+    }
+
+    const {
+      data: { getUser }
+    } = await API.graphql(graphqlOperation(queries.getUser, { id: user.id }));
+
+    if (!getUser) {
+      // if user is not present add user
+      //const data =
+      await API.graphql(
+        graphqlOperation(mutations.createUser, { input: user })
+      );
+      //console.log(data);
+    }
+  };
+
+  componentDidMount() {
+    this.checkAndAddUser();
+
+    //  console.log(user);
   }
 
   logOut = async () => {
