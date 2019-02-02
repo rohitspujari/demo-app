@@ -19,7 +19,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/hosting/template.json",
 				"logicalId": "hostingS3AndCloudFront"
 			},
-			"lastPushTimeStamp": "2019-01-29T06:48:08.095Z",
+			"lastPushTimeStamp": "2019-02-01T23:36:30.666Z",
 			"output": {
 				"CloudFrontSecureURL": "https://d2kbx0q3krjptx.cloudfront.net",
 				"S3BucketSecureURL": "https://demoapp-20181207231438-hostingbucket.s3.amazonaws.com",
@@ -40,7 +40,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/auth/Cognito-cloudformation-template.yml",
 				"logicalId": "authCognito"
 			},
-			"lastPushTimeStamp": "2019-01-29T06:48:08.096Z",
+			"lastPushTimeStamp": "2019-02-01T23:36:30.667Z",
 			"output": {
 				"GoogleWebClient": "277830869306-2c0r1esgjnjauug9koe5sodvh97uv419.apps.googleusercontent.com",
 				"CreatedSNSRole": "arn:aws:iam::465541050084:role/Cognito_sns-role",
@@ -53,7 +53,7 @@
 				"IdentityPoolName": "CognitoIdentityPool",
 				"UserPoolName": "CognitoUserPool"
 			},
-			"lastPushDirHash": "nbBfmNxRWOMFmJbyzFlPtPF84zM=",
+			"lastPushDirHash": "/3M/9bHaD1L0NyVq5o+nt4LqpLM=",
 			"[object Object]": {}
 		}
 	},
@@ -66,12 +66,12 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/storage/s3-cloudformation-template.json",
 				"logicalId": "storageDemoApp"
 			},
-			"lastPushTimeStamp": "2019-01-29T06:48:08.096Z",
+			"lastPushTimeStamp": "2019-02-01T23:36:30.668Z",
 			"output": {
 				"BucketName": "demo-app-storage",
 				"Region": "us-east-1"
 			},
-			"lastPushDirHash": "G2mvmcGJWMKrXJEc3684VPWO2jo="
+			"lastPushDirHash": "UaajP7JVPml0TC90mEWd/bIRsXA="
 		}
 	},
 	"api": {
@@ -91,8 +91,8 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"logicalId": "apidemoapp"
 			},
-			"lastPushTimeStamp": "2019-01-29T06:48:09.487Z",
-			"lastPushDirHash": "9tJLXXvL083GH3JRKHwvCX9B2hk="
+			"lastPushTimeStamp": "2019-02-01T23:36:32.355Z",
+			"lastPushDirHash": "fCUrW78rY1g0XIAP0HMoXiv9mgM="
 		},
 		"AWSPricing": {
 			"service": "API Gateway",
@@ -111,7 +111,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/api/AWSPricing-cloudformation-template.json",
 				"logicalId": "apiAWSPricing"
 			},
-			"lastPushTimeStamp": "2019-01-29T06:48:08.097Z",
+			"lastPushTimeStamp": "2019-02-01T23:36:30.669Z",
 			"output": {
 				"ApiName": "AWSPricing",
 				"RootUrl": "https://52emjepgy7.execute-api.us-east-1.amazonaws.com/Prod"
@@ -135,7 +135,7 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/api/SendEmail-cloudformation-template.json",
 				"logicalId": "apiSendEmail"
 			},
-			"lastPushTimeStamp": "2019-01-29T06:48:08.097Z",
+			"lastPushTimeStamp": "2019-02-01T23:36:30.669Z",
 			"output": {
 				"ApiName": "SendEmail",
 				"RootUrl": "https://bgis11wqii.execute-api.us-east-1.amazonaws.com/Prod"
@@ -156,13 +156,33 @@
 				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/function/AWSPricing-cloudformation-template.json",
 				"logicalId": "functionAWSPricing"
 			},
-			"lastPushTimeStamp": "2019-01-29T06:48:08.098Z",
+			"lastPushTimeStamp": "2019-02-01T23:36:30.670Z",
 			"output": {
 				"Region": "us-east-1",
 				"Arn": "arn:aws:lambda:us-east-1:465541050084:function:AWSPricing",
 				"Name": "AWSPricing"
 			},
 			"lastPushDirHash": "BGZDse2rn46QGuN+wYhqwThmOPM="
+		},
+		"amplifyTestLambda": {
+			"service": "Lambda",
+			"providerPlugin": "awscloudformation",
+			"build": true,
+			"dependsOn": [],
+			"lastBuildTimeStamp": "2019-02-01T04:34:32.452Z",
+			"lastPackageTimeStamp": "2019-02-01T04:34:32.641Z",
+			"distZipFilename": "amplifyTestLambda-1548995672-latest-build.zip",
+			"providerMetadata": {
+				"s3TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/function/amplifyTestLambda-cloudformation-template.json",
+				"logicalId": "functionamplifyTestLambda"
+			},
+			"lastPushTimeStamp": "2019-02-01T23:36:30.670Z",
+			"output": {
+				"Region": "us-east-1",
+				"Arn": "arn:aws:lambda:us-east-1:465541050084:function:amplifyTestLambda",
+				"Name": "amplifyTestLambda"
+			},
+			"lastPushDirHash": "mGSKwp0Sp4i/PXsoLSVOAESnaTA="
 		}
 	}
 }

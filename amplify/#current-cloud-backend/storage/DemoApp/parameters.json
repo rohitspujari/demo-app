@@ -5,5 +5,5 @@
     "authRoleName": "demoapp-20181206165647-authRole",
     "unauthRoleName": "demoapp-20181206165647-unauthRole",
     "authPermissions": "rw",
-    "unauthPermissions": "r"
+    "unauthPermissions": ""
 }

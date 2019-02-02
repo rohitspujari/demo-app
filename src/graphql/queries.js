@@ -31,13 +31,15 @@ export const listTasks = `query ListTasks(
 export const getObject = `query GetObject($id: ID!) {
   getObject(id: $id) {
     id
+    s3Key
     name
-    objectType
+    prefix
     createdBy {
       id
       name
       email
       type
+      sub
     }
   }
 }
@@ -50,13 +52,15 @@ export const listObjects = `query ListObjects(
   listObjects(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
+      s3Key
       name
-      objectType
+      prefix
       createdBy {
         id
         name
         email
         type
+        sub
       }
     }
     nextToken
@@ -69,10 +73,13 @@ export const getUser = `query GetUser($id: ID!) {
     name
     email
     type
+    sub
     objects {
       items {
         id
+        s3Key
         name
+        prefix
       }
       nextToken
     }
@@ -90,10 +97,13 @@ export const listUsers = `query ListUsers(
       name
       email
       type
+      sub
       objects {
         items {
           id
+          s3Key
           name
+          prefix
         }
         nextToken
       }
@@ -116,13 +126,15 @@ export const searchObjects = `query SearchObjects(
   ) {
     items {
       id
+      s3Key
       name
-      objectType
+      prefix
       createdBy {
         id
         name
         email
         type
+        sub
       }
     }
     nextToken
@@ -146,10 +158,13 @@ export const searchUsers = `query SearchUsers(
       name
       email
       type
+      sub
       objects {
         items {
           id
+          s3Key
           name
+          prefix
         }
         nextToken
       }

@@ -34,13 +34,15 @@ export const deleteTask = `mutation DeleteTask($input: DeleteTaskInput!) {
 export const createObject = `mutation CreateObject($input: CreateObjectInput!) {
   createObject(input: $input) {
     id
+    s3Key
     name
-    objectType
+    prefix
     createdBy {
       id
       name
       email
       type
+      sub
     }
   }
 }
@@ -48,13 +50,15 @@ export const createObject = `mutation CreateObject($input: CreateObjectInput!) {
 export const updateObject = `mutation UpdateObject($input: UpdateObjectInput!) {
   updateObject(input: $input) {
     id
+    s3Key
     name
-    objectType
+    prefix
     createdBy {
       id
       name
       email
       type
+      sub
     }
   }
 }
@@ -62,13 +66,15 @@ export const updateObject = `mutation UpdateObject($input: UpdateObjectInput!) {
 export const deleteObject = `mutation DeleteObject($input: DeleteObjectInput!) {
   deleteObject(input: $input) {
     id
+    s3Key
     name
-    objectType
+    prefix
     createdBy {
       id
       name
       email
       type
+      sub
     }
   }
 }
@@ -79,10 +85,13 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
     name
     email
     type
+    sub
     objects {
       items {
         id
+        s3Key
         name
+        prefix
       }
       nextToken
     }
@@ -95,10 +104,13 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
     name
     email
     type
+    sub
     objects {
       items {
         id
+        s3Key
         name
+        prefix
       }
       nextToken
     }
@@ -111,10 +123,13 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
     name
     email
     type
+    sub
     objects {
       items {
         id
+        s3Key
         name
+        prefix
       }
       nextToken
     }

@@ -27,32 +27,42 @@ function NavigationBar(props) {
 
   return (
     <div className={classes.root}>
-      {/* <Grid container item xs={12}> */}
-      <AppBar position="static">
-        <Toolbar>
-          <IconButton
-            className={classes.menuButton}
-            color="inherit"
-            onClick={() => history.push('/')}
-          >
-            <HomeIcon />
-          </IconButton>
+      <Grid container>
+        <Grid item xs={12}>
+          <AppBar position="static">
+            <Toolbar>
+              <IconButton
+                className={classes.menuButton}
+                color="inherit"
+                onClick={() => history.push('/')}
+              >
+                <HomeIcon />
+              </IconButton>
 
-          <Typography variant="h6" color="inherit" className={classes.grow} />
-          <Typography variant="h6" color="inherit" style={{ marginRight: 20 }}>
-            {username}
-          </Typography>
-          <IconButton
-            className={classes.menuButton}
-            color="inherit"
-            aria-label="Menu"
-            onClick={logout}
-          >
-            <LogOutIcon />
-          </IconButton>
-        </Toolbar>
-      </AppBar>
-      {/* </Grid> */}
+              <Typography
+                variant="h6"
+                color="inherit"
+                className={classes.grow}
+              />
+              <Typography
+                variant="h6"
+                color="inherit"
+                style={{ marginRight: 20 }}
+              >
+                {username}
+              </Typography>
+              <IconButton
+                className={classes.menuButton}
+                color="inherit"
+                aria-label="Menu"
+                onClick={logout}
+              >
+                <LogOutIcon />
+              </IconButton>
+            </Toolbar>
+          </AppBar>
+        </Grid>
+      </Grid>
     </div>
   );
 }

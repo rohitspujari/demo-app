@@ -8,6 +8,11 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 - Edit App.js file, import [MyPreoject] component created in above step.
 - Register new route with [/myproject] path
 
+## Resources
+
+[AppSync Lambda Client](https://docs.aws.amazon.com/appsync/latest/devguide/building-a-client-app-node.html)
+[Lambda Layer Blog - Dependencies](https://medium.com/@anjanava.biswas/nodejs-runtime-environment-with-aws-lambda-layers-f3914613e20e)
+
 ## Available Scripts
 
 In the project directory, you can run:

@@ -1,17 +1,23 @@
-import React, { Component, useRef } from 'react';
-import Amplify, { Storage } from 'aws-amplify';
+import React, { Component, useRef, useState, useEffect } from 'react';
+import Amplify, { Storage, API, graphqlOperation } from 'aws-amplify';
+
 import Webcam from 'react-webcam';
 import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
-import AddIcon from '@material-ui/icons/Add';
+import AddIcon from '@material-ui/icons/CameraAlt';
 import { makeStyles, useTheme } from '@material-ui/styles';
+import * as mutations from '../../graphql/mutations';
+import * as queries from '../../graphql/queries';
+import * as subscriptions from '../../graphql/subscriptions';
 
 import WebcamCapture from './components/WebcamCapture';
 import Input from '@material-ui/core/Input';
 import Fab from '@material-ui/core/Fab';
 import { PhotoPicker } from 'aws-amplify-react';
+import { listObjects } from '../../graphql/queries';
 //import Paper from '@material-ui/core/Paper';
+import ListComponent from './components/ListComponent';
 
 const useStyles = makeStyles(theme => ({
   fab: {
@@ -38,23 +44,99 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function Rekognition({ theme }) {
+function Rekognition({ user }) {
   const classes = useStyles();
   const myinput = useRef();
 
-  console.log(theme);
+  const [s3files, setS3Files] = useState([]);
+  const [progress, setProgress] = useState(null);
 
-  const handleChange = e => {
+  const getUser = async userId => {
+    const { data } = await API.graphql(
+      graphqlOperation(queries.getUser, {
+        id: userId
+      })
+    );
+
+    setS3Files(data.getUser.objects.items);
+    //console.log(items);
+  };
+
+  useEffect(() => {
+    const subscription = API.graphql(
+      graphqlOperation(subscriptions.onCreateObject)
+    ).subscribe({
+      next: ({
+        value: {
+          data: { onCreateObject: newItem }
+        }
+      }) => {
+        setS3Files(prev => {
+          return [...prev, newItem];
+        });
+      }
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  useEffect(
+    () => {
+      if (user) {
+        getUser(user.id);
+      }
+    },
+    [user]
+  );
+
+  //console.log(user);
+
+  const generateId = () => {
+    return (
+      '_' +
+      Math.random()
+        .toString(36)
+        .substr(2, 9)
+    );
+  };
+
+  const handleChange = async e => {
     const file = e.target.files[0];
-    const extension = file.name.split('.')[file.name.split('.').length - 1];
-    console.log(extension);
-    Storage.put(file.name, file, {
+    const prefix = file.type.split('/')[0];
+    const fileId = generateId();
+    //const extension = file.name.split('.')[file.name.split('.').length - 1];
+    //console.log(file);
+    const result = await Storage.put(`${prefix}/${fileId}`, file, {
       level: 'private',
-      contentType: `image/${extension}`
-    })
-      .then(result => console.log(result))
-      .catch(err => console.log(err));
-    // use html function click instead of onClick/onclick
+      contentType: file.type,
+      progressCallback(progress) {
+        //console.log(`Uploaded: ${progress.loaded / progress.total}`);
+        const percentProgress = Math.floor(
+          (progress.loaded / progress.total) * 100
+        );
+        if (percentProgress < 100) {
+          setProgress(`${percentProgress}%`);
+        } else {
+          setProgress(null);
+        }
+      }
+    });
+    if (result) {
+      //console.log(user, fileId, file.name, prefix);
+      const res = await API.graphql(
+        graphqlOperation(mutations.createObject, {
+          input: {
+            s3Key: fileId,
+            name: file.name,
+            prefix: prefix,
+            objectCreatedById: user.id //check graphQL query console to get this ID
+          }
+        })
+      );
+      console.log(res);
+    }
   };
 
   const videoConstraints = {
@@ -64,34 +146,30 @@ function Rekognition({ theme }) {
   };
   return (
     <div className={classes.root}>
-      <Grid container spacing={24}>
-        <Grid item xs={12} className={classes.paper}>
-          <input
-            id="myinput"
-            className={classes.input}
-            type="file"
-            name="hello"
-            ref={myinput}
-            onChange={handleChange}
-            onClick={() => {
-              console.log('Im clicked');
-            }}
-            accept="*/*"
-          />
+      <input
+        id="myinput"
+        className={classes.input}
+        type="file"
+        name="hello"
+        ref={myinput}
+        onChange={handleChange}
+        onClick={() => {
+          console.log('Im clicked');
+        }}
+        accept="*/*"
+      />
 
-          <Fab
-            onClick={() => myinput.current.click()}
-            color="primary"
-            aria-label="Add"
-            className={classes.fab}
-          >
-            <AddIcon />
-          </Fab>
-          {/* <Button variant="outlined" onClick={() => this.myinput.click()}>
-              Default
-            </Button> */}
-        </Grid>
-      </Grid>
+      <Fab
+        //use html function click instead of onClick/onclick
+        onClick={() => myinput.current.click()}
+        color="primary"
+        aria-label="Add"
+        className={classes.fab}
+      >
+        {progress || <AddIcon />}
+      </Fab>
+
+      <ListComponent files={s3files} />
     </div>
   );
 }

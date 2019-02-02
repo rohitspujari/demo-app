@@ -34,13 +34,15 @@ export const onDeleteTask = `subscription OnDeleteTask {
 export const onCreateObject = `subscription OnCreateObject {
   onCreateObject {
     id
+    s3Key
     name
-    objectType
+    prefix
     createdBy {
       id
       name
       email
       type
+      sub
     }
   }
 }
@@ -48,13 +50,15 @@ export const onCreateObject = `subscription OnCreateObject {
 export const onUpdateObject = `subscription OnUpdateObject {
   onUpdateObject {
     id
+    s3Key
     name
-    objectType
+    prefix
     createdBy {
       id
       name
       email
       type
+      sub
     }
   }
 }
@@ -62,13 +66,15 @@ export const onUpdateObject = `subscription OnUpdateObject {
 export const onDeleteObject = `subscription OnDeleteObject {
   onDeleteObject {
     id
+    s3Key
     name
-    objectType
+    prefix
     createdBy {
       id
       name
       email
       type
+      sub
     }
   }
 }
@@ -79,10 +85,13 @@ export const onCreateUser = `subscription OnCreateUser {
     name
     email
     type
+    sub
     objects {
       items {
         id
+        s3Key
         name
+        prefix
       }
       nextToken
     }
@@ -95,10 +104,13 @@ export const onUpdateUser = `subscription OnUpdateUser {
     name
     email
     type
+    sub
     objects {
       items {
         id
+        s3Key
         name
+        prefix
       }
       nextToken
     }
@@ -111,10 +123,13 @@ export const onDeleteUser = `subscription OnDeleteUser {
     name
     email
     type
+    sub
     objects {
       items {
         id
+        s3Key
         name
+        prefix
       }
       nextToken
     }

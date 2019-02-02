@@ -9,7 +9,7 @@
     "openIdLogPolicy": "Cognito_openid_lambda_log_policy",
     "userPoolName": "CognitoUserPool",
     "autoVerifiedAttributes": [
-        "email"
+        "phone_number"
     ],
     "mfaConfiguration": "OPTIONAL",
     "mfaTypes": [
@@ -22,7 +22,7 @@
     "smsVerificationMessage": "Your verification code is {####}",
     "emailVerificationSubject": "Your verification code",
     "emailVerificationMessage": "Your verification code is {####}",
-    "defaultPasswordPolicy": true,
+    "defaultPasswordPolicy": false,
     "passwordPolicyMinLength": "6",
     "passwordPolicyCharacters": [],
     "requiredAttributes": [

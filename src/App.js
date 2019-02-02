@@ -5,10 +5,13 @@ import Amplify, {
   Storage,
   Auth,
   API,
+  Logger,
   graphqlOperation
 } from 'aws-amplify';
 import aws_exports from './aws-exports';
+import { withStyles } from '@material-ui/core/styles';
 import { withAuthenticator } from 'aws-amplify-react';
+import Grid from '@material-ui/core/Grid';
 //https://codesandbox.io/s/zr1mjxxpq4
 import { ThemeProvider } from '@material-ui/styles';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
@@ -41,10 +44,18 @@ Amplify.configure(aws_exports);
 let myAppConfig = {
   aws_appsync_authenticationType: 'AWS_IAM'
 };
-
 Amplify.configure(myAppConfig);
+//Amplify.Logger.LOG_LEVEL = 'DEBUG';
+const logger = new Logger('main');
 
 Storage.configure({ level: 'private' });
+
+const styles = {
+  root: {
+    padding: 20,
+    flexGrow: 1
+  }
+};
 
 const theme = createMuiTheme({
   palette: {
@@ -55,11 +66,15 @@ const theme = createMuiTheme({
     useNextVariants: true
   },
   root: {
-    padding: 20
+    padding: 20,
+    flexGrow: 1
   }
 });
 
 class App extends Component {
+  state = {
+    user: ''
+  };
   // state = {
   //   authState: 'SignIn'
   // };
@@ -73,41 +88,60 @@ class App extends Component {
   };
 
   checkAndAddUser = async () => {
-    const authenticatedUser = await Auth.currentAuthenticatedUser({
-      bypassCache: false // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+    logger.debug('print_auth', Auth);
+    const currentUser = await Auth.currentAuthenticatedUser({
+      //bypassCache: false // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
     });
+    //logger.debug(currentUser);
+    //console.log('auth_user', currentUser);
+
+    //console.log('currentAuthenticatedUser', currentUser);
+
+    //console.log('cureentUserCreds', await Auth.currentUserCredentials());
     var user = {};
-    if (authenticatedUser.username) {
+    if (currentUser.username) {
       // cognito User
-      user.name = authenticatedUser.username;
-      user.id = authenticatedUser.attributes.sub;
-      user.email = authenticatedUser.attributes.email;
+      user.name = currentUser.username;
+      user.id = (await Auth.currentUserCredentials()).data.IdentityId;
+      user.email = currentUser.attributes.email;
       user.type = 'cognito';
-    } else if (authenticatedUser.name) {
+      user.sub = currentUser.attributes.sub;
+    } else if (currentUser.name) {
       // federated user
-      user.name = authenticatedUser.name;
-      user.id = authenticatedUser.id;
-      user.email = authenticatedUser.email;
+      user.name = currentUser.name;
+      user.id = currentUser.id;
+      user.email = currentUser.email;
       user.type = 'federated';
     }
 
+    //console.log('user', user);
+    //const user = '';
     const {
-      data: { getUser }
+      data: { getUser: result }
     } = await API.graphql(graphqlOperation(queries.getUser, { id: user.id }));
-
-    if (!getUser) {
+    if (!result) {
       // if user is not present add user
-      //const data =
       await API.graphql(
         graphqlOperation(mutations.createUser, { input: user })
       );
-      //console.log(data);
     }
+
+    this.setState({ user });
+    //console.log(result);
+
+    // const filter = {
+    //   filter: {
+    //     id: {
+    //       eq: 'us-east-1:08ab9fe2-c99d-4f2f-b885-9c4abd198973'
+    //     }
+    //   }
+    // };
+    // console.log(await API.graphql(graphqlOperation(queries.listUsers, filter)));
+    //console.log(await API.graphql(graphqlOperation(queries.listUsers)));
   };
 
   componentDidMount() {
     this.checkAndAddUser();
-
     //  console.log(user);
   }
 
@@ -118,43 +152,51 @@ class App extends Component {
 
   render() {
     //console.log(Auth.user);
+    const { classes } = this.props;
     return (
       <div className="App">
         <Router>
           <MuiThemeProvider theme={theme}>
-            <div
+            {/* <div
               //className={theme.container}
               style={{
                 padding: 20
               }}
-            >
-              {/* NAVIGATION BAR ROUTE - ALWAYS ON */}
-              <Route
-                path="/"
-                render={props => (
-                  <AppBar
-                    username={Auth.user.username || Auth.user.name}
-                    logout={this.logOut}
-                    {...props}
-                  />
-                )}
-              />
-              {/* MAIN ROUTE */}
-              <Route
-                exact
-                path="/"
-                render={props => (
-                  <ProjectGrid projectList={projectList} {...props} />
-                )}
-              />
-              {/* REGISTER PROJECT ROUTES */}
-              <Route path="/wordinsights" component={WordInsightsApp} />
-              <Route path="/comprehend" component={Comprehend} />
-              <Route path="/sagemaker" component={Sagemaker} />
-              <Route path="/graphqldemo" component={GraphQLDemo} />
-              <Route path="/splunkpricing" component={SplunkPricing} />
-              <Route path="/rekognition" render={props => <Rekognition />} />
-            </div>
+            > */}
+            <Grid container className={classes.root}>
+              <Grid item xs={12}>
+                {/* NAVIGATION BAR ROUTE - ALWAYS ON */}
+                <Route
+                  path="/"
+                  render={props => (
+                    <AppBar
+                      username={Auth.user.username || Auth.user.name}
+                      logout={this.logOut}
+                      {...props}
+                    />
+                  )}
+                />
+                {/* MAIN ROUTE */}
+                <Route
+                  exact
+                  path="/"
+                  render={props => (
+                    <ProjectGrid projectList={projectList} {...props} />
+                  )}
+                />
+                {/* REGISTER PROJECT ROUTES */}
+                <Route path="/wordinsights" component={WordInsightsApp} />
+                <Route path="/comprehend" component={Comprehend} />
+                <Route path="/sagemaker" component={Sagemaker} />
+                <Route path="/graphqldemo" component={GraphQLDemo} />
+                <Route path="/splunkpricing" component={SplunkPricing} />
+                <Route
+                  path="/rekognition"
+                  render={props => <Rekognition user={this.state.user} />}
+                />
+              </Grid>
+            </Grid>
+            {/* </div> */}
           </MuiThemeProvider>
         </Router>
       </div>
@@ -176,7 +218,14 @@ export default props => {
     //amazon_client_id: '' // Enter your amazon_client_id here
   };
 
-  const AppComponent = withAuthenticator(App, false, [], null, MyTheme);
+  const AppComponent = withAuthenticator(
+    withStyles(styles)(App),
+    false,
+    [],
+    null,
+    MyTheme
+  );
 
   return <AppComponent federated={federated} {...props} />;
+  //return <AppComponent {...props} />;
 };

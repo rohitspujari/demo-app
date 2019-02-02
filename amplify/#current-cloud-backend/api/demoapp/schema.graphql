@@ -6,17 +6,11 @@ type Task @model {
   date: String
 }
 
-enum objectType {
-  VIDEO
-  AUDIO
-  IMAGE
-  TXT
-}
-
 type Object @model @searchable {
   id: ID!
+  s3Key: ID
   name: String!
-  objectType: objectType!
+  prefix: String!
   createdBy: User @connection(name: "UserObjects")
 }
 
@@ -25,5 +19,6 @@ type User @model @searchable {
   name: String!
   email: String!
   type: String!
-  objects: [Object]! @connection(name: "UserObjects")
+  sub: String
+  objects: [Object] @connection(name: "UserObjects")
 }
