@@ -1,0 +1,23 @@
+# type Task @model {
+#   id: ID!
+#   name: String!
+#   description: String
+#   notes: String
+#   date: String
+# }
+
+type S3Object @model @searchable {
+  id: ID!
+  name: String!
+  prefix: String!
+  createdBy: User! @connection(name: "UserS3Objects")
+}
+
+type User @model @searchable {
+  id: ID!
+  name: String!
+  email: String!
+  type: String!
+  sub: String
+  objects: [S3Object] @connection(name: "UserS3Objects")
+}

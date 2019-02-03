@@ -1,17 +1,8 @@
-type Task {
+type S3Object {
   id: ID!
-  name: String!
-  description: String
-  notes: String
-  date: String
-}
-
-type Object {
-  id: ID!
-  s3Key: ID
   name: String!
   prefix: String!
-  createdBy: User
+  createdBy: User!
 }
 
 type User {
@@ -20,7 +11,7 @@ type User {
   email: String!
   type: String!
   sub: String
-  objects(filter: ModelObjectFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelObjectConnection
+  objects(filter: ModelS3ObjectFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelS3ObjectConnection
 }
 
 enum ModelSortDirection {
@@ -28,8 +19,8 @@ enum ModelSortDirection {
   DESC
 }
 
-type ModelTaskConnection {
-  items: [Task]
+type ModelS3ObjectConnection {
+  items: [S3Object]
   nextToken: String
 }
 
@@ -88,105 +79,58 @@ input ModelBooleanFilterInput {
   eq: Boolean
 }
 
-input ModelTaskFilterInput {
+input ModelS3ObjectFilterInput {
   id: ModelIDFilterInput
   name: ModelStringFilterInput
-  description: ModelStringFilterInput
-  notes: ModelStringFilterInput
-  date: ModelStringFilterInput
-  and: [ModelTaskFilterInput]
-  or: [ModelTaskFilterInput]
-  not: ModelTaskFilterInput
+  prefix: ModelStringFilterInput
+  and: [ModelS3ObjectFilterInput]
+  or: [ModelS3ObjectFilterInput]
+  not: ModelS3ObjectFilterInput
 }
 
 type Query {
-  getTask(id: ID!): Task
-  listTasks(filter: ModelTaskFilterInput, limit: Int, nextToken: String): ModelTaskConnection
-  getObject(id: ID!): Object
-  listObjects(filter: ModelObjectFilterInput, limit: Int, nextToken: String): ModelObjectConnection
+  getS3Object(id: ID!): S3Object
+  listS3Objects(filter: ModelS3ObjectFilterInput, limit: Int, nextToken: String): ModelS3ObjectConnection
   getUser(id: ID!): User
   listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection
-  searchObjects(filter: SearchableObjectFilterInput, sort: SearchableObjectSortInput, limit: Int, nextToken: Int): SearchableObjectConnection
+  searchS3Objects(filter: SearchableS3ObjectFilterInput, sort: SearchableS3ObjectSortInput, limit: Int, nextToken: Int): SearchableS3ObjectConnection
   searchUsers(filter: SearchableUserFilterInput, sort: SearchableUserSortInput, limit: Int, nextToken: Int): SearchableUserConnection
 }
 
-input CreateTaskInput {
+input CreateS3ObjectInput {
   id: ID
   name: String!
-  description: String
-  notes: String
-  date: String
+  prefix: String!
+  s3ObjectCreatedById: ID!
 }
 
-input UpdateTaskInput {
+input UpdateS3ObjectInput {
   id: ID!
   name: String
-  description: String
-  notes: String
-  date: String
+  prefix: String
+  s3ObjectCreatedById: ID
 }
 
-input DeleteTaskInput {
+input DeleteS3ObjectInput {
   id: ID
 }
 
 type Mutation {
-  createTask(input: CreateTaskInput!): Task
-  updateTask(input: UpdateTaskInput!): Task
-  deleteTask(input: DeleteTaskInput!): Task
-  createObject(input: CreateObjectInput!): Object
-  updateObject(input: UpdateObjectInput!): Object
-  deleteObject(input: DeleteObjectInput!): Object
+  createS3Object(input: CreateS3ObjectInput!): S3Object
+  updateS3Object(input: UpdateS3ObjectInput!): S3Object
+  deleteS3Object(input: DeleteS3ObjectInput!): S3Object
   createUser(input: CreateUserInput!): User
   updateUser(input: UpdateUserInput!): User
   deleteUser(input: DeleteUserInput!): User
 }
 
 type Subscription {
-  onCreateTask: Task @aws_subscribe(mutations: ["createTask"])
-  onUpdateTask: Task @aws_subscribe(mutations: ["updateTask"])
-  onDeleteTask: Task @aws_subscribe(mutations: ["deleteTask"])
-  onCreateObject: Object @aws_subscribe(mutations: ["createObject"])
-  onUpdateObject: Object @aws_subscribe(mutations: ["updateObject"])
-  onDeleteObject: Object @aws_subscribe(mutations: ["deleteObject"])
+  onCreateS3Object: S3Object @aws_subscribe(mutations: ["createS3Object"])
+  onUpdateS3Object: S3Object @aws_subscribe(mutations: ["updateS3Object"])
+  onDeleteS3Object: S3Object @aws_subscribe(mutations: ["deleteS3Object"])
   onCreateUser: User @aws_subscribe(mutations: ["createUser"])
   onUpdateUser: User @aws_subscribe(mutations: ["updateUser"])
   onDeleteUser: User @aws_subscribe(mutations: ["deleteUser"])
-}
-
-type ModelObjectConnection {
-  items: [Object]
-  nextToken: String
-}
-
-input ModelObjectFilterInput {
-  id: ModelIDFilterInput
-  s3Key: ModelIDFilterInput
-  name: ModelStringFilterInput
-  prefix: ModelStringFilterInput
-  and: [ModelObjectFilterInput]
-  or: [ModelObjectFilterInput]
-  not: ModelObjectFilterInput
-}
-
-input CreateObjectInput {
-  id: ID
-  s3Key: ID
-  name: String!
-  prefix: String!
-  objectCreatedById: ID
-}
-
-input UpdateObjectInput {
-  id: ID!
-  s3Key: ID
-  name: String
-  prefix: String
-  objectCreatedById: ID
-}
-
-input DeleteObjectInput {
-  id: ID
 }
 
 type ModelUserConnection {
@@ -274,14 +218,13 @@ input SearchableBooleanFilterInput {
   ne: Boolean
 }
 
-input SearchableObjectFilterInput {
+input SearchableS3ObjectFilterInput {
   id: SearchableIDFilterInput
-  s3Key: SearchableIDFilterInput
   name: SearchableStringFilterInput
   prefix: SearchableStringFilterInput
-  and: [SearchableObjectFilterInput]
-  or: [SearchableObjectFilterInput]
-  not: SearchableObjectFilterInput
+  and: [SearchableS3ObjectFilterInput]
+  or: [SearchableS3ObjectFilterInput]
+  not: SearchableS3ObjectFilterInput
 }
 
 enum SearchableSortDirection {
@@ -289,20 +232,19 @@ enum SearchableSortDirection {
   desc
 }
 
-enum SearchableObjectSortableFields {
+enum SearchableS3ObjectSortableFields {
   id
-  s3Key
   name
   prefix
 }
 
-input SearchableObjectSortInput {
-  field: SearchableObjectSortableFields
+input SearchableS3ObjectSortInput {
+  field: SearchableS3ObjectSortableFields
   direction: SearchableSortDirection
 }
 
-type SearchableObjectConnection {
-  items: [Object]
+type SearchableS3ObjectConnection {
+  items: [S3Object]
   nextToken: String
 }
 

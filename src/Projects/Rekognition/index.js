@@ -64,11 +64,11 @@ function Rekognition({ user }) {
 
   useEffect(() => {
     const subscription = API.graphql(
-      graphqlOperation(subscriptions.onCreateObject)
+      graphqlOperation(subscriptions.onCreateS3Object)
     ).subscribe({
       next: ({
         value: {
-          data: { onCreateObject: newItem }
+          data: { onCreateS3Object: newItem }
         }
       }) => {
         setS3Files(prev => {
@@ -102,8 +102,7 @@ function Rekognition({ user }) {
     );
   };
 
-  const handleChange = async e => {
-    const file = e.target.files[0];
+  const uploadFile = async file => {
     const prefix = file.type.split('/')[0];
     const fileId = generateId();
     //const extension = file.name.split('.')[file.name.split('.').length - 1];
@@ -126,17 +125,62 @@ function Rekognition({ user }) {
     if (result) {
       //console.log(user, fileId, file.name, prefix);
       const res = await API.graphql(
-        graphqlOperation(mutations.createObject, {
+        graphqlOperation(mutations.createS3Object, {
           input: {
-            s3Key: fileId,
+            id: fileId,
             name: file.name,
             prefix: prefix,
-            objectCreatedById: user.id //check graphQL query console to get this ID
+            s3ObjectCreatedById: user.id //check graphQL query console to get this ID
           }
         })
       );
       console.log(res);
     }
+  };
+
+  const handleChange = async e => {
+    //const file = e.target.files[0];
+    // e.target.files.forEach(file => {
+    //   uploadFile(file);
+    // });
+
+    console.log(e.target.files);
+
+    uploadFile(e.target.files[0]);
+
+    // const prefix = file.type.split('/')[0];
+    // const fileId = generateId();
+    // //const extension = file.name.split('.')[file.name.split('.').length - 1];
+    // //console.log(file);
+    // const result = await Storage.put(`${prefix}/${fileId}`, file, {
+    //   level: 'private',
+    //   contentType: file.type,
+    //   progressCallback(progress) {
+    //     //console.log(`Uploaded: ${progress.loaded / progress.total}`);
+    //     const percentProgress = Math.floor(
+    //       (progress.loaded / progress.total) * 100
+    //     );
+    //     if (percentProgress < 100) {
+    //       setProgress(`${percentProgress}%`);
+    //     } else {
+    //       setProgress(null);
+    //     }
+    //   }
+    // });
+    // if (result) {
+    //   //console.log(user, fileId, file.name, prefix);
+    //   const res = await API.graphql(
+    //     graphqlOperation(mutations.createObject, {
+    //       input: {
+    //         s3Key: fileId,
+    //         name: file.name,
+    //         prefix: prefix,
+    //         objectCreatedById: user.id //check graphQL query console to get this ID
+    //       }
+    //     })
+    //   );
+    //   console.log(res);
+    // }
   };
 
   const videoConstraints = {
@@ -146,8 +190,10 @@ function Rekognition({ user }) {
   };
   return (
     <div className={classes.root}>
+      <ListComponent files={s3files} />
       <input
         id="myinput"
+        multiple
         className={classes.input}
         type="file"
         name="hello"
@@ -168,8 +214,6 @@ function Rekognition({ user }) {
       >
         {progress || <AddIcon />}
       </Fab>
-
-      <ListComponent files={s3files} />
     </div>
   );
 }

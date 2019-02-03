@@ -11,9 +11,6 @@ const awsmobile =  {
     "aws_user_pools_web_client_id": "6lecpjfbfrj61dp4qb22e3h9fn",
     "aws_user_files_s3_bucket": "demo-app-storage",
     "aws_user_files_s3_bucket_region": "us-east-1",
-    "aws_appsync_graphqlEndpoint": "https://gxbq3ja2jzepzbafjnqrq6i2ge.appsync-api.us-east-1.amazonaws.com/graphql",
-    "aws_appsync_region": "us-east-1",
-    "aws_appsync_authenticationType": "AMAZON_COGNITO_USER_POOLS",
     "aws_cloud_logic_custom": [
         {
             "name": "AWSPricing",
@@ -25,7 +22,10 @@ const awsmobile =  {
             "endpoint": "https://bgis11wqii.execute-api.us-east-1.amazonaws.com/Prod",
             "region": "us-east-1"
         }
-    ]
+    ],
+    "aws_appsync_graphqlEndpoint": "https://dudyewcqhzf6hjo4qxhgpuq27m.appsync-api.us-east-1.amazonaws.com/graphql",
+    "aws_appsync_region": "us-east-1",
+    "aws_appsync_authenticationType": "AMAZON_COGNITO_USER_POOLS"
 };
 
 

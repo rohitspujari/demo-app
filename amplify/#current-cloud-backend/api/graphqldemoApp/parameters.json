@@ -1,5 +1,5 @@
 {
-    "AppSyncApiName": "demoapp",
+    "AppSyncApiName": "graphqldemoApp",
     "AuthCognitoUserPoolId": {
         "Fn::GetAtt": [
             "authCognito",
@@ -8,8 +8,8 @@
     },
     "ElasticSearchStreamingLambdaCodeS3Key": "amplify-appsync-files/python_streaming_function.zip",
     "ElasticSearchStreamingLambdaCodeS3Bucket": "demoapp-20181206165647-deployment",
-    "schemaGraphql": "s3://demoapp-20181206165647-deployment/amplify-appsync-files/schema.graphql.1549064093945",
+    "schemaGraphql": "s3://demoapp-20181206165647-deployment/amplify-appsync-files/schema.graphql.1549167539576",
     "ResolverBucket": "demoapp-20181206165647-deployment",
     "ResolverRootKey": "amplify-appsync-files",
-    "DeploymentTimestamp": "1549064093945"
+    "DeploymentTimestamp": "1549167539576"
 }

@@ -1,37 +1,9 @@
 // eslint-disable
 // this is an auto generated file. This will be overwritten
 
-export const getTask = `query GetTask($id: ID!) {
-  getTask(id: $id) {
+export const getS3Object = `query GetS3Object($id: ID!) {
+  getS3Object(id: $id) {
     id
-    name
-    description
-    notes
-    date
-  }
-}
-`;
-export const listTasks = `query ListTasks(
-  $filter: ModelTaskFilterInput
-  $limit: Int
-  $nextToken: String
-) {
-  listTasks(filter: $filter, limit: $limit, nextToken: $nextToken) {
-    items {
-      id
-      name
-      description
-      notes
-      date
-    }
-    nextToken
-  }
-}
-`;
-export const getObject = `query GetObject($id: ID!) {
-  getObject(id: $id) {
-    id
-    s3Key
     name
     prefix
     createdBy {
@@ -44,15 +16,14 @@ export const getObject = `query GetObject($id: ID!) {
   }
 }
 `;
-export const listObjects = `query ListObjects(
-  $filter: ModelObjectFilterInput
+export const listS3Objects = `query ListS3Objects(
+  $filter: ModelS3ObjectFilterInput
   $limit: Int
   $nextToken: String
 ) {
-  listObjects(filter: $filter, limit: $limit, nextToken: $nextToken) {
+  listS3Objects(filter: $filter, limit: $limit, nextToken: $nextToken) {
     items {
       id
-      s3Key
       name
       prefix
       createdBy {
@@ -77,7 +48,6 @@ export const getUser = `query GetUser($id: ID!) {
     objects {
       items {
         id
-        s3Key
         name
         prefix
       }
@@ -101,7 +71,6 @@ export const listUsers = `query ListUsers(
       objects {
         items {
           id
-          s3Key
           name
           prefix
         }
@@ -112,13 +81,13 @@ export const listUsers = `query ListUsers(
   }
 }
 `;
-export const searchObjects = `query SearchObjects(
-  $filter: SearchableObjectFilterInput
-  $sort: SearchableObjectSortInput
+export const searchS3Objects = `query SearchS3Objects(
+  $filter: SearchableS3ObjectFilterInput
+  $sort: SearchableS3ObjectSortInput
   $limit: Int
   $nextToken: Int
 ) {
-  searchObjects(
+  searchS3Objects(
     filter: $filter
     sort: $sort
     limit: $limit
@@ -126,7 +95,6 @@ export const searchObjects = `query SearchObjects(
   ) {
     items {
       id
-      s3Key
       name
       prefix
       createdBy {
@@ -162,7 +130,6 @@ export const searchUsers = `query SearchUsers(
       objects {
         items {
           id
-          s3Key
           name
           prefix
         }

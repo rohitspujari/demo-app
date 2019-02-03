@@ -1,40 +1,9 @@
 // eslint-disable
 // this is an auto generated file. This will be overwritten
 
-export const createTask = `mutation CreateTask($input: CreateTaskInput!) {
-  createTask(input: $input) {
+export const createS3Object = `mutation CreateS3Object($input: CreateS3ObjectInput!) {
+  createS3Object(input: $input) {
     id
-    name
-    description
-    notes
-    date
-  }
-}
-`;
-export const updateTask = `mutation UpdateTask($input: UpdateTaskInput!) {
-  updateTask(input: $input) {
-    id
-    name
-    description
-    notes
-    date
-  }
-}
-`;
-export const deleteTask = `mutation DeleteTask($input: DeleteTaskInput!) {
-  deleteTask(input: $input) {
-    id
-    name
-    description
-    notes
-    date
-  }
-}
-`;
-export const createObject = `mutation CreateObject($input: CreateObjectInput!) {
-  createObject(input: $input) {
-    id
-    s3Key
     name
     prefix
     createdBy {
@@ -47,10 +16,9 @@ export const createObject = `mutation CreateObject($input: CreateObjectInput!) {
   }
 }
 `;
-export const updateObject = `mutation UpdateObject($input: UpdateObjectInput!) {
-  updateObject(input: $input) {
+export const updateS3Object = `mutation UpdateS3Object($input: UpdateS3ObjectInput!) {
+  updateS3Object(input: $input) {
     id
-    s3Key
     name
     prefix
     createdBy {
@@ -63,10 +31,9 @@ export const updateObject = `mutation UpdateObject($input: UpdateObjectInput!) {
   }
 }
 `;
-export const deleteObject = `mutation DeleteObject($input: DeleteObjectInput!) {
-  deleteObject(input: $input) {
+export const deleteS3Object = `mutation DeleteS3Object($input: DeleteS3ObjectInput!) {
+  deleteS3Object(input: $input) {
     id
-    s3Key
     name
     prefix
     createdBy {
@@ -89,7 +56,6 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
     objects {
       items {
         id
-        s3Key
         name
         prefix
       }
@@ -108,7 +74,6 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
     objects {
       items {
         id
-        s3Key
         name
         prefix
       }
@@ -127,7 +92,6 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
     objects {
       items {
         id
-        s3Key
         name
         prefix
       }

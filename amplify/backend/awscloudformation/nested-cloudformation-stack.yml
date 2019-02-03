@@ -154,27 +154,6 @@
 				}
 			}
 		},
-		"apidemoapp": {
-			"Type": "AWS::CloudFormation::Stack",
-			"Properties": {
-				"TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/api/cloudformation-template.json",
-				"Parameters": {
-					"AppSyncApiName": "demoapp",
-					"AuthCognitoUserPoolId": {
-						"Fn::GetAtt": [
-							"authCognito",
-							"Outputs.UserPoolId"
-						]
-					},
-					"ElasticSearchStreamingLambdaCodeS3Key": "amplify-appsync-files/python_streaming_function.zip",
-					"ElasticSearchStreamingLambdaCodeS3Bucket": "demoapp-20181206165647-deployment",
-					"schemaGraphql": "s3://demoapp-20181206165647-deployment/amplify-appsync-files/schema.graphql.1549064093945",
-					"ResolverBucket": "demoapp-20181206165647-deployment",
-					"ResolverRootKey": "amplify-appsync-files",
-					"DeploymentTimestamp": "1549064093945"
-				}
-			}
-		},
 		"apiAWSPricing": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
@@ -212,6 +191,27 @@
 							"Outputs.Arn"
 						]
 					}
+				}
+			}
+		},
+		"apigraphqldemoApp": {
+			"Type": "AWS::CloudFormation::Stack",
+			"Properties": {
+				"TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/api/cloudformation-template.json",
+				"Parameters": {
+					"AppSyncApiName": "graphqldemoApp",
+					"AuthCognitoUserPoolId": {
+						"Fn::GetAtt": [
+							"authCognito",
+							"Outputs.UserPoolId"
+						]
+					},
+					"ElasticSearchStreamingLambdaCodeS3Key": "amplify-appsync-files/python_streaming_function.zip",
+					"ElasticSearchStreamingLambdaCodeS3Bucket": "demoapp-20181206165647-deployment",
+					"schemaGraphql": "s3://demoapp-20181206165647-deployment/amplify-appsync-files/schema.graphql.1549167539576",
+					"ResolverBucket": "demoapp-20181206165647-deployment",
+					"ResolverRootKey": "amplify-appsync-files",
+					"DeploymentTimestamp": "1549167539576"
 				}
 			}
 		},

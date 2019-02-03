@@ -188,7 +188,7 @@ class App extends Component {
                 <Route path="/wordinsights" component={WordInsightsApp} />
                 <Route path="/comprehend" component={Comprehend} />
                 <Route path="/sagemaker" component={Sagemaker} />
-                <Route path="/graphqldemo" component={GraphQLDemo} />
+                {/* <Route path="/graphqldemo" component={GraphQLDemo} /> */}
                 <Route path="/splunkpricing" component={SplunkPricing} />
                 <Route
                   path="/rekognition"

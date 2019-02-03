@@ -5,7 +5,7 @@
   "query": {
       "expression": "#connectionAttribute = :connectionAttribute",
       "expressionNames": {
-          "#connectionAttribute": "objectCreatedById"
+          "#connectionAttribute": "s3ObjectCreatedById"
     },
       "expressionValues": {
           ":connectionAttribute": {
@@ -33,5 +33,5 @@ null
   #else
 null
   #end,
-  "index": "gsi-UserObjects"
+  "index": "gsi-UserS3Objects"
 }

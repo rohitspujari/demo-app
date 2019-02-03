@@ -213,614 +213,14 @@
                 }
             }
         },
-        "TaskTable": {
+        "S3ObjectTable": {
             "Type": "AWS::DynamoDB::Table",
             "Properties": {
                 "TableName": {
                     "Fn::Join": [
                         "-",
                         [
-                            "Task",
-                            {
-                                "Fn::GetAtt": [
-                                    "GraphQLAPI",
-                                    "ApiId"
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "KeySchema": [
-                    {
-                        "AttributeName": "id",
-                        "KeyType": "HASH"
-                    }
-                ],
-                "AttributeDefinitions": [
-                    {
-                        "AttributeName": "id",
-                        "AttributeType": "S"
-                    }
-                ],
-                "ProvisionedThroughput": {
-                    "ReadCapacityUnits": {
-                        "Ref": "DynamoDBModelTableReadIOPS"
-                    },
-                    "WriteCapacityUnits": {
-                        "Ref": "DynamoDBModelTableWriteIOPS"
-                    }
-                },
-                "StreamSpecification": {
-                    "StreamViewType": "NEW_AND_OLD_IMAGES"
-                }
-            }
-        },
-        "TaskIAMRole": {
-            "Type": "AWS::IAM::Role",
-            "Properties": {
-                "RoleName": {
-                    "Fn::Join": [
-                        "-",
-                        [
-                            "TaskTable",
-                            "role",
-                            {
-                                "Fn::GetAtt": [
-                                    "GraphQLAPI",
-                                    "ApiId"
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "AssumeRolePolicyDocument": {
-                    "Version": "2012-10-17",
-                    "Statement": [
-                        {
-                            "Effect": "Allow",
-                            "Principal": {
-                                "Service": "appsync.amazonaws.com"
-                            },
-                            "Action": "sts:AssumeRole"
-                        }
-                    ]
-                },
-                "Policies": [
-                    {
-                        "PolicyName": "DynamoDBAccess",
-                        "PolicyDocument": {
-                            "Version": "2012-10-17",
-                            "Statement": [
-                                {
-                                    "Effect": "Allow",
-                                    "Action": [
-                                        "dynamodb:BatchGetItem",
-                                        "dynamodb:BatchWriteItem",
-                                        "dynamodb:PutItem",
-                                        "dynamodb:DeleteItem",
-                                        "dynamodb:GetItem",
-                                        "dynamodb:Scan",
-                                        "dynamodb:Query",
-                                        "dynamodb:UpdateItem"
-                                    ],
-                                    "Resource": [
-                                        {
-                                            "Fn::GetAtt": [
-                                                "TaskTable",
-                                                "Arn"
-                                            ]
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                "/",
-                                                [
-                                                    {
-                                                        "Fn::GetAtt": [
-                                                            "TaskTable",
-                                                            "Arn"
-                                                        ]
-                                                    },
-                                                    "*"
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    }
-                ]
-            }
-        },
-        "TaskDataSource": {
-            "Type": "AWS::AppSync::DataSource",
-            "Properties": {
-                "ApiId": {
-                    "Fn::GetAtt": [
-                        "GraphQLAPI",
-                        "ApiId"
-                    ]
-                },
-                "Name": "TaskTable",
-                "Type": "AMAZON_DYNAMODB",
-                "ServiceRoleArn": {
-                    "Fn::GetAtt": [
-                        "TaskIAMRole",
-                        "Arn"
-                    ]
-                },
-                "DynamoDBConfig": {
-                    "AwsRegion": {
-                        "Fn::Select": [
-                            3,
-                            {
-                                "Fn::Split": [
-                                    ":",
-                                    {
-                                        "Fn::GetAtt": [
-                                            "TaskTable",
-                                            "Arn"
-                                        ]
-                                    }
-                                ]
-                            }
-                        ]
-                    },
-                    "TableName": {
-                        "Ref": "TaskTable"
-                    }
-                }
-            },
-            "DependsOn": "TaskIAMRole"
-        },
-        "GetTaskResolver": {
-            "Type": "AWS::AppSync::Resolver",
-            "Properties": {
-                "ApiId": {
-                    "Fn::GetAtt": [
-                        "GraphQLAPI",
-                        "ApiId"
-                    ]
-                },
-                "DataSourceName": {
-                    "Fn::GetAtt": [
-                        "TaskDataSource",
-                        "Name"
-                    ]
-                },
-                "FieldName": "getTask",
-                "TypeName": "Query",
-                "RequestMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Query",
-                                                    "getTask",
-                                                    "request",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "ResponseMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Query",
-                                                    "getTask",
-                                                    "response",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                }
-            },
-            "DependsOn": "GraphQLSchema"
-        },
-        "ListTaskResolver": {
-            "Type": "AWS::AppSync::Resolver",
-            "Properties": {
-                "ApiId": {
-                    "Fn::GetAtt": [
-                        "GraphQLAPI",
-                        "ApiId"
-                    ]
-                },
-                "DataSourceName": {
-                    "Fn::GetAtt": [
-                        "TaskDataSource",
-                        "Name"
-                    ]
-                },
-                "FieldName": "listTasks",
-                "TypeName": "Query",
-                "RequestMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Query",
-                                                    "listTasks",
-                                                    "request",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "ResponseMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Query",
-                                                    "listTasks",
-                                                    "response",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                }
-            },
-            "DependsOn": "GraphQLSchema"
-        },
-        "CreateTaskResolver": {
-            "Type": "AWS::AppSync::Resolver",
-            "Properties": {
-                "ApiId": {
-                    "Fn::GetAtt": [
-                        "GraphQLAPI",
-                        "ApiId"
-                    ]
-                },
-                "DataSourceName": {
-                    "Fn::GetAtt": [
-                        "TaskDataSource",
-                        "Name"
-                    ]
-                },
-                "FieldName": "createTask",
-                "TypeName": "Mutation",
-                "RequestMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Mutation",
-                                                    "createTask",
-                                                    "request",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "ResponseMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Mutation",
-                                                    "createTask",
-                                                    "response",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                }
-            },
-            "DependsOn": "GraphQLSchema"
-        },
-        "UpdateTaskResolver": {
-            "Type": "AWS::AppSync::Resolver",
-            "Properties": {
-                "ApiId": {
-                    "Fn::GetAtt": [
-                        "GraphQLAPI",
-                        "ApiId"
-                    ]
-                },
-                "DataSourceName": {
-                    "Fn::GetAtt": [
-                        "TaskDataSource",
-                        "Name"
-                    ]
-                },
-                "FieldName": "updateTask",
-                "TypeName": "Mutation",
-                "RequestMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Mutation",
-                                                    "updateTask",
-                                                    "request",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "ResponseMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Mutation",
-                                                    "updateTask",
-                                                    "response",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                }
-            },
-            "DependsOn": "GraphQLSchema"
-        },
-        "DeleteTaskResolver": {
-            "Type": "AWS::AppSync::Resolver",
-            "Properties": {
-                "ApiId": {
-                    "Fn::GetAtt": [
-                        "GraphQLAPI",
-                        "ApiId"
-                    ]
-                },
-                "DataSourceName": {
-                    "Fn::GetAtt": [
-                        "TaskDataSource",
-                        "Name"
-                    ]
-                },
-                "FieldName": "deleteTask",
-                "TypeName": "Mutation",
-                "RequestMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Mutation",
-                                                    "deleteTask",
-                                                    "request",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                },
-                "ResponseMappingTemplateS3Location": {
-                    "Fn::Join": [
-                        "",
-                        [
-                            "s3://",
-                            {
-                                "Fn::Join": [
-                                    "/",
-                                    [
-                                        {
-                                            "Ref": "ResolverBucket"
-                                        },
-                                        {
-                                            "Ref": "ResolverRootKey"
-                                        },
-                                        {
-                                            "Fn::Join": [
-                                                ".",
-                                                [
-                                                    "Mutation",
-                                                    "deleteTask",
-                                                    "response",
-                                                    {
-                                                        "Ref": "DeploymentTimestamp"
-                                                    }
-                                                ]
-                                            ]
-                                        }
-                                    ]
-                                ]
-                            }
-                        ]
-                    ]
-                }
-            },
-            "DependsOn": "GraphQLSchema"
-        },
-        "ObjectTable": {
-            "Type": "AWS::DynamoDB::Table",
-            "Properties": {
-                "TableName": {
-                    "Fn::Join": [
-                        "-",
-                        [
-                            "Object",
+                            "S3Object",
                             {
                                 "Fn::GetAtt": [
                                     "GraphQLAPI",
@@ -842,7 +242,7 @@
                         "AttributeType": "S"
                     },
                     {
-                        "AttributeName": "objectCreatedById",
+                        "AttributeName": "s3ObjectCreatedById",
                         "AttributeType": "S"
                     }
                 ],
@@ -859,10 +259,10 @@
                 },
                 "GlobalSecondaryIndexes": [
                     {
-                        "IndexName": "gsi-UserObjects",
+                        "IndexName": "gsi-UserS3Objects",
                         "KeySchema": [
                             {
-                                "AttributeName": "objectCreatedById",
+                                "AttributeName": "s3ObjectCreatedById",
                                 "KeyType": "HASH"
                             }
                         ],
@@ -881,14 +281,14 @@
                 ]
             }
         },
-        "ObjectIAMRole": {
+        "S3ObjectIAMRole": {
             "Type": "AWS::IAM::Role",
             "Properties": {
                 "RoleName": {
                     "Fn::Join": [
                         "-",
                         [
-                            "ObjectTable",
+                            "S3ObjectTable",
                             "role",
                             {
                                 "Fn::GetAtt": [
@@ -932,7 +332,7 @@
                                     "Resource": [
                                         {
                                             "Fn::GetAtt": [
-                                                "ObjectTable",
+                                                "S3ObjectTable",
                                                 "Arn"
                                             ]
                                         },
@@ -942,7 +342,7 @@
                                                 [
                                                     {
                                                         "Fn::GetAtt": [
-                                                            "ObjectTable",
+                                                            "S3ObjectTable",
                                                             "Arn"
                                                         ]
                                                     },
@@ -958,7 +358,7 @@
                 ]
             }
         },
-        "ObjectDataSource": {
+        "S3ObjectDataSource": {
             "Type": "AWS::AppSync::DataSource",
             "Properties": {
                 "ApiId": {
@@ -967,11 +367,11 @@
                         "ApiId"
                     ]
                 },
-                "Name": "ObjectTable",
+                "Name": "S3ObjectTable",
                 "Type": "AMAZON_DYNAMODB",
                 "ServiceRoleArn": {
                     "Fn::GetAtt": [
-                        "ObjectIAMRole",
+                        "S3ObjectIAMRole",
                         "Arn"
                     ]
                 },
@@ -984,7 +384,7 @@
                                     ":",
                                     {
                                         "Fn::GetAtt": [
-                                            "ObjectTable",
+                                            "S3ObjectTable",
                                             "Arn"
                                         ]
                                     }
@@ -993,13 +393,13 @@
                         ]
                     },
                     "TableName": {
-                        "Ref": "ObjectTable"
+                        "Ref": "S3ObjectTable"
                     }
                 }
             },
-            "DependsOn": "ObjectIAMRole"
+            "DependsOn": "S3ObjectIAMRole"
         },
-        "GetObjectResolver": {
+        "GetS3ObjectResolver": {
             "Type": "AWS::AppSync::Resolver",
             "Properties": {
                 "ApiId": {
@@ -1010,11 +410,11 @@
                 },
                 "DataSourceName": {
                     "Fn::GetAtt": [
-                        "ObjectDataSource",
+                        "S3ObjectDataSource",
                         "Name"
                     ]
                 },
-                "FieldName": "getObject",
+                "FieldName": "getS3Object",
                 "TypeName": "Query",
                 "RequestMappingTemplateS3Location": {
                     "Fn::Join": [
@@ -1036,7 +436,7 @@
                                                 ".",
                                                 [
                                                     "Query",
-                                                    "getObject",
+                                                    "getS3Object",
                                                     "request",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1070,7 +470,7 @@
                                                 ".",
                                                 [
                                                     "Query",
-                                                    "getObject",
+                                                    "getS3Object",
                                                     "response",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1087,7 +487,7 @@
             },
             "DependsOn": "GraphQLSchema"
         },
-        "ListObjectResolver": {
+        "ListS3ObjectResolver": {
             "Type": "AWS::AppSync::Resolver",
             "Properties": {
                 "ApiId": {
@@ -1098,11 +498,11 @@
                 },
                 "DataSourceName": {
                     "Fn::GetAtt": [
-                        "ObjectDataSource",
+                        "S3ObjectDataSource",
                         "Name"
                     ]
                 },
-                "FieldName": "listObjects",
+                "FieldName": "listS3Objects",
                 "TypeName": "Query",
                 "RequestMappingTemplateS3Location": {
                     "Fn::Join": [
@@ -1124,7 +524,7 @@
                                                 ".",
                                                 [
                                                     "Query",
-                                                    "listObjects",
+                                                    "listS3Objects",
                                                     "request",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1158,7 +558,7 @@
                                                 ".",
                                                 [
                                                     "Query",
-                                                    "listObjects",
+                                                    "listS3Objects",
                                                     "response",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1175,7 +575,7 @@
             },
             "DependsOn": "GraphQLSchema"
         },
-        "CreateObjectResolver": {
+        "CreateS3ObjectResolver": {
             "Type": "AWS::AppSync::Resolver",
             "Properties": {
                 "ApiId": {
@@ -1186,11 +586,11 @@
                 },
                 "DataSourceName": {
                     "Fn::GetAtt": [
-                        "ObjectDataSource",
+                        "S3ObjectDataSource",
                         "Name"
                     ]
                 },
-                "FieldName": "createObject",
+                "FieldName": "createS3Object",
                 "TypeName": "Mutation",
                 "RequestMappingTemplateS3Location": {
                     "Fn::Join": [
@@ -1212,7 +612,7 @@
                                                 ".",
                                                 [
                                                     "Mutation",
-                                                    "createObject",
+                                                    "createS3Object",
                                                     "request",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1246,7 +646,7 @@
                                                 ".",
                                                 [
                                                     "Mutation",
-                                                    "createObject",
+                                                    "createS3Object",
                                                     "response",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1263,7 +663,7 @@
             },
             "DependsOn": "GraphQLSchema"
         },
-        "UpdateObjectResolver": {
+        "UpdateS3ObjectResolver": {
             "Type": "AWS::AppSync::Resolver",
             "Properties": {
                 "ApiId": {
@@ -1274,11 +674,11 @@
                 },
                 "DataSourceName": {
                     "Fn::GetAtt": [
-                        "ObjectDataSource",
+                        "S3ObjectDataSource",
                         "Name"
                     ]
                 },
-                "FieldName": "updateObject",
+                "FieldName": "updateS3Object",
                 "TypeName": "Mutation",
                 "RequestMappingTemplateS3Location": {
                     "Fn::Join": [
@@ -1300,7 +700,7 @@
                                                 ".",
                                                 [
                                                     "Mutation",
-                                                    "updateObject",
+                                                    "updateS3Object",
                                                     "request",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1334,7 +734,7 @@
                                                 ".",
                                                 [
                                                     "Mutation",
-                                                    "updateObject",
+                                                    "updateS3Object",
                                                     "response",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1351,7 +751,7 @@
             },
             "DependsOn": "GraphQLSchema"
         },
-        "DeleteObjectResolver": {
+        "DeleteS3ObjectResolver": {
             "Type": "AWS::AppSync::Resolver",
             "Properties": {
                 "ApiId": {
@@ -1362,11 +762,11 @@
                 },
                 "DataSourceName": {
                     "Fn::GetAtt": [
-                        "ObjectDataSource",
+                        "S3ObjectDataSource",
                         "Name"
                     ]
                 },
-                "FieldName": "deleteObject",
+                "FieldName": "deleteS3Object",
                 "TypeName": "Mutation",
                 "RequestMappingTemplateS3Location": {
                     "Fn::Join": [
@@ -1388,7 +788,7 @@
                                                 ".",
                                                 [
                                                     "Mutation",
-                                                    "deleteObject",
+                                                    "deleteS3Object",
                                                     "request",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -1422,7 +822,7 @@
                                                 ".",
                                                 [
                                                     "Mutation",
-                                                    "deleteObject",
+                                                    "deleteS3Object",
                                                     "response",
                                                     {
                                                         "Ref": "DeploymentTimestamp"
@@ -2039,7 +1439,7 @@
             },
             "DependsOn": "GraphQLSchema"
         },
-        "ObjectcreatedByResolver": {
+        "S3ObjectcreatedByResolver": {
             "Type": "AWS::AppSync::Resolver",
             "Properties": {
                 "ApiId": {
@@ -2055,7 +1455,7 @@
                     ]
                 },
                 "FieldName": "createdBy",
-                "TypeName": "Object",
+                "TypeName": "S3Object",
                 "RequestMappingTemplateS3Location": {
                     "Fn::Join": [
                         "",
@@ -2075,7 +1475,7 @@
                                             "Fn::Join": [
                                                 ".",
                                                 [
-                                                    "Object",
+                                                    "S3Object",
                                                     "createdBy",
                                                     "request",
                                                     {
@@ -2109,7 +1509,7 @@
                                             "Fn::Join": [
                                                 ".",
                                                 [
-                                                    "Object",
+                                                    "S3Object",
                                                     "createdBy",
                                                     "response",
                                                     {
@@ -2138,7 +1538,7 @@
                 },
                 "DataSourceName": {
                     "Fn::GetAtt": [
-                        "ObjectDataSource",
+                        "S3ObjectDataSource",
                         "Name"
                     ]
                 },
@@ -2644,14 +2044,14 @@
             },
             "DependsOn": "ElasticSearchDomain"
         },
-        "ObjectLambdaMapping": {
+        "S3ObjectLambdaMapping": {
             "Type": "AWS::Lambda::EventSourceMapping",
             "Properties": {
                 "BatchSize": 1,
                 "Enabled": true,
                 "EventSourceArn": {
                     "Fn::GetAtt": [
-                        "ObjectTable",
+                        "S3ObjectTable",
                         "StreamArn"
                     ]
                 },
@@ -2665,7 +2065,7 @@
             },
             "DependsOn": "ElasticSearchStreamingLambdaFunction"
         },
-        "SearchObjectResolver": {
+        "SearchS3ObjectResolver": {
             "Type": "AWS::AppSync::Resolver",
             "Properties": {
                 "ApiId": {
@@ -2680,7 +2080,7 @@
                         "Name"
                     ]
                 },
-                "FieldName": "searchObjects",
+                "FieldName": "searchS3Objects",
                 "TypeName": "Query",
                 "RequestMappingTemplate": {
                     "Fn::Sub": [
@@ -2690,7 +2090,7 @@
                                 "Fn::Join": [
                                     "-",
                                     [
-                                        "Object",
+                                        "S3Object",
                                         {
                                             "Fn::GetAtt": [
                                                 "GraphQLAPI",
