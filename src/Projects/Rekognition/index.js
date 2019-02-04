@@ -112,7 +112,7 @@ function Rekognition({ user }) {
   };
 
   useEffect(() => {
-    const subscription = API.graphql(
+    const createSubscription = API.graphql(
       graphqlOperation(subscriptions.onCreateS3Object)
     ).subscribe({
       next: ({
@@ -126,8 +126,29 @@ function Rekognition({ user }) {
       }
     });
 
+    const deleteSubscription = API.graphql(
+      graphqlOperation(subscriptions.onDeleteS3Object)
+    ).subscribe({
+      next: ({
+        value: {
+          data: { onDeleteS3Object: deletedItem }
+        }
+      }) => {
+        setS3Files(prev => {
+          const updated = prev.filter(f => f.id !== deletedItem.id);
+          return updated;
+        });
+
+        //console.log(deletedItem);
+        // setS3Files(prev => {
+        //   return [...prev, newItem];
+        // });
+      }
+    });
+
     return () => {
-      subscription.unsubscribe();
+      createSubscription.unsubscribe();
+      deleteSubscription.unsubscribe();
     };
   }, []);
 
@@ -168,11 +189,12 @@ function Rekognition({ user }) {
       }
     });
     if (result) {
+      //console.log(result);
       //console.log(user, fileId, file.name, prefix);
       const res = await API.graphql(
         graphqlOperation(mutations.createS3Object, {
           input: {
-            key: fileId,
+            key: `${prefix}/${fileId}`,
             name: file.name,
             prefix: prefix,
             s3ObjectCreatedById: user.id //check graphQL query console to get this ID
@@ -183,12 +205,22 @@ function Rekognition({ user }) {
     }
   };
 
-  const handleUpload = async e => {
-    //const file = e.target.files[0];
-    // e.target.files.forEach(file => {
-    //   uploadFile(file);
-    // });
+  const handleDelete = async (id, key) => {
+    //console.log(key);
+    const res = await Storage.remove(key, { level: 'private' });
 
+    if (res) {
+      await API.graphql(
+        graphqlOperation(mutations.deleteS3Object, {
+          input: {
+            id
+          }
+        })
+      );
+    }
+  };
+
+  const handleUpload = async e => {
     const fileArrary = [];
     const fileIndexes = Object.keys(e.target.files);
     fileIndexes.forEach(f => fileArrary.push(e.target.files[f]));
@@ -208,6 +240,7 @@ function Rekognition({ user }) {
       <ListComponent
         files={s3files}
         fetchMoreData={getUserObjects}
+        deleteItem={handleDelete}
         hasMore={hasMore}
       />
       {/* </Suspense> */}

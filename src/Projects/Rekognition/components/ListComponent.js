@@ -19,9 +19,11 @@ import DeleteIcon from '@material-ui/icons/Delete';
 
 const useStyles = makeStyles(theme => ({
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    marginBottom: 20
     //maxWidth: 752,
     // overflow: 'hidden'
+    // backgroundColor: 'green'
   },
   demo: {
     //backgroundColor: theme.palette.background.paper
@@ -34,15 +36,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-// function generate(element) {
-//   return files.map(value =>
-//     React.cloneElement(element, {
-//       key: value.name
-//     })
-//   );
-// }
-
-function InteractiveList({ files, fetchMoreData, hasMore }) {
+function InteractiveList({ files, fetchMoreData, hasMore, deleteItem }) {
   //console.log(files);
   const classes = useStyles();
   const listRef = useRef(null);
@@ -55,29 +49,31 @@ function InteractiveList({ files, fetchMoreData, hasMore }) {
   //console.log('render', files[0].name);
   return (
     <div className={classes.root}>
-      {/* <Grid container spacing={16}> */}
-      {/* <Grid container item xs={12}> */}
-
       <List>
         {files.map(f => (
-          <ListItem key={f.id}>
-            <Grid item xs={2}>
-              <ListItemAvatar>
-                <Avatar>
-                  <FolderIcon />
-                </Avatar>
-              </ListItemAvatar>
-            </Grid>
-            <Grid item xs={8}>
-              <ListItemText primary={f.name} secondary={f.prefix} />
-            </Grid>
-            <Grid item xs={2}>
-              <ListItemSecondaryAction>
-                <IconButton aria-label="Delete">
-                  <DeleteIcon />
-                </IconButton>
-              </ListItemSecondaryAction>
-            </Grid>
+          <ListItem
+            button
+            key={f.id}
+            onClick={e => {
+              //console.log('item click');
+            }}
+          >
+            <ListItemAvatar>
+              <Avatar>
+                <FolderIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <ListItemText primary={f.name} secondary={f.prefix} />
+            <ListItemSecondaryAction>
+              <IconButton
+                aria-label="Delete"
+                onClick={() => {
+                  deleteItem(f.id, f.key);
+                }}
+              >
+                <DeleteIcon />
+              </IconButton>
+            </ListItemSecondaryAction>
           </ListItem>
         ))}
       </List>
@@ -88,9 +84,6 @@ function InteractiveList({ files, fetchMoreData, hasMore }) {
           </Button>
         </Grid>
       )}
-
-      {/* </Grid> */}
-      {/* </Grid> */}
     </div>
   );
 }
