@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import { makeStyles } from '@material-ui/styles';
-import List from '@material-ui/core/List';
+import LinearProgress from '@material-ui/core/LinearProgress';
+import { List, Button } from '@material-ui/core';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemAvatar from '@material-ui/core/ListItemAvatar';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
@@ -41,48 +42,55 @@ const useStyles = makeStyles(theme => ({
 //   );
 // }
 
-function InteractiveList({ files }) {
+function InteractiveList({ files, fetchMoreData, hasMore }) {
   //console.log(files);
   const classes = useStyles();
+  const listRef = useRef(null);
   const [dense, setDense] = React.useState(false);
   const [secondary, setSecondary] = React.useState(false);
 
   if (files.length === 0) return null;
+  //console.log(files);
+  //console.log(files[0].name);
+  //console.log('render', files[0].name);
   return (
     <div className={classes.root}>
-      <Grid container spacing={16}>
-        <Grid item xs={12}>
-          {/* <Typography variant="h6" className={classes.title}>
-            Files
-          </Typography> */}
+      {/* <Grid container spacing={16}> */}
+      {/* <Grid container item xs={12}> */}
 
-          <List>
-            <Grid container>
-              {files.map(f => (
-                <ListItem key={f.id}>
-                  <Grid item xs={2}>
-                    <ListItemAvatar>
-                      <Avatar>
-                        <FolderIcon />
-                      </Avatar>
-                    </ListItemAvatar>
-                  </Grid>
-                  <Grid item xs={8}>
-                    <ListItemText primary={f.name} secondary={f.prefix} />
-                  </Grid>
-                  <Grid item xs={2}>
-                    <ListItemSecondaryAction>
-                      <IconButton aria-label="Delete">
-                        <DeleteIcon />
-                      </IconButton>
-                    </ListItemSecondaryAction>
-                  </Grid>
-                </ListItem>
-              ))}
+      <List>
+        {files.map(f => (
+          <ListItem key={f.id}>
+            <Grid item xs={2}>
+              <ListItemAvatar>
+                <Avatar>
+                  <FolderIcon />
+                </Avatar>
+              </ListItemAvatar>
             </Grid>
-          </List>
+            <Grid item xs={8}>
+              <ListItemText primary={f.name} secondary={f.prefix} />
+            </Grid>
+            <Grid item xs={2}>
+              <ListItemSecondaryAction>
+                <IconButton aria-label="Delete">
+                  <DeleteIcon />
+                </IconButton>
+              </ListItemSecondaryAction>
+            </Grid>
+          </ListItem>
+        ))}
+      </List>
+      {!hasMore || (
+        <Grid container justify="center">
+          <Button onClick={fetchMoreData} variant="outlined">
+            Load More
+          </Button>
         </Grid>
-      </Grid>
+      )}
+
+      {/* </Grid> */}
+      {/* </Grid> */}
     </div>
   );
 }

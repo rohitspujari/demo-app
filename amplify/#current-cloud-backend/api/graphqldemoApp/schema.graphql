@@ -8,8 +8,10 @@
 
 type S3Object @model @searchable {
   id: ID!
+  key: ID!
   name: String!
   prefix: String!
+  createdAt: String
   createdBy: User! @connection(name: "UserS3Objects")
 }
 
@@ -19,5 +21,6 @@ type User @model @searchable {
   email: String!
   type: String!
   sub: String
+  createdAt: String
   objects: [S3Object] @connection(name: "UserS3Objects")
 }

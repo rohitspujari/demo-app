@@ -1,7 +1,9 @@
 type S3Object {
   id: ID!
+  key: ID!
   name: String!
   prefix: String!
+  createdAt: String
   createdBy: User!
 }
 
@@ -11,6 +13,7 @@ type User {
   email: String!
   type: String!
   sub: String
+  createdAt: String
   objects(filter: ModelS3ObjectFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelS3ObjectConnection
 }
 
@@ -81,8 +84,10 @@ input ModelBooleanFilterInput {
 
 input ModelS3ObjectFilterInput {
   id: ModelIDFilterInput
+  key: ModelIDFilterInput
   name: ModelStringFilterInput
   prefix: ModelStringFilterInput
+  createdAt: ModelStringFilterInput
   and: [ModelS3ObjectFilterInput]
   or: [ModelS3ObjectFilterInput]
   not: ModelS3ObjectFilterInput
@@ -99,15 +104,19 @@ type Query {
 
 input CreateS3ObjectInput {
   id: ID
+  key: ID!
   name: String!
   prefix: String!
+  createdAt: String
   s3ObjectCreatedById: ID!
 }
 
 input UpdateS3ObjectInput {
   id: ID!
+  key: ID
   name: String
   prefix: String
+  createdAt: String
   s3ObjectCreatedById: ID
 }
 
@@ -144,6 +153,7 @@ input ModelUserFilterInput {
   email: ModelStringFilterInput
   type: ModelStringFilterInput
   sub: ModelStringFilterInput
+  createdAt: ModelStringFilterInput
   and: [ModelUserFilterInput]
   or: [ModelUserFilterInput]
   not: ModelUserFilterInput
@@ -155,6 +165,7 @@ input CreateUserInput {
   email: String!
   type: String!
   sub: String
+  createdAt: String
 }
 
 input UpdateUserInput {
@@ -163,6 +174,7 @@ input UpdateUserInput {
   email: String
   type: String
   sub: String
+  createdAt: String
 }
 
 input DeleteUserInput {
@@ -220,8 +232,10 @@ input SearchableBooleanFilterInput {
 
 input SearchableS3ObjectFilterInput {
   id: SearchableIDFilterInput
+  key: SearchableIDFilterInput
   name: SearchableStringFilterInput
   prefix: SearchableStringFilterInput
+  createdAt: SearchableStringFilterInput
   and: [SearchableS3ObjectFilterInput]
   or: [SearchableS3ObjectFilterInput]
   not: SearchableS3ObjectFilterInput
@@ -234,8 +248,10 @@ enum SearchableSortDirection {
 
 enum SearchableS3ObjectSortableFields {
   id
+  key
   name
   prefix
+  createdAt
 }
 
 input SearchableS3ObjectSortInput {
@@ -254,6 +270,7 @@ input SearchableUserFilterInput {
   email: SearchableStringFilterInput
   type: SearchableStringFilterInput
   sub: SearchableStringFilterInput
+  createdAt: SearchableStringFilterInput
   and: [SearchableUserFilterInput]
   or: [SearchableUserFilterInput]
   not: SearchableUserFilterInput
@@ -265,6 +282,7 @@ enum SearchableUserSortableFields {
   email
   type
   sub
+  createdAt
 }
 
 input SearchableUserSortInput {

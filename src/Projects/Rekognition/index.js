@@ -1,8 +1,16 @@
-import React, { Component, useRef, useState, useEffect } from 'react';
+import React, {
+  Component,
+  useRef,
+  useState,
+  useEffect,
+  Suspense,
+  lazy
+} from 'react';
 import Amplify, { Storage, API, graphqlOperation } from 'aws-amplify';
 
 import Webcam from 'react-webcam';
 import Grid from '@material-ui/core/Grid';
+
 import Paper from '@material-ui/core/Paper';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/CameraAlt';
@@ -17,7 +25,10 @@ import Fab from '@material-ui/core/Fab';
 import { PhotoPicker } from 'aws-amplify-react';
 import { listObjects } from '../../graphql/queries';
 //import Paper from '@material-ui/core/Paper';
+//const ListComponent = lazy(() => import('./components/ListComponent'));
 import ListComponent from './components/ListComponent';
+import { set } from 'immutable';
+import { CognitoAccessToken } from 'amazon-cognito-identity-js';
 
 const useStyles = makeStyles(theme => ({
   fab: {
@@ -44,22 +55,60 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
+const fetchUserObjects = `query GetUser($id: ID!, $nextToken: String) {
+  getUser(id: $id) {
+    id
+    name
+    email
+    type
+    sub
+    createdAt
+    objects (nextToken: $nextToken, limit: 10) {
+      items {
+        id
+        key
+        name
+        prefix
+        createdAt
+      }
+      nextToken
+    }
+  }
+}`;
+
 function Rekognition({ user }) {
   const classes = useStyles();
   const myinput = useRef();
 
   const [s3files, setS3Files] = useState([]);
+  const [nextToken, setNextToken] = useState(null);
+  const [hasMore, setHasMore] = useState(true);
   const [progress, setProgress] = useState(null);
 
-  const getUser = async userId => {
-    const { data } = await API.graphql(
-      graphqlOperation(queries.getUser, {
-        id: userId
-      })
-    );
+  const getUserObjects = async () => {
+    if (hasMore) {
+      const { data } = await API.graphql(
+        graphqlOperation(fetchUserObjects, {
+          id: user.id,
+          nextToken
+        })
+      );
 
-    setS3Files(data.getUser.objects.items);
-    //console.log(items);
+      //console.log(data);
+
+      const existingIDs = s3files.map(s => s.id); // remove ids that arrived through subscription
+      const filteredItems = data.getUser.objects.items.filter(
+        f => !existingIDs.includes(f.id)
+      );
+
+      const updatedItems = [...s3files, ...filteredItems];
+      setS3Files(updatedItems);
+      if (data.getUser.objects.nextToken === null) {
+        setHasMore(false);
+      } else {
+        setNextToken(data.getUser.objects.nextToken);
+      }
+    }
   };
 
   useEffect(() => {
@@ -82,16 +131,11 @@ function Rekognition({ user }) {
     };
   }, []);
 
-  useEffect(
-    () => {
-      if (user) {
-        getUser(user.id);
-      }
-    },
-    [user]
-  );
-
-  //console.log(user);
+  useEffect(() => {
+    if (user) {
+      getUserObjects();
+    }
+  }, [user]);
 
   const generateId = () => {
     return (
@@ -103,6 +147,7 @@ function Rekognition({ user }) {
   };
 
   const uploadFile = async file => {
+    //console.log(file.name);
     const prefix = file.type.split('/')[0];
     const fileId = generateId();
     //const extension = file.name.split('.')[file.name.split('.').length - 1];
@@ -127,60 +172,29 @@ function Rekognition({ user }) {
       const res = await API.graphql(
         graphqlOperation(mutations.createS3Object, {
           input: {
-            id: fileId,
+            key: fileId,
             name: file.name,
             prefix: prefix,
             s3ObjectCreatedById: user.id //check graphQL query console to get this ID
           }
         })
       );
-      console.log(res);
+      //console.log(res);
     }
   };
 
-  const handleChange = async e => {
+  const handleUpload = async e => {
     //const file = e.target.files[0];
     // e.target.files.forEach(file => {
     //   uploadFile(file);
     // });
 
-    console.log(e.target.files);
+    const fileArrary = [];
+    const fileIndexes = Object.keys(e.target.files);
+    fileIndexes.forEach(f => fileArrary.push(e.target.files[f]));
 
-    uploadFile(e.target.files[0]);
-
-    // const prefix = file.type.split('/')[0];
-    // const fileId = generateId();
-    // //const extension = file.name.split('.')[file.name.split('.').length - 1];
-    // //console.log(file);
-    // const result = await Storage.put(`${prefix}/${fileId}`, file, {
-    //   level: 'private',
-    //   contentType: file.type,
-    //   progressCallback(progress) {
-    //     //console.log(`Uploaded: ${progress.loaded / progress.total}`);
-    //     const percentProgress = Math.floor(
-    //       (progress.loaded / progress.total) * 100
-    //     );
-    //     if (percentProgress < 100) {
-    //       setProgress(`${percentProgress}%`);
-    //     } else {
-    //       setProgress(null);
-    //     }
-    //   }
-    // });
-    // if (result) {
-    //   //console.log(user, fileId, file.name, prefix);
-    //   const res = await API.graphql(
-    //     graphqlOperation(mutations.createObject, {
-    //       input: {
-    //         s3Key: fileId,
-    //         name: file.name,
-    //         prefix: prefix,
-    //         objectCreatedById: user.id //check graphQL query console to get this ID
-    //       }
-    //     })
-    //   );
-    //   console.log(res);
-    // }
+    // console.log(fileArrary);
+    fileArrary.forEach(f => uploadFile(f));
   };
 
   const videoConstraints = {
@@ -190,7 +204,13 @@ function Rekognition({ user }) {
   };
   return (
     <div className={classes.root}>
-      <ListComponent files={s3files} />
+      {/* <Suspense fallback={<h1>Loading...</h1>}> */}
+      <ListComponent
+        files={s3files}
+        fetchMoreData={getUserObjects}
+        hasMore={hasMore}
+      />
+      {/* </Suspense> */}
       <input
         id="myinput"
         multiple
@@ -198,9 +218,9 @@ function Rekognition({ user }) {
         type="file"
         name="hello"
         ref={myinput}
-        onChange={handleChange}
+        onChange={handleUpload}
         onClick={() => {
-          console.log('Im clicked');
+          //console.log('Im clicked');
         }}
         accept="*/*"
       />
