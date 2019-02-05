@@ -81,7 +81,7 @@ function Rekognition({ user }) {
   const classes = useStyles();
   const myinput = useRef();
 
-  const [s3files, setS3Files] = useState([]);
+  const [s3Files, setS3Files] = useState([]);
   const [nextToken, setNextToken] = useState(null);
   const [hasMore, setHasMore] = useState(true);
   const [progress, setProgress] = useState(null);
@@ -97,12 +97,12 @@ function Rekognition({ user }) {
 
       //console.log(data);
 
-      const existingIDs = s3files.map(s => s.id); // remove ids that arrived through subscription
+      const existingIDs = s3Files.map(s => s.id); // remove ids that arrived through subscription
       const filteredItems = data.getUser.objects.items.filter(
         f => !existingIDs.includes(f.id)
       );
 
-      const updatedItems = [...s3files, ...filteredItems];
+      const updatedItems = [...s3Files, ...filteredItems];
       setS3Files(updatedItems);
       if (data.getUser.objects.nextToken === null) {
         setHasMore(false);
@@ -208,6 +208,8 @@ function Rekognition({ user }) {
   };
 
   const handleDelete = async (id, key) => {
+    const updatedFiles = s3Files.filter(f => f.id !== id);
+    setS3Files(updatedFiles);
     //console.log(key);
     const res = await Storage.remove(key, { level: 'private' });
 
@@ -240,7 +242,7 @@ function Rekognition({ user }) {
     <div className={classes.root}>
       {/* <Suspense fallback={<h1>Loading...</h1>}> */}
       <ListComponent
-        files={s3files}
+        files={s3Files}
         fetchMoreData={getUserObjects}
         deleteItem={handleDelete}
         hasMore={hasMore}

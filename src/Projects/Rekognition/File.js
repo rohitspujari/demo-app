@@ -1,9 +1,10 @@
 import React, { useEffect, useState, Suspense } from 'react';
-import Card from '@material-ui/core/Card';
+import { Card, Divider } from '@material-ui/core';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
+import IconButton from '@material-ui/core/IconButton';
 import Button from '@material-ui/core/Button';
 // import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
@@ -14,6 +15,10 @@ import AppBar from '@material-ui/core/AppBar';
 import { Tabs, Grid, Paper } from '@material-ui/core';
 import Tab from '@material-ui/core/Tab';
 import Typography from '@material-ui/core/Typography';
+import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+
+const PLACEHOLDER_IMAGE_URL =
+  'https://cahilldental.ie/wp-content/uploads/2016/10/orionthemes-placeholder-image.png';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -29,8 +34,12 @@ const useStyles = makeStyles(theme => ({
     maxWidth: 700
   },
   media: {
-    height: 300
+    paddingTop: '56.25%'
     //maxHeight: 600
+  },
+
+  next: {
+    marginLeft: 'auto'
   }
 }));
 
@@ -46,7 +55,7 @@ function File({ match, user, history }) {
   const classes = useStyles();
   const { type, fileId } = match.params;
   const s3key = `${type}/${fileId}`;
-  const [imageUrl, setImageUrl] = useState();
+  const [imageUrl, setImageUrl] = useState(PLACEHOLDER_IMAGE_URL);
   const [value, setValue] = React.useState(0);
   const { height, width } = window.screen;
 
@@ -60,6 +69,7 @@ function File({ match, user, history }) {
       .catch(err => console.log(err));
   }, []);
 
+  console.log(imageUrl);
   return (
     <div className={classes.root}>
       <Grid
@@ -70,12 +80,17 @@ function File({ match, user, history }) {
         spacing={24}
       >
         <Grid item xs={12} sm={6}>
-          <Card>
-            <img
-              //height={'500'}
-              width={width / 2}
-              src={imageUrl}
-            />
+          <Card className={classes.card}>
+            <CardMedia image={imageUrl} className={classes.media} />
+            <Divider />
+            <CardActions>
+              <IconButton>
+                <ChevronLeft />
+              </IconButton>
+              <IconButton className={classes.next}>
+                <ChevronRight />
+              </IconButton>
+            </CardActions>
           </Card>
         </Grid>
         <Grid item xs={12} sm={6}>
