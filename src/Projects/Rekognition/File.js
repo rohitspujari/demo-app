@@ -2,6 +2,7 @@ import React, { useEffect, useState, Suspense } from 'react';
 import { Card, Divider } from '@material-ui/core';
 import CardActionArea from '@material-ui/core/CardActionArea';
 import CardActions from '@material-ui/core/CardActions';
+import classnames from 'classnames';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import IconButton from '@material-ui/core/IconButton';
@@ -14,34 +15,36 @@ import Amplify, { Storage } from 'aws-amplify';
 import AppBar from '@material-ui/core/AppBar';
 import { Tabs, Grid, Paper } from '@material-ui/core';
 import Tab from '@material-ui/core/Tab';
+import Lightbox from 'react-lightbox-component';
 import Typography from '@material-ui/core/Typography';
-import { ChevronLeft, ChevronRight } from '@material-ui/icons';
+import Image from 'material-ui-image';
+import { ChevronLeft, ChevronRight, RotateRight } from '@material-ui/icons';
+//import Lightbox from 'react-images-extended';
+//import Lightbox from 'react-lightbox-component';
+const { height, width } = window.screen;
 
 const PLACEHOLDER_IMAGE_URL =
   'https://cahilldental.ie/wp-content/uploads/2016/10/orionthemes-placeholder-image.png';
 
-const useStyles = makeStyles(theme => ({
-  root: {
-    flexGrow: 1,
-    // width: '100%',
-    padding: 20
-    //backgroundColor: theme.palette.background.paper
-  },
-  debug: {
-    backgroundColor: 'red'
-  },
-  card: {
-    maxWidth: 700
-  },
-  media: {
-    paddingTop: '56.25%'
-    //maxHeight: 600
-  },
+const ROTATION = ['0', '90', '180', '270'];
+const useStyles = makeStyles(rotate => {
+  console.log('styles');
+  return {
+    root: {
+      flexGrow: 1,
+      padding: 20
+      //backgroundColor: theme.palette.background.paper
+    },
+    debug: {
+      backgroundColor: 'red'
+    },
+    //rotate: { transform: 'rotate(90deg)' },
 
-  next: {
-    marginLeft: 'auto'
-  }
-}));
+    next: {
+      marginLeft: 'auto'
+    }
+  };
+});
 
 function TabContainer(props) {
   return (
@@ -51,47 +54,77 @@ function TabContainer(props) {
   );
 }
 
-function File({ match, user, history }) {
-  const classes = useStyles();
-  const { type, fileId } = match.params;
-  const s3key = `${type}/${fileId}`;
+function File(props) {
+  //
+  var classes = useStyles();
+  const {
+    match,
+    user,
+    history,
+    location: { files }
+  } = props;
+  console.log(match);
+
+  if (!files) return <></>;
+  //if (!user) return null;
+  const { id } = match.params;
+  const [fileIndex, setFileIndex] = useState(files.findIndex(f => f.id === id));
+  console.log(fileIndex);
+  const [rotationIndex, setRotationIndex] = useState(0);
+
+  const key = files[Math.abs(fileIndex)].key;
   const [imageUrl, setImageUrl] = useState(PLACEHOLDER_IMAGE_URL);
   const [value, setValue] = React.useState(0);
-  const { height, width } = window.screen;
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };
 
   useEffect(() => {
-    Storage.get(s3key, { level: 'private' })
+    Storage.get(key, { level: 'private' })
       .then(url => setImageUrl(url))
       .catch(err => console.log(err));
-  }, []);
+  }, [fileIndex]);
 
   console.log(imageUrl);
   return (
     <div className={classes.root}>
-      <Grid
-        container
-        //className={classes.debug}
-        //justify="left"
-        //alignItems="center"
-        spacing={24}
-      >
+      <Grid container spacing={24}>
         <Grid item xs={12} sm={6}>
-          <Card className={classes.card}>
-            <CardMedia image={imageUrl} className={classes.media} />
-            <Divider />
-            <CardActions>
-              <IconButton>
-                <ChevronLeft />
+          <Paper style={{ padding: 10 }}>
+            <Image
+              src={imageUrl}
+              style={{ transform: `rotate(${ROTATION[rotationIndex]}deg)` }}
+            />
+            <Grid container justify="space-between">
+              <IconButton style={{ marginTop: 10 }}>
+                <ChevronLeft
+                  onClick={() => {
+                    const nextIndex = (fileIndex - 1) % files.length;
+                    console.log(nextIndex);
+                    setFileIndex(nextIndex);
+                  }}
+                />
               </IconButton>
-              <IconButton className={classes.next}>
-                <ChevronRight />
+              <IconButton
+                style={{ marginTop: 10 }}
+                onClick={() => {
+                  const nextIndex = (rotationIndex + 1) % ROTATION.length;
+                  setRotationIndex(nextIndex);
+                }}
+              >
+                <RotateRight />
               </IconButton>
-            </CardActions>
-          </Card>
+              <IconButton style={{ marginTop: 10 }}>
+                <ChevronRight
+                  onClick={() => {
+                    const nextIndex = (fileIndex + 1) % files.length;
+                    setFileIndex(nextIndex);
+                  }}
+                />
+              </IconButton>
+            </Grid>
+          </Paper>
         </Grid>
         <Grid item xs={12} sm={6}>
           <Paper>

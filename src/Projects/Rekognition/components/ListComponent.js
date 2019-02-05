@@ -57,7 +57,10 @@ function ListComponent({ files, fetchMoreData, hasMore, deleteItem, history }) {
             button
             key={f.id}
             onClick={() => {
-              history.push('/rekognition/' + f.key);
+              history.push({
+                pathname: '/rekognition/' + f.id,
+                files
+              });
             }}
           >
             <ListItemAvatar>

@@ -192,10 +192,8 @@ class App extends Component {
             />
             {/* <Route path="/rekognition/:fileId" component={File} /> */}
             <Route
-              path="/rekognition/:type/:fileId"
-              render={props => (
-                <File user={this.state.user} match={props.match} />
-              )}
+              path="/rekognition/:id"
+              render={props => <File user={this.state.user} {...props} />}
             />
           </MuiThemeProvider>
         </Router>
