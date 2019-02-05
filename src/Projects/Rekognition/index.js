@@ -43,7 +43,8 @@ const useStyles = makeStyles(theme => ({
     display: 'none'
   },
   root: {
-    flexGrow: 1
+    flexGrow: 1,
+    margin: 20
   },
   button: {
     // margin: theme.spacing.unit
@@ -63,7 +64,7 @@ const fetchUserObjects = `query GetUser($id: ID!, $nextToken: String) {
     type
     sub
     createdAt
-    objects (nextToken: $nextToken, limit: 10) {
+    objects (nextToken: $nextToken, limit: 10, sortDirection: DESC ) {
       items {
         id
         key
@@ -121,7 +122,7 @@ function Rekognition({ user }) {
         }
       }) => {
         setS3Files(prev => {
-          return [...prev, newItem];
+          return [newItem, ...prev];
         });
       }
     });
@@ -170,8 +171,9 @@ function Rekognition({ user }) {
   const uploadFile = async file => {
     //console.log(file.name);
     const prefix = file.type.split('/')[0];
-    const fileId = generateId();
-    //const extension = file.name.split('.')[file.name.split('.').length - 1];
+    const extension = file.name.split('.')[file.name.split('.').length - 1];
+    const fileId = generateId() + '.' + extension;
+
     //console.log(file);
     const result = await Storage.put(`${prefix}/${fileId}`, file, {
       level: 'private',

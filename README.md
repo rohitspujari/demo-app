@@ -13,6 +13,8 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 [AppSync Lambda Client](https://docs.aws.amazon.com/appsync/latest/devguide/building-a-client-app-node.html)
 [Lambda Layer Blog - Dependencies](https://medium.com/@anjanava.biswas/nodejs-runtime-environment-with-aws-lambda-layers-f3914613e20e)
 
+[How to programmtically Switch Routes](https://stackoverflow.com/questions/31079081/programmatically-navigate-using-react-router)
+
 ## Available Scripts
 
 In the project directory, you can run:

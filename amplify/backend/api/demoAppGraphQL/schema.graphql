@@ -1,11 +1,3 @@
-# type Task @model {
-#   id: ID!
-#   name: String!
-#   description: String
-#   notes: String
-#   date: String
-# }
-
 type S3Object @model @searchable {
   id: ID!
   key: ID!
@@ -22,5 +14,5 @@ type User @model @searchable {
   type: String!
   sub: String
   createdAt: String
-  objects: [S3Object] @connection(name: "UserS3Objects")
+  objects: [S3Object] @connection(name: "UserS3Objects", sortField: "createdAt")
 }

@@ -244,6 +244,10 @@
                     {
                         "AttributeName": "s3ObjectCreatedById",
                         "AttributeType": "S"
+                    },
+                    {
+                        "AttributeName": "createdAt",
+                        "AttributeType": "S"
                     }
                 ],
                 "ProvisionedThroughput": {
@@ -264,6 +268,10 @@
                             {
                                 "AttributeName": "s3ObjectCreatedById",
                                 "KeyType": "HASH"
+                            },
+                            {
+                                "AttributeName": "createdAt",
+                                "KeyType": "RANGE"
                             }
                         ],
                         "Projection": {

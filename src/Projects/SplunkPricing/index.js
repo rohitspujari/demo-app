@@ -132,12 +132,10 @@ const styles = theme => ({
     margin: theme.spacing.unit * 2
   },
 
-  constainer: {
-    //margin: 20
-  },
   root: {
     //marginTop: 20,
-    flexGrow: 1
+    flexGrow: 1,
+    padding: 20
   },
   paper: {
     padding: theme.spacing.unit * 2,
@@ -445,653 +443,650 @@ class SplunkPricing extends Component {
     //console.log('render', this.state.result);
 
     return (
-      <div className={classes.container}>
-        {/* <h3 className="Title">Welcome to Splunk Pricing Page</h3> */}
-        <div className={classes.root}>
-          <Grid container spacing={24}>
-            <Grid item xs={12}>
-              <Typography variant="h5" gutterBottom className={classes.heading}>
-                AWS Infrastructure Costs for Splunk
-              </Typography>
-            </Grid>
+      <div className={classes.root}>
+        <Grid container spacing={24}>
+          <Grid item xs={12}>
+            <Typography variant="h5" gutterBottom className={classes.heading}>
+              AWS Infrastructure Costs for Splunk
+            </Typography>
+          </Grid>
 
-            <Grid item xs={12} sm={6}>
-              <TextField
-                required
-                id="outlined-required"
-                label="Index Volume / Splunk License"
-                value={this.state.volumePerDay}
-                onChange={handleChange('volumePerDay')}
-                onFocus={e => (this.onFocusText = e.target.value)}
-                onBlur={this.handleRefresh}
-                className={classes.textField}
-                //margin="normal"
-                variant="outlined"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">GB/day</InputAdornment>
-                  )
-                }}
-              />
+          <Grid item xs={12} sm={6}>
+            <TextField
+              required
+              id="outlined-required"
+              label="Index Volume / Splunk License"
+              value={this.state.volumePerDay}
+              onChange={handleChange('volumePerDay')}
+              onFocus={e => (this.onFocusText = e.target.value)}
+              onBlur={this.handleRefresh}
+              className={classes.textField}
+              //margin="normal"
+              variant="outlined"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">GB/day</InputAdornment>
+                )
+              }}
+            />
 
-              <TextField
-                required
-                id="outlined-required"
-                label="Hot Retention (IDR) / Cache (S2)"
-                value={this.state.retentionHot}
-                onChange={handleChange('retentionHot')}
-                onFocus={e => (this.onFocusText = e.target.value)}
-                onBlur={this.handleRefresh}
-                //defaultValue="30 days"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">days</InputAdornment>
-                  )
-                }}
-              />
+            <TextField
+              required
+              id="outlined-required"
+              label="Hot Retention (IDR) / Cache (S2)"
+              value={this.state.retentionHot}
+              onChange={handleChange('retentionHot')}
+              onFocus={e => (this.onFocusText = e.target.value)}
+              onBlur={this.handleRefresh}
+              //defaultValue="30 days"
+              className={classes.textField}
+              margin="normal"
+              variant="outlined"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">days</InputAdornment>
+                )
+              }}
+            />
 
-              <TextField
-                id="outlined-uncontrolled"
-                label="Cold Retention"
-                value={this.state.retentionCold}
-                onChange={handleChange('retentionCold')}
-                onFocus={e => (this.onFocusText = e.target.value)}
-                onBlur={this.handleRefresh}
-                //defaultValue="90 days"
-                className={classes.textField}
-                margin="normal"
-                variant="outlined"
-                InputProps={{
-                  endAdornment: (
-                    <InputAdornment position="end">days</InputAdornment>
-                  )
-                }}
-              />
-            </Grid>
-            {/* <Hidden smDown> */}
-            <Grid
-              item
-              container
-              justify="center"
-              alignItems="center"
-              xs={12}
-              sm={6}
-            >
-              <Hidden smDown>
-                <Grid item>
-                  {/* <Grid container> */}
-                  {/* <Grid item xs={12}> */}
-                  <img
-                    src={require('./awslogo.jpg')}
-                    height="150"
-                    width="250"
-                    alt="aws logo"
-                  />
-                  {/* </Grid> */}
-                  {/* <Grid item xs={12}> */}
-                  <img
-                    src={require('./splunklogo.png')}
-                    height="150"
-                    width="250"
-                    alt="splunk logo"
-                  />
-                </Grid>
-              </Hidden>
-              <Grid container justify="center" alignItems="center" item sm={12}>
-                <ContactForm user={this.state.user} />
-              </Grid>
-            </Grid>
-            {/* </Hidden> */}
-
-            <Grid item xs={6} sm={3}>
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    disabled={this.state.inProgress}
-                    checked={this.state.splunkES}
-                    onChange={toggleChange('splunkES')}
-                    value={this.state.splunkES.toString()}
-                    color="primary"
-                  />
-                }
-                label="Enterprise Security"
-              />
-              {/* </Grid> */}
-              {/* <Grid item xs={6} sm={3}> */}
-              <FormControlLabel
-                control={
-                  <Checkbox
-                    disabled={this.state.inProgress}
-                    checked={this.state.splunkITSI}
-                    onChange={toggleChange('splunkITSI')}
-                    value={this.state.splunkITSI.toString()}
-                    color="primary"
-                  />
-                }
-                label="IT Service Intelligence"
-              />
-              {/* <Paper className={classes.paper}>ES or ITSI</Paper> */}
-            </Grid>
-            <Grid item xs={12}>
-              <ExpansionPanel>
-                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                  <SettingsIcon fontSize="small" />
-                  <Typography className={classes.expansionPanelHeading}>
-                    Change Default Settings
-                  </Typography>
-                </ExpansionPanelSummary>
-                <ExpansionPanelDetails>
-                  <div className={classes.root}>
-                    <Grid container spacing={24}>
-                      <Grid item xs={12}>
-                        <div>
-                          <Typography fontSize={11} color="primary">
-                            AWS Options
-                          </Typography>
-                          <Divider />
-                        </div>
-                      </Grid>
-                      <Grid item xs={12} sm={3}>
-                        <FormControl
-                          disabled
-                          variant="outlined"
-                          className={classes.select}
-                        >
-                          <InputLabel
-                            ref={ref => {
-                              this.InputLabelRef = ref;
-                            }}
-                            htmlFor="outlined-age-simple"
-                          >
-                            Deployment
-                          </InputLabel>
-                          <Select
-                            value={deploymentOption}
-                            onChange={handleChange('deploymentOption')}
-                            input={
-                              <OutlinedInput
-                                labelWidth={this.state.labelWidth}
-                                name="age"
-                                id="outlined-age-simple"
-                              />
-                            }
-                          >
-                            {deploymentOptions.map((option, i) => (
-                              <MenuItem key={i} value={option}>
-                                {option}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {/* <Paper className={classes.paper}>
-                          Deployment Option
-                        </Paper> */}
-                      </Grid>
-                      <Grid item xs={12} sm={3}>
-                        <FormControl
-                          variant="outlined"
-                          className={classes.select}
-                        >
-                          <InputLabel
-                            ref={ref => {
-                              this.InputLabelRef = ref;
-                            }}
-                            htmlFor="outlined-age-simple"
-                          >
-                            AWS Region
-                          </InputLabel>
-                          <Select
-                            value={location}
-                            onChange={handleChange('location')}
-                            input={
-                              <OutlinedInput
-                                labelWidth={this.state.labelWidth}
-                                name="age"
-                                id="outlined-age-simple"
-                              />
-                            }
-                          >
-                            {locations.map((region, i) => (
-                              <MenuItem key={i} value={region}>
-                                {region}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {/* <Paper className={classes.paper}>AWS Region</Paper> */}
-                      </Grid>
-                      <Grid item xs={12} sm={3}>
-                        <FormControl
-                          variant="outlined"
-                          className={classes.select}
-                        >
-                          <InputLabel
-                            ref={ref => {
-                              this.InputLabelRef = ref;
-                            }}
-                            htmlFor="outlined-age-simple"
-                          >
-                            AWS Support
-                          </InputLabel>
-                          <Select
-                            value={this.state.awsSupportTier}
-                            onChange={handleChange('awsSupportTier')}
-                            input={
-                              <OutlinedInput
-                                labelWidth={this.state.labelWidth}
-                                name="age"
-                                id="outlined-age-simple"
-                                //value={'US East 1'}
-                              />
-                            }
-                          >
-                            <MenuItem value={'Developer'}>Developer</MenuItem>
-                            <MenuItem value={'Business'}>Business</MenuItem>
-                            <MenuItem value={'Enterprise'}>Enterprise</MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Grid>
-                      <Grid item xs={12} sm={3}>
-                        <FormControl
-                          variant="outlined"
-                          className={classes.select}
-                        >
-                          <InputLabel
-                            ref={ref => {
-                              this.InputLabelRef = ref;
-                            }}
-                            htmlFor="outlined-age-simple"
-                          >
-                            S3 Volume
-                          </InputLabel>
-                          <Select
-                            value={this.state.s3VolumeType}
-                            onChange={handleChange('s3VolumeType')}
-                            input={
-                              <OutlinedInput
-                                labelWidth={this.state.labelWidth}
-                                name="age"
-                                id="outlined-age-simple"
-                              />
-                            }
-                          >
-                            {this.state.s3VolumeTypes.map((value, i) => (
-                              <MenuItem key={i} value={value}>
-                                {value}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {/* <Paper className={classes.paper}>S3 Volumes</Paper> */}
-                      </Grid>
-
-                      <Grid item xs={12} sm={4}>
-                        <FormControl
-                          variant="outlined"
-                          className={classes.select}
-                        >
-                          <InputLabel
-                            ref={ref => {
-                              this.InputLabelRef = ref;
-                            }}
-                            htmlFor="outlined-age-simple"
-                          >
-                            Hot Volume
-                          </InputLabel>
-                          <Select
-                            value={this.state.hotEbsVolumeType}
-                            onChange={handleChange('hotEbsVolumeType')}
-                            input={
-                              <OutlinedInput
-                                labelWidth={this.state.labelWidth}
-                                name="age"
-                                id="outlined-age-simple"
-                              />
-                            }
-                          >
-                            {this.state.ebsVolumeTypes.map((value, i) => (
-                              <MenuItem key={i} value={value}>
-                                {value}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {/* <Paper className={classes.paper}>Hot EBS Volumes</Paper> */}
-                      </Grid>
-                      <Grid item xs={12} sm={4}>
-                        <FormControl
-                          variant="outlined"
-                          className={classes.select}
-                        >
-                          <InputLabel
-                            ref={ref => {
-                              this.InputLabelRef = ref;
-                            }}
-                            htmlFor="outlined-age-simple"
-                          >
-                            Cold Volume
-                          </InputLabel>
-                          <Select
-                            value={this.state.coldEbsVolumeType}
-                            onChange={handleChange('coldEbsVolumeType')}
-                            input={
-                              <OutlinedInput
-                                labelWidth={this.state.labelWidth}
-                                name="age"
-                                id="outlined-age-simple"
-                              />
-                            }
-                          >
-                            {this.state.ebsVolumeTypes.map((value, i) => (
-                              <MenuItem key={i} value={value}>
-                                {value}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {/* <Paper className={classes.paper}>Cold EBS Volumes</Paper> */}
-                      </Grid>
-                      <Grid item xs={12} sm={4}>
-                        <FormControl
-                          variant="outlined"
-                          className={classes.select}
-                        >
-                          <InputLabel
-                            ref={ref => {
-                              this.InputLabelRef = ref;
-                            }}
-                            htmlFor="outlined-age-simple"
-                          >
-                            Billing Option
-                          </InputLabel>
-                          <Select
-                            value={billingOption}
-                            onChange={handleChange('billingOption')}
-                            input={
-                              <OutlinedInput
-                                labelWidth={this.state.labelWidth}
-                                name="age"
-                                id="outlined-age-simple"
-                                //value={'US East 1'}
-                              />
-                            }
-                          >
-                            {billingOptions.map((option, i) => (
-                              <MenuItem key={i} value={option}>
-                                {option.description}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {/* <Paper className={classes.paper}>
-                          Server Billing Option
-                        </Paper> */}
-                      </Grid>
-
-                      <Grid item xs={12}>
-                        <div>
-                          <Typography fontSize={11} color="primary">
-                            Splunk Options
-                          </Typography>
-                          <Divider />
-                        </div>
-                      </Grid>
-                      <Grid item xs={12} sm={3}>
-                        <FormControl
-                          variant="outlined"
-                          className={classes.select}
-                        >
-                          <InputLabel
-                            ref={ref => {
-                              this.InputLabelRef = ref;
-                            }}
-                            htmlFor="outlined-age-simple"
-                          >
-                            Architecture
-                          </InputLabel>
-                          <Select
-                            value={splunkArchitecture}
-                            onChange={handleChange('splunkArchitecture')}
-                            input={
-                              <OutlinedInput
-                                labelWidth={this.state.labelWidth}
-                                name="age"
-                                id="outlined-age-simple"
-                                //value={'US East 1'}
-                              />
-                            }
-                          >
-                            <MenuItem value={'Smart Store (S2)'}>
-                              Smart Store (S2)
-                            </MenuItem>
-                            <MenuItem value={'Indxer Cluster Replication'}>
-                              Indxer Cluster Replication (IDR)
-                            </MenuItem>
-                          </Select>
-                        </FormControl>
-                      </Grid>
-                      <Grid item xs={12} sm={3}>
-                        <FormControl
-                          variant="outlined"
-                          className={classes.select}
-                        >
-                          <InputLabel
-                            ref={ref => {
-                              this.InputLabelRef = ref;
-                            }}
-                            htmlFor="outlined-age-simple"
-                          >
-                            Compression
-                          </InputLabel>
-                          <Select
-                            value={this.state.compressionPercent}
-                            onChange={handleChange('compressionPercent')}
-                            input={
-                              <OutlinedInput
-                                labelWidth={this.state.labelWidth}
-                                id="outlined-age-simple"
-                              />
-                            }
-                          >
-                            <MenuItem key={1} value={50}>
-                              {'50 %'}
-                            </MenuItem>
-                            <MenuItem key={2} value={40}>
-                              {'40 %'}
-                            </MenuItem>
-                            <MenuItem key={3} value={30}>
-                              {'30 %'}
-                            </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {/* <Paper className={classes.paper}>
-                          Compresssion
-                        </Paper> */}
-                      </Grid>
-                      <Grid item xs={6} sm={3}>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              disabled={this.state.inProgress}
-                              checked={this.state.clusterIndexers}
-                              onChange={toggleChange('clusterIndexers')}
-                              value={this.state.clusterIndexers.toString()}
-                              color="primary"
-                            />
-                          }
-                          label="Cluster Indexers"
-                        />
-
-                        {/* <Paper className={classes.paper}>Indexer Cluster</Paper> */}
-                      </Grid>
-
-                      <Grid item xs={6} sm={3}>
-                        <FormControlLabel
-                          control={
-                            <Checkbox
-                              disabled={this.state.inProgress}
-                              checked={this.state.clusterSearchHeads}
-                              onChange={toggleChange('clusterSearchHeads')}
-                              value={this.state.clusterSearchHeads.toString()}
-                              color="primary"
-                            />
-                          }
-                          label="Cluster Search Heads"
-                        />
-                      </Grid>
-
-                      <Grid item sm={3} xs={6}>
-                        <TextField
-                          required
-                          id="outlined-required"
-                          label="Replication Factor"
-                          value={this.state.replicationFactor}
-                          onChange={handleChange('replicationFactor')}
-                          onFocus={e => (this.onFocusText = e.target.value)}
-                          onBlur={this.handleRefresh}
-                          //defaultValue="30 days"
-                          className={classes.textField}
-                          //margin="normal"
-                          variant="outlined"
-                        />
-                      </Grid>
-                      <Grid item sm={3} xs={6}>
-                        <TextField
-                          required
-                          id="outlined-required"
-                          label="Search Factor"
-                          value={this.state.searchFactor}
-                          onChange={handleChange('searchFactor')}
-                          onFocus={e => (this.onFocusText = e.target.value)}
-                          onBlur={this.handleRefresh}
-                          //defaultValue="30 days"
-                          className={classes.textField}
-                          //margin="normal"
-                          variant="outlined"
-                        />
-                      </Grid>
-
-                      <Grid item xs={12} sm={3}>
-                        <TextField
-                          required
-                          id="outlined-required"
-                          label="Core Indexer Rate"
-                          value={this.state.coreIndexerRate}
-                          onChange={handleChange('coreIndexerRate')}
-                          onFocus={e => (this.onFocusText = e.target.value)}
-                          onBlur={this.handleRefresh}
-                          className={classes.textField}
-                          variant="outlined"
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                GB/day
-                              </InputAdornment>
-                            )
-                          }}
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={3}>
-                        <TextField
-                          required
-                          id="outlined-required"
-                          label="ES Indexer Rate"
-                          value={this.state.esIndexerRate}
-                          onChange={handleChange('esIndexerRate')}
-                          onFocus={e => (this.onFocusText = e.target.value)}
-                          onBlur={this.handleRefresh}
-                          className={classes.textField}
-                          variant="outlined"
-                          InputProps={{
-                            endAdornment: (
-                              <InputAdornment position="end">
-                                GB/day
-                              </InputAdornment>
-                            )
-                          }}
-                        />
-                      </Grid>
-                      <Grid item sm={3} xs={6}>
-                        <TextField
-                          id="outlined-required"
-                          label="Concurrent Users"
-                          value={this.state.noOfConcurrentUsers}
-                          onChange={handleChange('noOfConcurrentUsers')}
-                          onFocus={e => (this.onFocusText = e.target.value)}
-                          onBlur={this.handleRefresh}
-                          //defaultValue="30 days"
-                          className={classes.textField}
-                          //margin="normal"
-                          variant="outlined"
-                        />
-                      </Grid>
-                      <Grid item xs={12} sm={3}>
-                        <FormControl
-                          variant="outlined"
-                          className={classes.select}
-                        >
-                          <InputLabel
-                            ref={ref => {
-                              this.InputLabelRef = ref;
-                            }}
-                            htmlFor="outlined-age-simple"
-                          >
-                            Operating System
-                          </InputLabel>
-                          <Select
-                            disabled
-                            value={this.state.operatingSystem}
-                            onChange={handleChange('operatingSystem')}
-                            input={
-                              <OutlinedInput
-                                labelWidth={this.state.labelWidth}
-                                name="age"
-                                id="outlined-age-simple"
-                              />
-                            }
-                          >
-                            {this.state.operatingSystems.map((value, i) => (
-                              <MenuItem key={i} value={value}>
-                                {value}
-                              </MenuItem>
-                            ))}
-                          </Select>
-                        </FormControl>
-                        {/* <Paper className={classes.paper}>AWS Region</Paper> */}
-                      </Grid>
-                    </Grid>
-                  </div>
-                </ExpansionPanelDetails>
-              </ExpansionPanel>
-            </Grid>
+            <TextField
+              id="outlined-uncontrolled"
+              label="Cold Retention"
+              value={this.state.retentionCold}
+              onChange={handleChange('retentionCold')}
+              onFocus={e => (this.onFocusText = e.target.value)}
+              onBlur={this.handleRefresh}
+              //defaultValue="90 days"
+              className={classes.textField}
+              margin="normal"
+              variant="outlined"
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">days</InputAdornment>
+                )
+              }}
+            />
+          </Grid>
+          {/* <Hidden smDown> */}
+          <Grid
+            item
+            container
+            justify="center"
+            alignItems="center"
+            xs={12}
+            sm={6}
+          >
             <Hidden smDown>
-              <Grid item xs={12}>
-                <ArchitecturePanel
-                  architecture={this.state.splunkArchitecture}
-                  {...this.state}
+              <Grid item>
+                {/* <Grid container> */}
+                {/* <Grid item xs={12}> */}
+                <img
+                  src={require('./awslogo.jpg')}
+                  height="150"
+                  width="250"
+                  alt="aws logo"
+                />
+                {/* </Grid> */}
+                {/* <Grid item xs={12}> */}
+                <img
+                  src={require('./splunklogo.png')}
+                  height="150"
+                  width="250"
+                  alt="splunk logo"
                 />
               </Grid>
             </Hidden>
-
-            <Grid item xs={12}>
-              {!this.state.inProgress ? (
-                <CostSummary
-                  computeResources={this.state.result.computeResources}
-                  storageResources={this.state.result.storageResources}
-                  billingOption={this.state.billingOption}
-                  awsSupportTier={this.state.awsSupportTier}
-                  location={this.state.location}
-                />
-              ) : (
-                <CircularProgress className={classes.progress} />
-              )}
+            <Grid container justify="center" alignItems="center" item sm={12}>
+              <ContactForm user={this.state.user} />
             </Grid>
           </Grid>
-        </div>
+          {/* </Hidden> */}
+
+          <Grid item xs={6} sm={3}>
+            <FormControlLabel
+              control={
+                <Checkbox
+                  disabled={this.state.inProgress}
+                  checked={this.state.splunkES}
+                  onChange={toggleChange('splunkES')}
+                  value={this.state.splunkES.toString()}
+                  color="primary"
+                />
+              }
+              label="Enterprise Security"
+            />
+            {/* </Grid> */}
+            {/* <Grid item xs={6} sm={3}> */}
+            <FormControlLabel
+              control={
+                <Checkbox
+                  disabled={this.state.inProgress}
+                  checked={this.state.splunkITSI}
+                  onChange={toggleChange('splunkITSI')}
+                  value={this.state.splunkITSI.toString()}
+                  color="primary"
+                />
+              }
+              label="IT Service Intelligence"
+            />
+            {/* <Paper className={classes.paper}>ES or ITSI</Paper> */}
+          </Grid>
+          <Grid item xs={12}>
+            <ExpansionPanel>
+              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <SettingsIcon fontSize="small" />
+                <Typography className={classes.expansionPanelHeading}>
+                  Change Default Settings
+                </Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                <div className={classes.root}>
+                  <Grid container spacing={24}>
+                    <Grid item xs={12}>
+                      <div>
+                        <Typography fontSize={11} color="primary">
+                          AWS Options
+                        </Typography>
+                        <Divider />
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <FormControl
+                        disabled
+                        variant="outlined"
+                        className={classes.select}
+                      >
+                        <InputLabel
+                          ref={ref => {
+                            this.InputLabelRef = ref;
+                          }}
+                          htmlFor="outlined-age-simple"
+                        >
+                          Deployment
+                        </InputLabel>
+                        <Select
+                          value={deploymentOption}
+                          onChange={handleChange('deploymentOption')}
+                          input={
+                            <OutlinedInput
+                              labelWidth={this.state.labelWidth}
+                              name="age"
+                              id="outlined-age-simple"
+                            />
+                          }
+                        >
+                          {deploymentOptions.map((option, i) => (
+                            <MenuItem key={i} value={option}>
+                              {option}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      {/* <Paper className={classes.paper}>
+                          Deployment Option
+                        </Paper> */}
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <FormControl
+                        variant="outlined"
+                        className={classes.select}
+                      >
+                        <InputLabel
+                          ref={ref => {
+                            this.InputLabelRef = ref;
+                          }}
+                          htmlFor="outlined-age-simple"
+                        >
+                          AWS Region
+                        </InputLabel>
+                        <Select
+                          value={location}
+                          onChange={handleChange('location')}
+                          input={
+                            <OutlinedInput
+                              labelWidth={this.state.labelWidth}
+                              name="age"
+                              id="outlined-age-simple"
+                            />
+                          }
+                        >
+                          {locations.map((region, i) => (
+                            <MenuItem key={i} value={region}>
+                              {region}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      {/* <Paper className={classes.paper}>AWS Region</Paper> */}
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <FormControl
+                        variant="outlined"
+                        className={classes.select}
+                      >
+                        <InputLabel
+                          ref={ref => {
+                            this.InputLabelRef = ref;
+                          }}
+                          htmlFor="outlined-age-simple"
+                        >
+                          AWS Support
+                        </InputLabel>
+                        <Select
+                          value={this.state.awsSupportTier}
+                          onChange={handleChange('awsSupportTier')}
+                          input={
+                            <OutlinedInput
+                              labelWidth={this.state.labelWidth}
+                              name="age"
+                              id="outlined-age-simple"
+                              //value={'US East 1'}
+                            />
+                          }
+                        >
+                          <MenuItem value={'Developer'}>Developer</MenuItem>
+                          <MenuItem value={'Business'}>Business</MenuItem>
+                          <MenuItem value={'Enterprise'}>Enterprise</MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <FormControl
+                        variant="outlined"
+                        className={classes.select}
+                      >
+                        <InputLabel
+                          ref={ref => {
+                            this.InputLabelRef = ref;
+                          }}
+                          htmlFor="outlined-age-simple"
+                        >
+                          S3 Volume
+                        </InputLabel>
+                        <Select
+                          value={this.state.s3VolumeType}
+                          onChange={handleChange('s3VolumeType')}
+                          input={
+                            <OutlinedInput
+                              labelWidth={this.state.labelWidth}
+                              name="age"
+                              id="outlined-age-simple"
+                            />
+                          }
+                        >
+                          {this.state.s3VolumeTypes.map((value, i) => (
+                            <MenuItem key={i} value={value}>
+                              {value}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      {/* <Paper className={classes.paper}>S3 Volumes</Paper> */}
+                    </Grid>
+
+                    <Grid item xs={12} sm={4}>
+                      <FormControl
+                        variant="outlined"
+                        className={classes.select}
+                      >
+                        <InputLabel
+                          ref={ref => {
+                            this.InputLabelRef = ref;
+                          }}
+                          htmlFor="outlined-age-simple"
+                        >
+                          Hot Volume
+                        </InputLabel>
+                        <Select
+                          value={this.state.hotEbsVolumeType}
+                          onChange={handleChange('hotEbsVolumeType')}
+                          input={
+                            <OutlinedInput
+                              labelWidth={this.state.labelWidth}
+                              name="age"
+                              id="outlined-age-simple"
+                            />
+                          }
+                        >
+                          {this.state.ebsVolumeTypes.map((value, i) => (
+                            <MenuItem key={i} value={value}>
+                              {value}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      {/* <Paper className={classes.paper}>Hot EBS Volumes</Paper> */}
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <FormControl
+                        variant="outlined"
+                        className={classes.select}
+                      >
+                        <InputLabel
+                          ref={ref => {
+                            this.InputLabelRef = ref;
+                          }}
+                          htmlFor="outlined-age-simple"
+                        >
+                          Cold Volume
+                        </InputLabel>
+                        <Select
+                          value={this.state.coldEbsVolumeType}
+                          onChange={handleChange('coldEbsVolumeType')}
+                          input={
+                            <OutlinedInput
+                              labelWidth={this.state.labelWidth}
+                              name="age"
+                              id="outlined-age-simple"
+                            />
+                          }
+                        >
+                          {this.state.ebsVolumeTypes.map((value, i) => (
+                            <MenuItem key={i} value={value}>
+                              {value}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      {/* <Paper className={classes.paper}>Cold EBS Volumes</Paper> */}
+                    </Grid>
+                    <Grid item xs={12} sm={4}>
+                      <FormControl
+                        variant="outlined"
+                        className={classes.select}
+                      >
+                        <InputLabel
+                          ref={ref => {
+                            this.InputLabelRef = ref;
+                          }}
+                          htmlFor="outlined-age-simple"
+                        >
+                          Billing Option
+                        </InputLabel>
+                        <Select
+                          value={billingOption}
+                          onChange={handleChange('billingOption')}
+                          input={
+                            <OutlinedInput
+                              labelWidth={this.state.labelWidth}
+                              name="age"
+                              id="outlined-age-simple"
+                              //value={'US East 1'}
+                            />
+                          }
+                        >
+                          {billingOptions.map((option, i) => (
+                            <MenuItem key={i} value={option}>
+                              {option.description}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      {/* <Paper className={classes.paper}>
+                          Server Billing Option
+                        </Paper> */}
+                    </Grid>
+
+                    <Grid item xs={12}>
+                      <div>
+                        <Typography fontSize={11} color="primary">
+                          Splunk Options
+                        </Typography>
+                        <Divider />
+                      </div>
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <FormControl
+                        variant="outlined"
+                        className={classes.select}
+                      >
+                        <InputLabel
+                          ref={ref => {
+                            this.InputLabelRef = ref;
+                          }}
+                          htmlFor="outlined-age-simple"
+                        >
+                          Architecture
+                        </InputLabel>
+                        <Select
+                          value={splunkArchitecture}
+                          onChange={handleChange('splunkArchitecture')}
+                          input={
+                            <OutlinedInput
+                              labelWidth={this.state.labelWidth}
+                              name="age"
+                              id="outlined-age-simple"
+                              //value={'US East 1'}
+                            />
+                          }
+                        >
+                          <MenuItem value={'Smart Store (S2)'}>
+                            Smart Store (S2)
+                          </MenuItem>
+                          <MenuItem value={'Indxer Cluster Replication'}>
+                            Indxer Cluster Replication (IDR)
+                          </MenuItem>
+                        </Select>
+                      </FormControl>
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <FormControl
+                        variant="outlined"
+                        className={classes.select}
+                      >
+                        <InputLabel
+                          ref={ref => {
+                            this.InputLabelRef = ref;
+                          }}
+                          htmlFor="outlined-age-simple"
+                        >
+                          Compression
+                        </InputLabel>
+                        <Select
+                          value={this.state.compressionPercent}
+                          onChange={handleChange('compressionPercent')}
+                          input={
+                            <OutlinedInput
+                              labelWidth={this.state.labelWidth}
+                              id="outlined-age-simple"
+                            />
+                          }
+                        >
+                          <MenuItem key={1} value={50}>
+                            {'50 %'}
+                          </MenuItem>
+                          <MenuItem key={2} value={40}>
+                            {'40 %'}
+                          </MenuItem>
+                          <MenuItem key={3} value={30}>
+                            {'30 %'}
+                          </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      {/* <Paper className={classes.paper}>
+                          Compresssion
+                        </Paper> */}
+                    </Grid>
+                    <Grid item xs={6} sm={3}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            disabled={this.state.inProgress}
+                            checked={this.state.clusterIndexers}
+                            onChange={toggleChange('clusterIndexers')}
+                            value={this.state.clusterIndexers.toString()}
+                            color="primary"
+                          />
+                        }
+                        label="Cluster Indexers"
+                      />
+
+                      {/* <Paper className={classes.paper}>Indexer Cluster</Paper> */}
+                    </Grid>
+
+                    <Grid item xs={6} sm={3}>
+                      <FormControlLabel
+                        control={
+                          <Checkbox
+                            disabled={this.state.inProgress}
+                            checked={this.state.clusterSearchHeads}
+                            onChange={toggleChange('clusterSearchHeads')}
+                            value={this.state.clusterSearchHeads.toString()}
+                            color="primary"
+                          />
+                        }
+                        label="Cluster Search Heads"
+                      />
+                    </Grid>
+
+                    <Grid item sm={3} xs={6}>
+                      <TextField
+                        required
+                        id="outlined-required"
+                        label="Replication Factor"
+                        value={this.state.replicationFactor}
+                        onChange={handleChange('replicationFactor')}
+                        onFocus={e => (this.onFocusText = e.target.value)}
+                        onBlur={this.handleRefresh}
+                        //defaultValue="30 days"
+                        className={classes.textField}
+                        //margin="normal"
+                        variant="outlined"
+                      />
+                    </Grid>
+                    <Grid item sm={3} xs={6}>
+                      <TextField
+                        required
+                        id="outlined-required"
+                        label="Search Factor"
+                        value={this.state.searchFactor}
+                        onChange={handleChange('searchFactor')}
+                        onFocus={e => (this.onFocusText = e.target.value)}
+                        onBlur={this.handleRefresh}
+                        //defaultValue="30 days"
+                        className={classes.textField}
+                        //margin="normal"
+                        variant="outlined"
+                      />
+                    </Grid>
+
+                    <Grid item xs={12} sm={3}>
+                      <TextField
+                        required
+                        id="outlined-required"
+                        label="Core Indexer Rate"
+                        value={this.state.coreIndexerRate}
+                        onChange={handleChange('coreIndexerRate')}
+                        onFocus={e => (this.onFocusText = e.target.value)}
+                        onBlur={this.handleRefresh}
+                        className={classes.textField}
+                        variant="outlined"
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              GB/day
+                            </InputAdornment>
+                          )
+                        }}
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <TextField
+                        required
+                        id="outlined-required"
+                        label="ES Indexer Rate"
+                        value={this.state.esIndexerRate}
+                        onChange={handleChange('esIndexerRate')}
+                        onFocus={e => (this.onFocusText = e.target.value)}
+                        onBlur={this.handleRefresh}
+                        className={classes.textField}
+                        variant="outlined"
+                        InputProps={{
+                          endAdornment: (
+                            <InputAdornment position="end">
+                              GB/day
+                            </InputAdornment>
+                          )
+                        }}
+                      />
+                    </Grid>
+                    <Grid item sm={3} xs={6}>
+                      <TextField
+                        id="outlined-required"
+                        label="Concurrent Users"
+                        value={this.state.noOfConcurrentUsers}
+                        onChange={handleChange('noOfConcurrentUsers')}
+                        onFocus={e => (this.onFocusText = e.target.value)}
+                        onBlur={this.handleRefresh}
+                        //defaultValue="30 days"
+                        className={classes.textField}
+                        //margin="normal"
+                        variant="outlined"
+                      />
+                    </Grid>
+                    <Grid item xs={12} sm={3}>
+                      <FormControl
+                        variant="outlined"
+                        className={classes.select}
+                      >
+                        <InputLabel
+                          ref={ref => {
+                            this.InputLabelRef = ref;
+                          }}
+                          htmlFor="outlined-age-simple"
+                        >
+                          Operating System
+                        </InputLabel>
+                        <Select
+                          disabled
+                          value={this.state.operatingSystem}
+                          onChange={handleChange('operatingSystem')}
+                          input={
+                            <OutlinedInput
+                              labelWidth={this.state.labelWidth}
+                              name="age"
+                              id="outlined-age-simple"
+                            />
+                          }
+                        >
+                          {this.state.operatingSystems.map((value, i) => (
+                            <MenuItem key={i} value={value}>
+                              {value}
+                            </MenuItem>
+                          ))}
+                        </Select>
+                      </FormControl>
+                      {/* <Paper className={classes.paper}>AWS Region</Paper> */}
+                    </Grid>
+                  </Grid>
+                </div>
+              </ExpansionPanelDetails>
+            </ExpansionPanel>
+          </Grid>
+          <Hidden smDown>
+            <Grid item xs={12}>
+              <ArchitecturePanel
+                architecture={this.state.splunkArchitecture}
+                {...this.state}
+              />
+            </Grid>
+          </Hidden>
+
+          <Grid item xs={12}>
+            {!this.state.inProgress ? (
+              <CostSummary
+                computeResources={this.state.result.computeResources}
+                storageResources={this.state.result.storageResources}
+                billingOption={this.state.billingOption}
+                awsSupportTier={this.state.awsSupportTier}
+                location={this.state.location}
+              />
+            ) : (
+              <CircularProgress className={classes.progress} />
+            )}
+          </Grid>
+        </Grid>
       </div>
     );
   }

@@ -33,6 +33,7 @@ import Sagemaker from './Projects/Sagemaker';
 import GraphQLDemo from './Projects/GraphQLDemo';
 import SplunkPricing from './Projects/SplunkPricing';
 import Rekognition from './Projects/Rekognition';
+import File from './Projects/Rekognition/File';
 Amplify.configure(aws_exports);
 
 //Amplify CLI doesn't automatically configure AWS_IAM authentication mode for graphql. The defualt auth mode is cognito user pool.
@@ -157,46 +158,45 @@ class App extends Component {
       <div className="App">
         <Router>
           <MuiThemeProvider theme={theme}>
-            {/* <div
-              //className={theme.container}
-              style={{
-                padding: 20
-              }}
-            > */}
-            <Grid container className={classes.root}>
-              <Grid item xs={12}>
-                {/* NAVIGATION BAR ROUTE - ALWAYS ON */}
-                <Route
-                  path="/"
-                  render={props => (
-                    <AppBar
-                      username={Auth.user.username || Auth.user.name}
-                      logout={this.logOut}
-                      {...props}
-                    />
-                  )}
+            {/* NAVIGATION BAR ROUTE - ALWAYS ON */}
+            <Route
+              path="/"
+              render={props => (
+                <AppBar
+                  username={Auth.user.username || Auth.user.name}
+                  logout={this.logOut}
+                  {...props}
                 />
-                {/* MAIN ROUTE */}
-                <Route
-                  exact
-                  path="/"
-                  render={props => (
-                    <ProjectGrid projectList={projectList} {...props} />
-                  )}
-                />
-                {/* REGISTER PROJECT ROUTES */}
-                <Route path="/wordinsights" component={WordInsightsApp} />
-                <Route path="/comprehend" component={Comprehend} />
-                <Route path="/sagemaker" component={Sagemaker} />
-                {/* <Route path="/graphqldemo" component={GraphQLDemo} /> */}
-                <Route path="/splunkpricing" component={SplunkPricing} />
-                <Route
-                  path="/rekognition"
-                  render={props => <Rekognition user={this.state.user} />}
-                />
-              </Grid>
-            </Grid>
-            {/* </div> */}
+              )}
+            />
+            {/* MAIN ROUTE */}
+            <Route
+              exact
+              path="/"
+              render={props => (
+                <ProjectGrid projectList={projectList} {...props} />
+              )}
+            />
+            {/* REGISTER PROJECT ROUTES */}
+            <Route path="/wordinsights" component={WordInsightsApp} />
+            <Route path="/comprehend" component={Comprehend} />
+            <Route path="/sagemaker" component={Sagemaker} />
+            {/* <Route path="/graphqldemo" component={GraphQLDemo} /> */}
+            <Route path="/splunkpricing" component={SplunkPricing} />
+            <Route
+              exact
+              path="/rekognition"
+              render={props => (
+                <Rekognition user={this.state.user} history={props.history} />
+              )}
+            />
+            {/* <Route path="/rekognition/:fileId" component={File} /> */}
+            <Route
+              path="/rekognition/:type/:fileId"
+              render={props => (
+                <File user={this.state.user} match={props.match} />
+              )}
+            />
           </MuiThemeProvider>
         </Router>
       </div>

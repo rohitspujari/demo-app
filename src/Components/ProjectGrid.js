@@ -8,7 +8,8 @@ import { Auth } from 'aws-amplify';
 const styles = theme => ({
   root: {
     flexGrow: 1,
-    marginTop: theme.spacing.unit * 2
+    padding: 20
+    //marginTop: theme.spacing.unit * 2
   }
   // paper: {
   //   padding: theme.spacing.unit * 2,

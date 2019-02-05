@@ -1,5 +1,7 @@
 import React, { useRef } from 'react';
 import { makeStyles } from '@material-ui/styles';
+import { withRouter } from 'react-router-dom';
+
 import LinearProgress from '@material-ui/core/LinearProgress';
 import { List, Button } from '@material-ui/core';
 import ListItem from '@material-ui/core/ListItem';
@@ -36,7 +38,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-function InteractiveList({ files, fetchMoreData, hasMore, deleteItem }) {
+function ListComponent({ files, fetchMoreData, hasMore, deleteItem, history }) {
   //console.log(files);
   const classes = useStyles();
   const listRef = useRef(null);
@@ -54,8 +56,8 @@ function InteractiveList({ files, fetchMoreData, hasMore, deleteItem }) {
           <ListItem
             button
             key={f.id}
-            onClick={e => {
-              //console.log('item click');
+            onClick={() => {
+              history.push('/rekognition/' + f.key);
             }}
           >
             <ListItemAvatar>
@@ -64,6 +66,7 @@ function InteractiveList({ files, fetchMoreData, hasMore, deleteItem }) {
               </Avatar>
             </ListItemAvatar>
             <ListItemText primary={f.name} secondary={f.prefix} />
+
             <ListItemSecondaryAction>
               <IconButton
                 aria-label="Delete"
@@ -88,4 +91,4 @@ function InteractiveList({ files, fetchMoreData, hasMore, deleteItem }) {
   );
 }
 
-export default InteractiveList;
+export default withRouter(ListComponent);
