@@ -20,11 +20,11 @@ type User @model @searchable {
 
 type Analysis @model @searchable {
   id: ID!
-  object: S3Object! @connection(name: "S3ObjectAnalysis")
+  object: S3Object @connection(name: "S3ObjectAnalysis")
   category: String!
   type: String!
   params: String!
   result: String
-  createdBy: User! @connection
+  createdBy: User @connection
   createdAt: String
 }

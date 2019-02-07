@@ -1,6 +1,8 @@
 import React, { useEffect, useState, Suspense } from 'react';
 import { Card, Divider } from '@material-ui/core';
 import CardActionArea from '@material-ui/core/CardActionArea';
+import Amplify, { Storage, API, graphqlOperation } from 'aws-amplify';
+import * as queries from '../../graphql/queries';
 import CardActions from '@material-ui/core/CardActions';
 import classnames from 'classnames';
 import CardContent from '@material-ui/core/CardContent';
@@ -11,7 +13,7 @@ import Button from '@material-ui/core/Button';
 import { makeStyles } from '@material-ui/styles';
 import { withRouter } from 'react-router-dom';
 import { S3Image } from 'aws-amplify-react';
-import Amplify, { Storage } from 'aws-amplify';
+//import Amplify, { Storage } from 'aws-amplify';
 import AppBar from '@material-ui/core/AppBar';
 import { Tabs, Grid, Paper } from '@material-ui/core';
 import Tab from '@material-ui/core/Tab';
@@ -80,24 +82,45 @@ function File(props) {
     setValue(newValue);
   };
 
+  const getObjectAnalysis = async () => {
+    //console.log('id', key.split('/')[1]);
+    const { data } = await API.graphql(
+      graphqlOperation(queries.getS3Object, {
+        id: key.split('/')[1]
+        //nextToken
+      })
+    );
+    console.log(JSON.parse(data.getS3Object.analysis.items[0].result));
+  };
+
   useEffect(() => {
     Storage.get(key, { level: 'private' })
       .then(url => setImageUrl(url))
       .catch(err => console.log(err));
+
+    getObjectAnalysis();
   }, [fileIndex]);
 
-  console.log(imageUrl);
+  // console.log(imageUrl);
   return (
     <div className={classes.root}>
       <Grid container spacing={24}>
-        <Grid item xs={12} sm={6}>
-          <Paper style={{ padding: 10 }}>
+        <Grid container item xs={12} sm={6}>
+          <Paper
+            style={{
+              padding: 0,
+              flexGrow: 1
+            }}
+          >
             <Image
               src={imageUrl}
-              style={{ transform: `rotate(${ROTATION[rotationIndex]}deg)` }}
+              style={{
+                transform: `rotate(${ROTATION[rotationIndex]}deg)`,
+                paddingTop: '56.25%'
+              }}
             />
             <Grid container justify="space-between">
-              <IconButton style={{ marginTop: 10 }}>
+              <IconButton style={{ padding: 10 }}>
                 <ChevronLeft
                   onClick={() => {
                     const nextIndex = (fileIndex - 1) % files.length;
@@ -107,7 +130,7 @@ function File(props) {
                 />
               </IconButton>
               <IconButton
-                style={{ marginTop: 10 }}
+                style={{ padding: 10 }}
                 onClick={() => {
                   const nextIndex = (rotationIndex + 1) % ROTATION.length;
                   setRotationIndex(nextIndex);
@@ -115,7 +138,7 @@ function File(props) {
               >
                 <RotateRight />
               </IconButton>
-              <IconButton style={{ marginTop: 10 }}>
+              <IconButton style={{ padding: 10 }}>
                 <ChevronRight
                   onClick={() => {
                     const nextIndex = (fileIndex + 1) % files.length;

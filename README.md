@@ -15,6 +15,10 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 [How to programmtically Switch Routes](https://stackoverflow.com/questions/31079081/programmatically-navigate-using-react-router)
 
+[Challenges with lambda](https://blog.hellojs.org/3-common-challenges-using-javascript-node-js-in-aws-lambda-e3fc318401ba)
+
+[Using Promises with AWS APIs](https://github.com/KaleFive/Categorize/blob/master/src/index.js)
+
 ## Available Scripts
 
 In the project directory, you can run:

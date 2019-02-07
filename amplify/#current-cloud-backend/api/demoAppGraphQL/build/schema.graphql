@@ -20,12 +20,12 @@ type User {
 
 type Analysis {
   id: ID!
-  object: S3Object!
+  object: S3Object
   category: String!
   type: String!
   params: String!
   result: String
-  createdBy: User!
+  createdBy: User
   createdAt: String
 }
 
@@ -226,8 +226,8 @@ input CreateAnalysisInput {
   params: String!
   result: String
   createdAt: String
-  analysisObjectId: ID!
-  analysisCreatedById: ID!
+  analysisObjectId: ID
+  analysisCreatedById: ID
 }
 
 input UpdateAnalysisInput {
