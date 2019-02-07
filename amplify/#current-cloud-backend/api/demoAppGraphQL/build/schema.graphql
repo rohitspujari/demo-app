@@ -5,6 +5,7 @@ type S3Object {
   prefix: String!
   createdAt: String
   createdBy: User!
+  analysis(filter: ModelAnalysisFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelAnalysisConnection
 }
 
 type User {
@@ -15,6 +16,17 @@ type User {
   sub: String
   createdAt: String
   objects(filter: ModelS3ObjectFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelS3ObjectConnection
+}
+
+type Analysis {
+  id: ID!
+  object: S3Object!
+  category: String!
+  type: String!
+  params: String!
+  result: String
+  createdBy: User!
+  createdAt: String
 }
 
 enum ModelSortDirection {
@@ -98,8 +110,11 @@ type Query {
   listS3Objects(filter: ModelS3ObjectFilterInput, limit: Int, nextToken: String): ModelS3ObjectConnection
   getUser(id: ID!): User
   listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection
+  getAnalysis(id: ID!): Analysis
+  listAnalysiss(filter: ModelAnalysisFilterInput, limit: Int, nextToken: String): ModelAnalysisConnection
   searchS3Objects(filter: SearchableS3ObjectFilterInput, sort: SearchableS3ObjectSortInput, limit: Int, nextToken: Int): SearchableS3ObjectConnection
   searchUsers(filter: SearchableUserFilterInput, sort: SearchableUserSortInput, limit: Int, nextToken: Int): SearchableUserConnection
+  searchAnalysiss(filter: SearchableAnalysisFilterInput, sort: SearchableAnalysisSortInput, limit: Int, nextToken: Int): SearchableAnalysisConnection
 }
 
 input CreateS3ObjectInput {
@@ -131,6 +146,9 @@ type Mutation {
   createUser(input: CreateUserInput!): User
   updateUser(input: UpdateUserInput!): User
   deleteUser(input: DeleteUserInput!): User
+  createAnalysis(input: CreateAnalysisInput!): Analysis
+  updateAnalysis(input: UpdateAnalysisInput!): Analysis
+  deleteAnalysis(input: DeleteAnalysisInput!): Analysis
 }
 
 type Subscription {
@@ -140,6 +158,9 @@ type Subscription {
   onCreateUser: User @aws_subscribe(mutations: ["createUser"])
   onUpdateUser: User @aws_subscribe(mutations: ["updateUser"])
   onDeleteUser: User @aws_subscribe(mutations: ["deleteUser"])
+  onCreateAnalysis: Analysis @aws_subscribe(mutations: ["createAnalysis"])
+  onUpdateAnalysis: Analysis @aws_subscribe(mutations: ["updateAnalysis"])
+  onDeleteAnalysis: Analysis @aws_subscribe(mutations: ["deleteAnalysis"])
 }
 
 type ModelUserConnection {
@@ -178,6 +199,49 @@ input UpdateUserInput {
 }
 
 input DeleteUserInput {
+  id: ID
+}
+
+type ModelAnalysisConnection {
+  items: [Analysis]
+  nextToken: String
+}
+
+input ModelAnalysisFilterInput {
+  id: ModelIDFilterInput
+  category: ModelStringFilterInput
+  type: ModelStringFilterInput
+  params: ModelStringFilterInput
+  result: ModelStringFilterInput
+  createdAt: ModelStringFilterInput
+  and: [ModelAnalysisFilterInput]
+  or: [ModelAnalysisFilterInput]
+  not: ModelAnalysisFilterInput
+}
+
+input CreateAnalysisInput {
+  id: ID
+  category: String!
+  type: String!
+  params: String!
+  result: String
+  createdAt: String
+  analysisObjectId: ID!
+  analysisCreatedById: ID!
+}
+
+input UpdateAnalysisInput {
+  id: ID!
+  category: String
+  type: String
+  params: String
+  result: String
+  createdAt: String
+  analysisObjectId: ID
+  analysisCreatedById: ID
+}
+
+input DeleteAnalysisInput {
   id: ID
 }
 
@@ -292,5 +356,36 @@ input SearchableUserSortInput {
 
 type SearchableUserConnection {
   items: [User]
+  nextToken: String
+}
+
+input SearchableAnalysisFilterInput {
+  id: SearchableIDFilterInput
+  category: SearchableStringFilterInput
+  type: SearchableStringFilterInput
+  params: SearchableStringFilterInput
+  result: SearchableStringFilterInput
+  createdAt: SearchableStringFilterInput
+  and: [SearchableAnalysisFilterInput]
+  or: [SearchableAnalysisFilterInput]
+  not: SearchableAnalysisFilterInput
+}
+
+enum SearchableAnalysisSortableFields {
+  id
+  category
+  type
+  params
+  result
+  createdAt
+}
+
+input SearchableAnalysisSortInput {
+  field: SearchableAnalysisSortableFields
+  direction: SearchableSortDirection
+}
+
+type SearchableAnalysisConnection {
+  items: [Analysis]
   nextToken: String
 }

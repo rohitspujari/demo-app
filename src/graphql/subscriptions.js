@@ -16,6 +16,17 @@ export const onCreateS3Object = `subscription OnCreateS3Object {
       sub
       createdAt
     }
+    analysis {
+      items {
+        id
+        category
+        type
+        params
+        result
+        createdAt
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -34,6 +45,17 @@ export const onUpdateS3Object = `subscription OnUpdateS3Object {
       sub
       createdAt
     }
+    analysis {
+      items {
+        id
+        category
+        type
+        params
+        result
+        createdAt
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -51,6 +73,17 @@ export const onDeleteS3Object = `subscription OnDeleteS3Object {
       type
       sub
       createdAt
+    }
+    analysis {
+      items {
+        id
+        category
+        type
+        params
+        result
+        createdAt
+      }
+      nextToken
     }
   }
 }
@@ -115,6 +148,84 @@ export const onDeleteUser = `subscription OnDeleteUser {
       }
       nextToken
     }
+  }
+}
+`;
+export const onCreateAnalysis = `subscription OnCreateAnalysis {
+  onCreateAnalysis {
+    id
+    object {
+      id
+      key
+      name
+      prefix
+      createdAt
+    }
+    category
+    type
+    params
+    result
+    createdBy {
+      id
+      name
+      email
+      type
+      sub
+      createdAt
+    }
+    createdAt
+  }
+}
+`;
+export const onUpdateAnalysis = `subscription OnUpdateAnalysis {
+  onUpdateAnalysis {
+    id
+    object {
+      id
+      key
+      name
+      prefix
+      createdAt
+    }
+    category
+    type
+    params
+    result
+    createdBy {
+      id
+      name
+      email
+      type
+      sub
+      createdAt
+    }
+    createdAt
+  }
+}
+`;
+export const onDeleteAnalysis = `subscription OnDeleteAnalysis {
+  onDeleteAnalysis {
+    id
+    object {
+      id
+      key
+      name
+      prefix
+      createdAt
+    }
+    category
+    type
+    params
+    result
+    createdBy {
+      id
+      name
+      email
+      type
+      sub
+      createdAt
+    }
+    createdAt
   }
 }
 `;

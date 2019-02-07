@@ -12,6 +12,7 @@ import Webcam from 'react-webcam';
 import Grid from '@material-ui/core/Grid';
 
 import Paper from '@material-ui/core/Paper';
+import { v4 as uuid } from 'uuid';
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/CameraAlt';
 import { makeStyles, useTheme } from '@material-ui/styles';
@@ -172,7 +173,8 @@ function Rekognition({ user }) {
     //console.log(file.name);
     const prefix = file.type.split('/')[0];
     const extension = file.name.split('.')[file.name.split('.').length - 1];
-    const fileId = generateId() + '.' + extension;
+    //const fileId = generateId() + '.' + extension;
+    const fileId = uuid(); // + '.' + extension;
 
     //console.log(file);
     const result = await Storage.put(`${prefix}/${fileId}`, file, {
@@ -196,6 +198,7 @@ function Rekognition({ user }) {
       const res = await API.graphql(
         graphqlOperation(mutations.createS3Object, {
           input: {
+            id: fileId,
             key: `${prefix}/${fileId}`,
             name: file.name,
             prefix: prefix,

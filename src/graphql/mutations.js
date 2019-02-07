@@ -16,6 +16,17 @@ export const createS3Object = `mutation CreateS3Object($input: CreateS3ObjectInp
       sub
       createdAt
     }
+    analysis {
+      items {
+        id
+        category
+        type
+        params
+        result
+        createdAt
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -34,6 +45,17 @@ export const updateS3Object = `mutation UpdateS3Object($input: UpdateS3ObjectInp
       sub
       createdAt
     }
+    analysis {
+      items {
+        id
+        category
+        type
+        params
+        result
+        createdAt
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -51,6 +73,17 @@ export const deleteS3Object = `mutation DeleteS3Object($input: DeleteS3ObjectInp
       type
       sub
       createdAt
+    }
+    analysis {
+      items {
+        id
+        category
+        type
+        params
+        result
+        createdAt
+      }
+      nextToken
     }
   }
 }
@@ -115,6 +148,84 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
       }
       nextToken
     }
+  }
+}
+`;
+export const createAnalysis = `mutation CreateAnalysis($input: CreateAnalysisInput!) {
+  createAnalysis(input: $input) {
+    id
+    object {
+      id
+      key
+      name
+      prefix
+      createdAt
+    }
+    category
+    type
+    params
+    result
+    createdBy {
+      id
+      name
+      email
+      type
+      sub
+      createdAt
+    }
+    createdAt
+  }
+}
+`;
+export const updateAnalysis = `mutation UpdateAnalysis($input: UpdateAnalysisInput!) {
+  updateAnalysis(input: $input) {
+    id
+    object {
+      id
+      key
+      name
+      prefix
+      createdAt
+    }
+    category
+    type
+    params
+    result
+    createdBy {
+      id
+      name
+      email
+      type
+      sub
+      createdAt
+    }
+    createdAt
+  }
+}
+`;
+export const deleteAnalysis = `mutation DeleteAnalysis($input: DeleteAnalysisInput!) {
+  deleteAnalysis(input: $input) {
+    id
+    object {
+      id
+      key
+      name
+      prefix
+      createdAt
+    }
+    category
+    type
+    params
+    result
+    createdBy {
+      id
+      name
+      email
+      type
+      sub
+      createdAt
+    }
+    createdAt
   }
 }
 `;

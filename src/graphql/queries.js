@@ -16,6 +16,17 @@ export const getS3Object = `query GetS3Object($id: ID!) {
       sub
       createdAt
     }
+    analysis {
+      items {
+        id
+        category
+        type
+        params
+        result
+        createdAt
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -38,6 +49,17 @@ export const listS3Objects = `query ListS3Objects(
         type
         sub
         createdAt
+      }
+      analysis {
+        items {
+          id
+          category
+          type
+          params
+          result
+          createdAt
+        }
+        nextToken
       }
     }
     nextToken
@@ -93,6 +115,65 @@ export const listUsers = `query ListUsers(
   }
 }
 `;
+export const getAnalysis = `query GetAnalysis($id: ID!) {
+  getAnalysis(id: $id) {
+    id
+    object {
+      id
+      key
+      name
+      prefix
+      createdAt
+    }
+    category
+    type
+    params
+    result
+    createdBy {
+      id
+      name
+      email
+      type
+      sub
+      createdAt
+    }
+    createdAt
+  }
+}
+`;
+export const listAnalysiss = `query ListAnalysiss(
+  $filter: ModelAnalysisFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listAnalysiss(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      object {
+        id
+        key
+        name
+        prefix
+        createdAt
+      }
+      category
+      type
+      params
+      result
+      createdBy {
+        id
+        name
+        email
+        type
+        sub
+        createdAt
+      }
+      createdAt
+    }
+    nextToken
+  }
+}
+`;
 export const searchS3Objects = `query SearchS3Objects(
   $filter: SearchableS3ObjectFilterInput
   $sort: SearchableS3ObjectSortInput
@@ -118,6 +199,17 @@ export const searchS3Objects = `query SearchS3Objects(
         type
         sub
         createdAt
+      }
+      analysis {
+        items {
+          id
+          category
+          type
+          params
+          result
+          createdAt
+        }
+        nextToken
       }
     }
     nextToken
@@ -153,6 +245,45 @@ export const searchUsers = `query SearchUsers(
         }
         nextToken
       }
+    }
+    nextToken
+  }
+}
+`;
+export const searchAnalysiss = `query SearchAnalysiss(
+  $filter: SearchableAnalysisFilterInput
+  $sort: SearchableAnalysisSortInput
+  $limit: Int
+  $nextToken: Int
+) {
+  searchAnalysiss(
+    filter: $filter
+    sort: $sort
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      object {
+        id
+        key
+        name
+        prefix
+        createdAt
+      }
+      category
+      type
+      params
+      result
+      createdBy {
+        id
+        name
+        email
+        type
+        sub
+        createdAt
+      }
+      createdAt
     }
     nextToken
   }

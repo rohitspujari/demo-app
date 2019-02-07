@@ -5,6 +5,7 @@ type S3Object @model @searchable {
   prefix: String!
   createdAt: String
   createdBy: User! @connection(name: "UserS3Objects")
+  analysis: [Analysis] @connection(name: "S3ObjectAnalysis")
 }
 
 type User @model @searchable {
@@ -15,4 +16,15 @@ type User @model @searchable {
   sub: String
   createdAt: String
   objects: [S3Object] @connection(name: "UserS3Objects", sortField: "createdAt")
+}
+
+type Analysis @model @searchable {
+  id: ID!
+  object: S3Object! @connection(name: "S3ObjectAnalysis")
+  category: String!
+  type: String!
+  params: String!
+  result: String
+  createdBy: User! @connection
+  createdAt: String
 }
