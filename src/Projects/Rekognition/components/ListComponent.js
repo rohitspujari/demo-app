@@ -58,8 +58,9 @@ function ListComponent({ files, fetchMoreData, hasMore, deleteItem, history }) {
             key={f.id}
             onClick={() => {
               history.push({
-                pathname: '/rekognition/' + f.id,
-                files
+                pathname: '/rekognition/details',
+                files: files,
+                selectedFileId: f.id
               });
             }}
           >

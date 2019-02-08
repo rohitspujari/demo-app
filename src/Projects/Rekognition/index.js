@@ -6,7 +6,7 @@ import React, {
   Suspense,
   lazy
 } from 'react';
-import Amplify, { Storage, API, graphqlOperation } from 'aws-amplify';
+import Amplify, { Storage, API, graphqlOperation, Hub } from 'aws-amplify';
 
 import Webcam from 'react-webcam';
 import Grid from '@material-ui/core/Grid';

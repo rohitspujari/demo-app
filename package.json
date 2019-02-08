@@ -9,6 +9,7 @@
     "aws-amplify": "^1.1.18",
     "aws-amplify-react": "^2.2.5",
     "classnames": "^2.2.6",
+    "eslint-plugin-react-hooks": "^1.0.1",
     "immutable": "^4.0.0-rc.12",
     "material-ui-image": "^3.1.0",
     "react": "^16.8.0-alpha.1",

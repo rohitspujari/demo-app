@@ -4,16 +4,16 @@ import './index.css';
 //import App from './App';
 import * as serviceWorker from './serviceWorker';
 
-import MainApp from './App.js';
-class AuthWrapper extends React.Component {
-  rerender = () => this.forceUpdate();
-  render() {
-    return <MainApp rerender={this.rerender} />;
-  }
-}
+import App from './App';
+// class AuthWrapper extends React.Component {
+//   rerender = () => this.forceUpdate();
+//   render() {
+//     return <MainApp rerender={this.rerender} />;
+//   }
+// }
 //Amplify React Native auth.signout() does not return to Sign In page
 //https://github.com/aws-amplify/amplify-js/issues/1529
-ReactDOM.render(<AuthWrapper />, document.getElementById('root'));
+ReactDOM.render(<App />, document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

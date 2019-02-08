@@ -30,7 +30,6 @@ const PLACEHOLDER_IMAGE_URL =
 
 const ROTATION = ['0', '90', '180', '270'];
 const useStyles = makeStyles(rotate => {
-  console.log('styles');
   return {
     root: {
       flexGrow: 1,
@@ -63,17 +62,18 @@ function File(props) {
     match,
     user,
     history,
-    location: { files }
+    location: { files, selectedFileId }
   } = props;
-  console.log(match);
 
-  if (!files) return <></>;
-  //if (!user) return null;
-  const { id } = match.params;
-  const [fileIndex, setFileIndex] = useState(files.findIndex(f => f.id === id));
-  console.log(fileIndex);
+  if (!files) {
+    history.push('/rekognition');
+    return <></>;
+  }
+
+  const [fileIndex, setFileIndex] = useState(
+    files.findIndex(f => f.id === selectedFileId)
+  );
   const [rotationIndex, setRotationIndex] = useState(0);
-
   const key = files[Math.abs(fileIndex)].key;
   const [imageUrl, setImageUrl] = useState(PLACEHOLDER_IMAGE_URL);
   const [value, setValue] = React.useState(0);
@@ -84,9 +84,10 @@ function File(props) {
 
   const getObjectAnalysis = async () => {
     //console.log('id', key.split('/')[1]);
+    const id = key.split('/')[1];
     const { data } = await API.graphql(
       graphqlOperation(queries.getS3Object, {
-        id: key.split('/')[1]
+        id
         //nextToken
       })
     );
@@ -205,4 +206,4 @@ function File(props) {
 }
 
 //export default File
-export default File;
+export default withRouter(File);

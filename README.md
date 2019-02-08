@@ -19,6 +19,15 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 [Using Promises with AWS APIs](https://github.com/KaleFive/Categorize/blob/master/src/index.js)
 
+## Notes
+
+Amplify CLI doesn't automatically configure AWS_IAM authentication mode for graphql. The defualt auth mode is cognito user pool.C ongnito user pool restricts the graphql endpoint access through web apps only. To enable accessing graphql
+endpoint from other services like lambda, we need to customize the authentication, and set the authRole on cognito identity pool the auth role should have permission to invoke required graphql api
+http://sandny.com/2018/09/24/appsync-graphql-amplify-iam/
+
+Amplify React Native auth.signout() does not return to Sign In page
+https://github.com/aws-amplify/amplify-js/issues/1529
+
 ## Available Scripts
 
 In the project directory, you can run:

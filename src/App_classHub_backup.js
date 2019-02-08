@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react';
+import React, { Component } from 'react';
 import './App.css';
 import Amplify, {
   Analytics,
@@ -50,8 +50,6 @@ const federated = {
 //Amplify.Logger.LOG_LEVEL = 'DEBUG';
 //const logger = new Logger('main');
 
-const authWatcher = new Logger('auth_watcher');
-
 const theme = createMuiTheme({
   palette: {
     primary: { main: '#232f3e' },
@@ -72,35 +70,12 @@ const authenticatorTheme = {
   button: { backgroundColor: '#232f3e' }
 };
 
-function App() {
-  authWatcher.onHubCapsule = capsule => {
-    switch (capsule.payload.event) {
-      case 'signIn':
-        //console.log('signIn');
-        getUserData();
-        authWatcher.error('user signed in'); //[ERROR] auth_watcher - user signed in
-        break;
-      case 'signUp':
-        //authWatcher.error('user signed up');
-        break;
-      case 'signOut':
-        //console.log('signOut');
-        setUser(null);
-        //authWatcher.error('user signed out');
-        break;
-      case 'signIn_failure':
-        authWatcher.error('user sign in failed');
-        break;
-      case 'configured':
-        authWatcher.error('the Auth module is configured');
-      default:
-        break;
-    }
+class App extends Component {
+  state = {
+    user: null
   };
 
-  const [user, setUser] = useState(null);
-
-  const getUserData = async () => {
+  getUserData = async () => {
     // logger.debug('print_auth', Auth);
     const authedUser = await Auth.currentAuthenticatedUser({
       //bypassCache: false // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
@@ -136,66 +111,106 @@ function App() {
         graphqlOperation(mutations.createUser, { input: user })
       );
     }
+    this.setState({ user });
+    //console.log(result);
 
-    setUser(user);
-    //this.setState({ user });
+    // const filter = {
+    //   filter: {
+    //     id: {
+    //       eq: 'us-east-1:08ab9fe2-c99d-4f2f-b885-9c4abd198973'
+    //     }
+    //   }
+    // };
+    // console.log(await API.graphql(graphqlOperation(queries.listUsers, filter)));
+    //console.log(await API.graphql(graphqlOperation(queries.listUsers)));
   };
-  const logOut = async () => {
+
+  onHubCapsule = capsule => {
+    console.log(capsule);
+    switch (capsule.payload.event) {
+      case 'signIn':
+        this.getUserData();
+        console.log('user signed in');
+        break;
+      case 'signUp':
+        console.log('user signed up');
+        break;
+      case 'signOut':
+        this.setState({ user: null });
+        console.log('user signed out');
+        break;
+      case 'signIn_failure':
+        console.log('user sign in failed');
+        break;
+      case 'configured':
+        console.log('the Auth module is configured');
+        break;
+      default:
+        break;
+    }
+  };
+
+  logOut = async () => {
     await Auth.signOut();
   };
 
-  useEffect(() => {
-    Hub.listen('auth', authWatcher);
-    getUserData();
-  }, []);
+  componentDidMount() {
+    Hub.listen('auth', this, 'onHubCapsule');
+    this.getUserData();
+  }
 
-  return !user ? (
-    <Authenticator
-      theme={authenticatorTheme}
-      federated={federated}
-      hide={[Greetings]}
-    />
-  ) : (
-    <div className="App">
-      <Router>
-        <MuiThemeProvider theme={theme}>
-          {/* NAVIGATION BAR ROUTE - ALWAYS ON */}
-          <Route
-            path="/"
-            render={props => (
-              <AppBar username={user.name} logout={logOut} {...props} />
-            )}
-          />
-          {/* MAIN ROUTE */}
-          <Route
-            exact
-            path="/"
-            render={props => (
-              <ProjectGrid projectList={projectList} {...props} />
-            )}
-          />
-          {/* REGISTER PROJECT ROUTES */}
-          <Route path="/wordinsights" component={WordInsightsApp} />
-          <Route path="/comprehend" component={Comprehend} />
-          <Route path="/sagemaker" component={Sagemaker} />
-          {/* <Route path="/graphqldemo" component={GraphQLDemo} /> */}
-          <Route path="/splunkpricing" component={SplunkPricing} />
-          <Route
-            exact
-            path="/rekognition"
-            render={props => (
-              <Rekognition user={user} history={props.history} />
-            )}
-          />
-          {/* <Route path="/rekognition/:fileId" component={File} /> */}
-          <Route
-            path="/rekognition/details"
-            render={props => <File user={user} {...props} />}
-          />
-        </MuiThemeProvider>
-      </Router>
-    </div>
-  );
+  render() {
+    //console.log(Auth.user);
+    const { user } = this.state;
+
+    return !user ? (
+      <Authenticator
+        theme={authenticatorTheme}
+        federated={federated}
+        hide={[Greetings]}
+      />
+    ) : (
+      <div className="App">
+        <Router>
+          <MuiThemeProvider theme={theme}>
+            {/* NAVIGATION BAR ROUTE - ALWAYS ON */}
+            <Route
+              path="/"
+              render={props => (
+                <AppBar username={user.name} logout={this.logOut} {...props} />
+              )}
+            />
+            {/* MAIN ROUTE */}
+            <Route
+              exact
+              path="/"
+              render={props => (
+                <ProjectGrid projectList={projectList} {...props} />
+              )}
+            />
+            {/* REGISTER PROJECT ROUTES */}
+            <Route path="/wordinsights" component={WordInsightsApp} />
+            <Route path="/comprehend" component={Comprehend} />
+            <Route path="/sagemaker" component={Sagemaker} />
+            {/* <Route path="/graphqldemo" component={GraphQLDemo} /> */}
+            <Route path="/splunkpricing" component={SplunkPricing} />
+            <Route
+              exact
+              path="/rekognition"
+              render={props => (
+                <Rekognition user={this.state.user} history={props.history} />
+              )}
+            />
+            {/* <Route path="/rekognition/:fileId" component={File} /> */}
+            <Route
+              path="/rekognition/:id"
+              render={props => <File user={this.state.user} {...props} />}
+            />
+          </MuiThemeProvider>
+        </Router>
+      </div>
+    );
+  }
 }
 
 export default App;
