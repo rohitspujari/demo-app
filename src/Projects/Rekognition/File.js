@@ -8,6 +8,7 @@ import classnames from 'classnames';
 import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
 import IconButton from '@material-ui/core/IconButton';
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Button from '@material-ui/core/Button';
 // import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/styles';
@@ -15,7 +16,16 @@ import { withRouter } from 'react-router-dom';
 import { S3Image } from 'aws-amplify-react';
 //import Amplify, { Storage } from 'aws-amplify';
 import AppBar from '@material-ui/core/AppBar';
-import { Tabs, Grid, Paper } from '@material-ui/core';
+import {
+  Tabs,
+  Grid,
+  Paper,
+  Chip,
+  Tooltip,
+  ExpansionPanel,
+  ExpansionPanelDetails,
+  ExpansionPanelSummary
+} from '@material-ui/core';
 import Tab from '@material-ui/core/Tab';
 import Lightbox from 'react-lightbox-component';
 import Typography from '@material-ui/core/Typography';
@@ -77,6 +87,7 @@ function File(props) {
   const key = files[Math.abs(fileIndex)].key;
   const [imageUrl, setImageUrl] = useState(PLACEHOLDER_IMAGE_URL);
   const [value, setValue] = React.useState(0);
+  const [analysis, setAnalysis] = useState(null);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -91,7 +102,11 @@ function File(props) {
         //nextToken
       })
     );
-    console.log(JSON.parse(data.getS3Object.analysis.items[0].result));
+    if (data) {
+      const result = JSON.parse(data.getS3Object.analysis.items[0].result);
+      setAnalysis(result);
+    }
+    //console.log(JSON.parse(data.getS3Object.analysis.items[0].result));
   };
 
   useEffect(() => {
@@ -166,7 +181,7 @@ function File(props) {
               <Tab label="Textract" />
             </Tabs>
           </Paper>
-          {value === 0 && <TabContainer>Item One</TabContainer>}
+          {value === 0 && <Reko analysis={analysis} />}
           {value === 1 && <TabContainer>Item Two</TabContainer>}
           {value === 2 && <TabContainer>Item Three</TabContainer>}
           {value === 3 && <TabContainer>Item Four</TabContainer>}
@@ -207,3 +222,73 @@ function File(props) {
 
 //export default File
 export default withRouter(File);
+
+function Reko({ analysis }) {
+  const TextPanel = () => (
+    <>
+      <ExpansionPanel
+        style={{ marginTop: 10 }}
+        expanded={true}
+        onChange={() => {}}
+      >
+        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+          <Typography>Detected Text</Typography>
+        </ExpansionPanelSummary>
+        <ExpansionPanelDetails>
+          <Grid item zeroMinWidth>
+            {analysis.text.TextDetections.map(i => (
+              <div key={i.Id}>
+                <Typography>{i.DetectedText}</Typography>
+                <Divider />
+              </div>
+            ))}
+          </Grid>
+          {/* <Typography>
+            Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer
+            sit amet egestas eros, vitae egestas augue. Duis vel est augue.
+          </Typography> */}
+        </ExpansionPanelDetails>
+      </ExpansionPanel>
+    </>
+  );
+  const Celebrity = () => (
+    <>
+      <Typography variant="h6" style={{ marginTop: 10, marginBottom: 0 }}>
+        Celebrities
+      </Typography>
+      <Divider />
+      {analysis.celebrities.CelebrityFaces.map(l => (
+        <Chip
+          style={{ marginRight: 10, marginTop: 10 }}
+          key={l.Name}
+          label={l.Name}
+          variant="outlined"
+        />
+      ))}
+    </>
+  );
+  console.log(analysis);
+  if (analysis) {
+    return (
+      <div style={{}}>
+        <Typography variant="h6" style={{ marginTop: 10, marginBottom: 0 }}>
+          Labels
+        </Typography>
+        <Divider />
+        {analysis.labels.Labels.map(l => (
+          <Tooltip key={l.Name} title={Math.floor(l.Confidence) + ' %'}>
+            <Chip
+              style={{ marginRight: 10, marginTop: 10 }}
+              label={l.Name}
+              variant="outlined"
+            />
+          </Tooltip>
+        ))}
+        {analysis.celebrities.CelebrityFaces.length > 0 && <Celebrity />}
+        {analysis.text.TextDetections.length > 0 && <TextPanel />}
+      </div>
+    );
+  } else {
+    return <></>;
+  }
+}
