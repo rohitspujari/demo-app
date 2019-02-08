@@ -84,6 +84,7 @@ function File(props) {
     files.findIndex(f => f.id === selectedFileId)
   );
   const [rotationIndex, setRotationIndex] = useState(0);
+
   const key = files[Math.abs(fileIndex)].key;
   const [imageUrl, setImageUrl] = useState(PLACEHOLDER_IMAGE_URL);
   const [value, setValue] = React.useState(0);
@@ -166,21 +167,21 @@ function File(props) {
           </Paper>
         </Grid>
         <Grid item xs={12} sm={6}>
-          <Paper>
-            <Tabs
-              value={value}
-              onChange={handleChange}
-              indicatorColor="primary"
-              textColor="primary"
-              //variant="scrollable"
-              //scrollButtons="auto"
-              centered
-            >
-              <Tab label="Rekognition" />
-              <Tab label="Comprehend" />
-              <Tab label="Textract" />
-            </Tabs>
-          </Paper>
+          {/* <Paper> */}
+          <Tabs
+            value={value}
+            onChange={handleChange}
+            indicatorColor="primary"
+            textColor="primary"
+            //variant="scrollable"
+            //scrollButtons="auto"
+            centered
+          >
+            <Tab label="Rekognition" />
+            <Tab label="Comprehend" />
+            <Tab label="Textract" />
+          </Tabs>
+          {/* </Paper> */}
           {value === 0 && <Reko analysis={analysis} />}
           {value === 1 && <TabContainer>Item Two</TabContainer>}
           {value === 2 && <TabContainer>Item Three</TabContainer>}
@@ -224,24 +225,31 @@ function File(props) {
 export default withRouter(File);
 
 function Reko({ analysis }) {
-  const TextPanel = () => (
+  const [panelExpanded, setPanelExpanded] = useState(false);
+  const TextPanel = ({ panelExpanded }) => (
     <>
       <ExpansionPanel
         style={{ marginTop: 10 }}
-        expanded={true}
-        onChange={() => {}}
+        expanded={panelExpanded}
+        onChange={(event, expanded) => {
+          setPanelExpanded(panelExpanded ? false : true);
+        }}
       >
         <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
           <Typography>Detected Text</Typography>
         </ExpansionPanelSummary>
         <ExpansionPanelDetails>
           <Grid item zeroMinWidth>
-            {analysis.text.TextDetections.map(i => (
-              <div key={i.Id}>
-                <Typography>{i.DetectedText}</Typography>
-                <Divider />
-              </div>
-            ))}
+            <div style={{ maxHeight: 200, overflow: 'auto' }}>
+              {analysis.text.TextDetections.map(i => (
+                <div key={i.Id}>
+                  <Typography style={{ marginBottom: 5 }}>
+                    {i.DetectedText}
+                  </Typography>
+                  {/* <Divider /> */}
+                </div>
+              ))}
+            </div>
           </Grid>
           {/* <Typography>
             Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer
@@ -267,7 +275,7 @@ function Reko({ analysis }) {
       ))}
     </>
   );
-  console.log(analysis);
+  //console.log(analysis);
   if (analysis) {
     return (
       <div style={{}}>
@@ -285,7 +293,9 @@ function Reko({ analysis }) {
           </Tooltip>
         ))}
         {analysis.celebrities.CelebrityFaces.length > 0 && <Celebrity />}
-        {analysis.text.TextDetections.length > 0 && <TextPanel />}
+        {analysis.text.TextDetections.length > 0 && (
+          <TextPanel panelExpanded={panelExpanded} />
+        )}
       </div>
     );
   } else {
