@@ -33,13 +33,15 @@ import Sagemaker from './Projects/Sagemaker';
 import GraphQLDemo from './Projects/GraphQLDemo';
 import SplunkPricing from './Projects/SplunkPricing';
 import Rekognition from './Projects/Rekognition';
-import File from './Projects/Rekognition/File';
+import Details from './Projects/Rekognition/Details';
 
 Amplify.configure(aws_exports);
 let appSyncConfig = {
   aws_appsync_authenticationType: 'AWS_IAM'
 };
 Amplify.configure(appSyncConfig);
+
+export const UserContext = React.createContext();
 
 const federated = {
   google_client_id:
@@ -68,7 +70,7 @@ const theme = createMuiTheme({
 
 const authenticatorTheme = {
   //signInButtonIcon: { display: 'none' },
-  //googleSignInButton: { backgroundColor: 'red', borderColor: 'red' },
+  googleSignInButton: { backgroundColor: '#232f3e', borderColor: '#232f3e' },
   button: { backgroundColor: '#232f3e' }
 };
 
@@ -107,9 +109,7 @@ function App() {
     });
     //logger.debug(authedUser);
     //console.log('auth_user', authedUser);
-
     //console.log('currentAuthenticatedUser', authedUser);
-
     //console.log('cureentUserCreds', await Auth.authedUserCredentials());
     var user = {};
     if (authedUser.username) {
@@ -138,7 +138,6 @@ function App() {
     }
 
     setUser(user);
-    //this.setState({ user });
   };
   const logOut = async () => {
     await Auth.signOut();
@@ -156,45 +155,48 @@ function App() {
       hide={[Greetings]}
     />
   ) : (
-    <div className="App">
-      <Router>
-        <MuiThemeProvider theme={theme}>
-          {/* NAVIGATION BAR ROUTE - ALWAYS ON */}
-          <Route
-            path="/"
-            render={props => (
-              <AppBar username={user.name} logout={logOut} {...props} />
-            )}
-          />
-          {/* MAIN ROUTE */}
-          <Route
-            exact
-            path="/"
-            render={props => (
-              <ProjectGrid projectList={projectList} {...props} />
-            )}
-          />
-          {/* REGISTER PROJECT ROUTES */}
-          <Route path="/wordinsights" component={WordInsightsApp} />
-          <Route path="/comprehend" component={Comprehend} />
-          <Route path="/sagemaker" component={Sagemaker} />
-          {/* <Route path="/graphqldemo" component={GraphQLDemo} /> */}
-          <Route path="/splunkpricing" component={SplunkPricing} />
-          <Route
-            exact
-            path="/rekognition"
-            render={props => (
-              <Rekognition user={user} history={props.history} />
-            )}
-          />
-          {/* <Route path="/rekognition/:fileId" component={File} /> */}
-          <Route
-            path="/rekognition/details"
-            render={props => <File user={user} {...props} />}
-          />
-        </MuiThemeProvider>
-      </Router>
-    </div>
+    <UserContext.Provider value={user}>
+      <div className="App">
+        <Router>
+          <MuiThemeProvider theme={theme}>
+            {/* NAVIGATION BAR ROUTE - ALWAYS ON */}
+            <Route
+              path="/"
+              render={props => (
+                <AppBar username={user.name} logout={logOut} {...props} />
+              )}
+            />
+            {/* MAIN ROUTE */}
+            <Route
+              exact
+              path="/"
+              render={props => (
+                <ProjectGrid projectList={projectList} {...props} />
+              )}
+            />
+            {/* REGISTER PROJECT ROUTES */}
+            <Route path="/wordinsights" component={WordInsightsApp} />
+            <Route path="/comprehend" component={Comprehend} />
+            <Route path="/sagemaker" component={Sagemaker} />
+            {/* <Route path="/graphqldemo" component={GraphQLDemo} /> */}
+            <Route path="/splunkpricing" component={SplunkPricing} />
+            <Route exact path="/rekognition" component={Rekognition} />
+            {/* <Route
+              exact
+              path="/rekognition"
+              render={props => (
+                <Rekognition user={user} history={props.history} />
+              )}
+            /> */}
+            {/* <Route path="/rekognition/:fileId" component={File} /> */}
+            <Route
+              path="/rekognition/details"
+              render={props => <Details user={user} {...props} />}
+            />
+          </MuiThemeProvider>
+        </Router>
+      </div>
+    </UserContext.Provider>
   );
 }
 

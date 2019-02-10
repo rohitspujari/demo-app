@@ -66,11 +66,8 @@ function TabContainer(props) {
 }
 
 function File(props) {
-  //
   var classes = useStyles();
   const {
-    match,
-    user,
     history,
     location: { files, selectedFileId }
   } = props;
@@ -122,10 +119,17 @@ function File(props) {
   return (
     <div className={classes.root}>
       <Grid container spacing={24}>
-        <Grid container item xs={12} sm={6}>
+        <Grid item xs={12} sm={6}>
+          <Button variant="outlined" onClick={() => history.goBack()}>
+            Back
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6}>
           <Paper
+            square
             style={{
-              padding: 0,
+              //padding: 0,
+              textAlign: 'center',
               flexGrow: 1
             }}
           >
@@ -136,6 +140,7 @@ function File(props) {
                 paddingTop: '56.25%'
               }}
             />
+
             <Grid container justify="space-between">
               <IconButton style={{ padding: 10 }}>
                 <ChevronLeft
@@ -164,9 +169,13 @@ function File(props) {
                 />
               </IconButton>
             </Grid>
+            <Button style={{ marginBottom: 10 }} variant="outlined">
+              Upload
+            </Button>
           </Paper>
         </Grid>
-        <Grid item xs={12} sm={6}>
+
+        <Grid item xs={12}>
           {/* <Paper> */}
           <Tabs
             value={value}
@@ -192,36 +201,9 @@ function File(props) {
         </Grid>
       </Grid>
     </div>
-    // <Card className={classes.card}>
-    //   <CardActionArea>
-    //     <CardMedia
-    //       className={classes.media}
-    //       image={imageUrl}
-    //       title="Contemplative Reptile"
-    //     />
-    //     <CardContent>
-    //       <Typography gutterBottom variant="h5" component="h2">
-    //         Lizard
-    //       </Typography>
-    //       <Typography component="p">
-    //         Lizards are a widespread group of squamate reptiles, with over 6,000
-    //         species, ranging across all continents except Antarctica
-    //       </Typography>
-    //     </CardContent>
-    //   </CardActionArea>
-    //   <CardActions>
-    //     <Button size="small" color="primary">
-    //       Share
-    //     </Button>
-    //     <Button size="small" color="primary">
-    //       Learn More
-    //     </Button>
-    //   </CardActions>
-    // </Card>
   );
 }
 
-//export default File
 export default withRouter(File);
 
 function Reko({ analysis }) {
@@ -251,10 +233,6 @@ function Reko({ analysis }) {
               ))}
             </div>
           </Grid>
-          {/* <Typography>
-            Nunc vitae orci ultricies, auctor nunc in, volutpat nisl. Integer
-            sit amet egestas eros, vitae egestas augue. Duis vel est augue.
-          </Typography> */}
         </ExpansionPanelDetails>
       </ExpansionPanel>
     </>

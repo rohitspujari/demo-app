@@ -3,6 +3,7 @@ import React, {
   useRef,
   useState,
   useEffect,
+  useContext,
   Suspense,
   lazy
 } from 'react';
@@ -30,6 +31,7 @@ import { listObjects } from '../../graphql/queries';
 import ListComponent from './components/ListComponent';
 import { set } from 'immutable';
 import { CognitoAccessToken } from 'amazon-cognito-identity-js';
+import { UserContext } from '../../App';
 
 const useStyles = makeStyles(theme => ({
   fab: {
@@ -78,9 +80,11 @@ const fetchUserObjects = `query GetUser($id: ID!, $nextToken: String) {
   }
 }`;
 
-function Rekognition({ user }) {
+function Rekognition() {
   const classes = useStyles();
   const myinput = useRef();
+
+  const user = useContext(UserContext);
 
   const [s3Files, setS3Files] = useState([]);
   const [nextToken, setNextToken] = useState(null);
@@ -236,11 +240,11 @@ function Rekognition({ user }) {
     fileArrary.forEach(f => uploadFile(f));
   };
 
-  const videoConstraints = {
-    width: 1280,
-    height: 720,
-    facingMode: 'user'
-  };
+  // const videoConstraints = {
+  //   width: 1280,
+  //   height: 720,
+  //   facingMode: 'user'
+  // };
   return (
     <div className={classes.root}>
       {/* <Suspense fallback={<h1>Loading...</h1>}> */}
