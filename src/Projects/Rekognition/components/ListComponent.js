@@ -40,9 +40,6 @@ const useStyles = makeStyles(theme => ({
 
 function ListComponent({ files, fetchMoreData, hasMore, deleteItem, history }) {
   const classes = useStyles();
-  // const listRef = useRef(null);
-  // const [dense, setDense] = React.useState(false);
-  // const [secondary, setSecondary] = React.useState(false);
 
   if (files.length === 0) return <></>;
 

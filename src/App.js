@@ -34,6 +34,7 @@ import GraphQLDemo from './Projects/GraphQLDemo';
 import SplunkPricing from './Projects/SplunkPricing';
 import Rekognition from './Projects/Rekognition';
 import Details from './Projects/Rekognition/Details';
+import Test from './Projects/Rekognition/Test';
 
 Amplify.configure(aws_exports);
 let appSyncConfig = {
@@ -181,18 +182,14 @@ function App() {
             {/* <Route path="/graphqldemo" component={GraphQLDemo} /> */}
             <Route path="/splunkpricing" component={SplunkPricing} />
             <Route exact path="/rekognition" component={Rekognition} />
-            {/* <Route
-              exact
-              path="/rekognition"
-              render={props => (
-                <Rekognition user={user} history={props.history} />
-              )}
-            /> */}
+            <Route exact path="/rekognition/details" component={Details} />
+            <Route exact path="/test" component={Test} />
+
             {/* <Route path="/rekognition/:fileId" component={File} /> */}
-            <Route
+            {/* <Route
               path="/rekognition/details"
               render={props => <Details user={user} {...props} />}
-            />
+            /> */}
           </MuiThemeProvider>
         </Router>
       </div>

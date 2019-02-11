@@ -1,36 +1,24 @@
-import React, {
-  Component,
-  useRef,
-  useState,
-  useEffect,
-  useContext,
-  Suspense,
-  lazy
-} from 'react';
-import Amplify, { Storage, API, graphqlOperation, Hub } from 'aws-amplify';
+import React, { useRef, useContext } from 'react';
 
 import Webcam from 'react-webcam';
 import Grid from '@material-ui/core/Grid';
 
 import Paper from '@material-ui/core/Paper';
-import { v4 as uuid } from 'uuid';
+
 import Button from '@material-ui/core/Button';
 import AddIcon from '@material-ui/icons/CameraAlt';
 import { makeStyles, useTheme } from '@material-ui/styles';
-import * as mutations from '../../graphql/mutations';
-import * as queries from '../../graphql/queries';
-import * as subscriptions from '../../graphql/subscriptions';
 
 import WebcamCapture from './components/WebcamCapture';
 import Input from '@material-ui/core/Input';
 import Fab from '@material-ui/core/Fab';
 import { PhotoPicker } from 'aws-amplify-react';
-import { listObjects } from '../../graphql/queries';
+
 //import Paper from '@material-ui/core/Paper';
 //const ListComponent = lazy(() => import('./components/ListComponent'));
 import ListComponent from './components/ListComponent';
-import { set } from 'immutable';
-import { CognitoAccessToken } from 'amazon-cognito-identity-js';
+import useUserFiles from './hooks/useUserFiles';
+
 import { UserContext } from '../../App';
 
 const useStyles = makeStyles(theme => ({
@@ -39,8 +27,6 @@ const useStyles = makeStyles(theme => ({
     position: 'fixed',
     bottom: 10,
     right: 10
-    //width: 300
-    //border: 3px solid #73AD21;
   },
   input: {
     display: 'none'
@@ -59,185 +45,23 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const fetchUserObjects = `query GetUser($id: ID!, $nextToken: String) {
-  getUser(id: $id) {
-    id
-    name
-    email
-    type
-    sub
-    createdAt
-    objects (nextToken: $nextToken, limit: 10, sortDirection: DESC ) {
-      items {
-        id
-        key
-        name
-        prefix
-        createdAt
-      }
-      nextToken
-    }
-  }
-}`;
-
 function Rekognition() {
   const classes = useStyles();
   const myinput = useRef();
-
   const user = useContext(UserContext);
 
-  const [s3Files, setS3Files] = useState([]);
-  const [nextToken, setNextToken] = useState(null);
-  const [hasMore, setHasMore] = useState(true);
-  const [progress, setProgress] = useState(null);
-
-  const getUserObjects = async () => {
-    if (hasMore) {
-      const { data } = await API.graphql(
-        graphqlOperation(fetchUserObjects, {
-          id: user.id,
-          nextToken
-        })
-      );
-
-      //console.log(data);
-
-      const existingIDs = s3Files.map(s => s.id); // remove ids that arrived through subscription
-      const filteredItems = data.getUser.objects.items.filter(
-        f => !existingIDs.includes(f.id)
-      );
-
-      const updatedItems = [...s3Files, ...filteredItems];
-      setS3Files(updatedItems);
-      if (data.getUser.objects.nextToken === null) {
-        setHasMore(false);
-      } else {
-        setNextToken(data.getUser.objects.nextToken);
-      }
-    }
-  };
-
-  useEffect(() => {
-    const createSubscription = API.graphql(
-      graphqlOperation(subscriptions.onCreateS3Object)
-    ).subscribe({
-      next: ({
-        value: {
-          data: { onCreateS3Object: newItem }
-        }
-      }) => {
-        setS3Files(prev => {
-          return [newItem, ...prev];
-        });
-      }
-    });
-
-    const deleteSubscription = API.graphql(
-      graphqlOperation(subscriptions.onDeleteS3Object)
-    ).subscribe({
-      next: ({
-        value: {
-          data: { onDeleteS3Object: deletedItem }
-        }
-      }) => {
-        setS3Files(prev => {
-          const updated = prev.filter(f => f.id !== deletedItem.id);
-          return updated;
-        });
-
-        //console.log(deletedItem);
-        // setS3Files(prev => {
-        //   return [...prev, newItem];
-        // });
-      }
-    });
-
-    return () => {
-      createSubscription.unsubscribe();
-      deleteSubscription.unsubscribe();
-    };
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      getUserObjects();
-    }
-  }, [user]);
-
-  const generateId = () => {
-    return (
-      '_' +
-      Math.random()
-        .toString(36)
-        .substr(2, 9)
-    );
-  };
-
-  const uploadFile = async file => {
-    //console.log(file.name);
-    const prefix = file.type.split('/')[0];
-    const extension = file.name.split('.')[file.name.split('.').length - 1];
-    //const fileId = generateId() + '.' + extension;
-    const fileId = uuid(); // + '.' + extension;
-
-    //console.log(file);
-    const result = await Storage.put(`${prefix}/${fileId}`, file, {
-      level: 'private',
-      contentType: file.type,
-      progressCallback(progress) {
-        //console.log(`Uploaded: ${progress.loaded / progress.total}`);
-        const percentProgress = Math.floor(
-          (progress.loaded / progress.total) * 100
-        );
-        if (percentProgress < 100) {
-          setProgress(`${percentProgress}%`);
-        } else {
-          setProgress(null);
-        }
-      }
-    });
-    if (result) {
-      //console.log(result);
-      //console.log(user, fileId, file.name, prefix);
-      const res = await API.graphql(
-        graphqlOperation(mutations.createS3Object, {
-          input: {
-            id: fileId,
-            key: `${prefix}/${fileId}`,
-            name: file.name,
-            prefix: prefix,
-            s3ObjectCreatedById: user.id //check graphQL query console to get this ID
-          }
-        })
-      );
-      //console.log(res);
-    }
-  };
-
-  const handleDelete = async (id, key) => {
-    const updatedFiles = s3Files.filter(f => f.id !== id);
-    setS3Files(updatedFiles);
-    //console.log(key);
-    const res = await Storage.remove(key, { level: 'private' });
-
-    if (res) {
-      await API.graphql(
-        graphqlOperation(mutations.deleteS3Object, {
-          input: {
-            id
-          }
-        })
-      );
-    }
-  };
+  const {
+    S3Files,
+    hasMore,
+    getUserObjects,
+    removeUserObject,
+    uploadFiles,
+    progress
+  } = useUserFiles(user.id);
+  console.log(' --- render ----', S3Files.length);
 
   const handleUpload = async e => {
-    const fileArrary = [];
-    const fileIndexes = Object.keys(e.target.files);
-    fileIndexes.forEach(f => fileArrary.push(e.target.files[f]));
-
-    // console.log(fileArrary);
-    fileArrary.forEach(f => uploadFile(f));
+    uploadFiles(e);
   };
 
   // const videoConstraints = {
@@ -249,9 +73,9 @@ function Rekognition() {
     <div className={classes.root}>
       {/* <Suspense fallback={<h1>Loading...</h1>}> */}
       <ListComponent
-        files={s3Files}
+        files={S3Files}
         fetchMoreData={getUserObjects}
-        deleteItem={handleDelete}
+        deleteItem={removeUserObject}
         hasMore={hasMore}
       />
       {/* </Suspense> */}

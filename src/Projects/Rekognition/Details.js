@@ -81,8 +81,10 @@ function File(props) {
     files.findIndex(f => f.id === selectedFileId)
   );
   const [rotationIndex, setRotationIndex] = useState(0);
+  const file = files[Math.abs(fileIndex)];
+  console.log(file);
 
-  const key = files[Math.abs(fileIndex)].key;
+  const key = file.key;
   const [imageUrl, setImageUrl] = useState(PLACEHOLDER_IMAGE_URL);
   const [value, setValue] = React.useState(0);
   const [analysis, setAnalysis] = useState(null);
@@ -100,7 +102,8 @@ function File(props) {
         //nextToken
       })
     );
-    if (data) {
+    if (data.getS3Object.analysis.items.length > 0) {
+      //console.log();
       const result = JSON.parse(data.getS3Object.analysis.items[0].result);
       setAnalysis(result);
     }
@@ -119,64 +122,98 @@ function File(props) {
   return (
     <div className={classes.root}>
       <Grid container spacing={24}>
-        <Grid item xs={12} sm={6}>
+        <Grid item xs={12} sm={8}>
           <Button variant="outlined" onClick={() => history.goBack()}>
             Back
           </Button>
         </Grid>
-        <Grid item xs={12} sm={6}>
-          <Paper
+        <Grid item xs={12} sm={4}>
+          {/* <Paper
             square
             style={{
-              //padding: 0,
-              textAlign: 'center',
-              flexGrow: 1
+              padding: 0,
+
+              textAlign: 'center'
+              //flexGrow: 1
             }}
-          >
+          > */}
+          {file.prefix === 'image' ? (
             <Image
               src={imageUrl}
               style={{
                 transform: `rotate(${ROTATION[rotationIndex]}deg)`,
-                paddingTop: '56.25%'
+                width: '100%'
+
+                //paddingTop: '56.25%'
               }}
             />
+          ) : (
+            // <CardMedia
+            //   src="video"
+            //   component="video"
+            //   className={classes.cover}
+            //   image={imageUrl}
+            //   //height="140"
+            //   title="Live from space album cover"
+            // />
+            // <div style={{ padding: 10 }}>
+            <video
+              controls
+              style={{
+                width: '100%',
+                //height: window.screen.height / 2
+                height: '50%'
+              }}
+            >
+              // <source src={imageUrl} type="video/webm" />
+              // <source src={imageUrl} type="video/mov" />
+              // Sorry, your browser doesn't support embedded videos. //{' '}
+            </video>
+            // </div>
+          )}
 
-            <Grid container justify="space-between">
-              <IconButton style={{ padding: 10 }}>
-                <ChevronLeft
-                  onClick={() => {
-                    const nextIndex = (fileIndex - 1) % files.length;
-                    console.log(nextIndex);
-                    setFileIndex(nextIndex);
-                  }}
-                />
-              </IconButton>
-              <IconButton
-                style={{ padding: 10 }}
+          <Grid
+            item
+            style={{ marginTop: 10, marginBottom: 10 }}
+            container
+            justify="space-between"
+          >
+            <IconButton style={{ padding: 10 }}>
+              <ChevronLeft
                 onClick={() => {
-                  const nextIndex = (rotationIndex + 1) % ROTATION.length;
-                  setRotationIndex(nextIndex);
+                  const nextIndex = (fileIndex - 1) % files.length;
+                  console.log(nextIndex);
+                  setFileIndex(nextIndex);
                 }}
-              >
-                <RotateRight />
-              </IconButton>
-              <IconButton style={{ padding: 10 }}>
-                <ChevronRight
-                  onClick={() => {
-                    const nextIndex = (fileIndex + 1) % files.length;
-                    setFileIndex(nextIndex);
-                  }}
-                />
-              </IconButton>
-            </Grid>
+              />
+            </IconButton>
+            <IconButton
+              style={{ padding: 10 }}
+              onClick={() => {
+                const nextIndex = (rotationIndex + 1) % ROTATION.length;
+                setRotationIndex(nextIndex);
+              }}
+            >
+              <RotateRight />
+            </IconButton>
+            <IconButton style={{ padding: 10 }}>
+              <ChevronRight
+                onClick={() => {
+                  const nextIndex = (fileIndex + 1) % files.length;
+                  setFileIndex(nextIndex);
+                }}
+              />
+            </IconButton>
+          </Grid>
+          <Grid item style={{ textAlign: 'center' }}>
             <Button style={{ marginBottom: 10 }} variant="outlined">
               Upload
             </Button>
-          </Paper>
+          </Grid>
+          {/* </Paper> */}
         </Grid>
 
         <Grid item xs={12}>
-          {/* <Paper> */}
           <Tabs
             value={value}
             onChange={handleChange}
@@ -190,7 +227,7 @@ function File(props) {
             <Tab label="Comprehend" />
             <Tab label="Textract" />
           </Tabs>
-          {/* </Paper> */}
+
           {value === 0 && <Reko analysis={analysis} />}
           {value === 1 && <TabContainer>Item Two</TabContainer>}
           {value === 2 && <TabContainer>Item Three</TabContainer>}
@@ -253,6 +290,7 @@ function Reko({ analysis }) {
       ))}
     </>
   );
+
   //console.log(analysis);
   if (analysis) {
     return (
