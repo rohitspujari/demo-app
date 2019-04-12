@@ -93,6 +93,13 @@ const styles = theme => ({
 
 const supportPrice = (awsSupportTier, amount, applyMinFee) => {
   //console.log('aws support', awsSupportTier);
+
+  if (awsSupportTier === 'NA') {
+    return {
+      price: 0
+    };
+  }
+
   var minFee = 0;
   var priceRange = [];
   if (awsSupportTier === 'Business') {

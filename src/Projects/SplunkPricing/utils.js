@@ -371,7 +371,13 @@ export async function priceSplunkDeployment(params) {
 
   const coldStoragePerIndexer = dataRetentionCold / indexerCount;
 
-  const dataRetention = dataRetentionHot + dataRetentionCold;
+  var dataRetention;
+
+  if (splunkArchitecture === 'Smart Store (S2)') {
+    dataRetention = dataRetentionCold;
+  } else {
+    dataRetention = dataRetentionHot + dataRetentionCold;
+  }
 
   const s3DataRetention = dataRetention / params.replicationFactor; // removing replication
 

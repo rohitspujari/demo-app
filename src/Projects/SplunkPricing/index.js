@@ -491,7 +491,7 @@ class SplunkPricing extends Component {
 
             <TextField
               id="outlined-uncontrolled"
-              label="Cold Retention"
+              label="Cold Retention / Total Retention"
               value={this.state.retentionCold}
               onChange={handleChange('retentionCold')}
               onFocus={e => (this.onFocusText = e.target.value)}
@@ -684,6 +684,7 @@ class SplunkPricing extends Component {
                             />
                           }
                         >
+                          <MenuItem value={'NA'}>Exclude Support</MenuItem>
                           <MenuItem value={'Developer'}>Developer</MenuItem>
                           <MenuItem value={'Business'}>Business</MenuItem>
                           <MenuItem value={'Enterprise'}>Enterprise</MenuItem>
