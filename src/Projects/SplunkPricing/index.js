@@ -123,7 +123,7 @@ const BILLING_OPTIONS = [
     description: '3 Yr All Upfront convertible'
   }
 ];
-const DEPLOYMENT_OPTIONS = ['Spunk on AWS', 'Splunk Cloud'];
+const DEPLOYMENT_OPTIONS = ['Splunk on AWS', 'Splunk Cloud'];
 const styles = theme => ({
   button: {
     display: 'flex'

@@ -4,7 +4,15 @@
     
     
     "Parameters": {
-        
+        "authRoleName": {
+            "Type":  "String"
+        },
+        "unauthRoleName": {
+            "Type":  "String"
+        },
+        "env": {
+            "Type": "String"
+        },
     
     
           "functionAWSPricingName": {
@@ -20,8 +28,18 @@
         
           
           
-        },
     
+    },
+     "Conditions": {
+        "ShouldNotCreateEnvResources": {
+            "Fn::Equals": [
+                {
+                    "Ref": "env"
+                },
+                "NONE"
+            ]
+        }
+    },
     "Resources": {
         
         
@@ -33,7 +51,7 @@
             "Properties": {
               "PolicyName": "PolicyAPIGWdemoapp910ccf6eauth",
               "Roles": [
-                "demoapp-20181206165647-authRole"
+                {"Ref": "authRoleName"}
               ],
               "PolicyDocument": {
                 "Version": "2012-10-17",
@@ -63,7 +81,17 @@
                             {
                               "Ref": "demoapp910ccf6e"
                             },
-                            "/Prod/*",
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                            "/*",
                             "/email/*"
                           ]
                         ]
@@ -84,7 +112,17 @@
                             {
                               "Ref": "demoapp910ccf6e"
                             },
-                            "/Prod/*",
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                            "/*",
                             "/email"
                           ]
                         ]
@@ -126,7 +164,23 @@
                   ]
                 ]
               },
-            "basePath": "/Prod",
+            "basePath": {
+              "Fn::If": [
+                "ShouldNotCreateEnvResources",
+                "/Prod",
+                {
+                  "Fn::Join": [
+                      "",
+                      [
+                          "/",
+                          {
+                              "Ref": "env"
+                          }
+                      ]
+                  ]
+                } 
+              ]
+            },
             "schemes": [
               "https"
             ],
@@ -421,13 +475,19 @@
         
         
         
-        
-        
       "DeploymentAPIGWdemoapp910ccf6e": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
           "Description": "The Development stage deployment of your API.",
-          "StageName": "Prod",
+          "StageName": {
+            "Fn::If": [
+              "ShouldNotCreateEnvResources",
+              "Prod", 
+              {
+                "Ref": "env"
+              } 
+            ]
+          },
           "RestApiId": {
             "Ref": "demoapp910ccf6e"
           }
@@ -437,7 +497,7 @@
     "Outputs": {
         "RootUrl": {
             "Description": "Root URL of the API gateway",
-            "Value": {"Fn::Join": ["", ["https://", {"Ref": "demoapp910ccf6e"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/Prod"]]}
+            "Value": {"Fn::Join": ["", ["https://", {"Ref": "demoapp910ccf6e"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/", {"Fn::If": ["ShouldNotCreateEnvResources","Prod", {"Ref": "env"} ]}]]}
         },
         "ApiName": {
           "Description": "API Friendly name",

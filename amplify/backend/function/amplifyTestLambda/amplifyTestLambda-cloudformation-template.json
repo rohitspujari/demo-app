@@ -6,7 +6,24 @@
 			"Type": "AWS::Lambda::Function",
 			"Properties": {
 				"Handler": "index.handler",
-				"FunctionName": "amplifyTestLambda",
+				"FunctionName": {
+					"Fn::If": [
+						"ShouldNotCreateEnvResources",
+						"amplifyTestLambda",
+						{
+							"Fn::Join": [
+								"",
+								[
+									"amplifyTestLambda",
+									"-",
+									{
+										"Ref": "env"
+									}
+								]
+							]
+						}
+					]
+				},
 				"Role": {
 					"Fn::GetAtt": [
 						"LambdaExecutionRole",
@@ -18,13 +35,37 @@
 				"Code": {
 					"S3Bucket": "demoapp-20181206165647-deployment",
 					"S3Key": "amplify-builds/amplifyTestLambda-1548995672-latest-build.zip"
+				},
+				"Environment": {
+					"Variables": {
+						"ENV": {
+							"Ref": "env"
+						}
+					}
 				}
 			}
 		},
 		"LambdaExecutionRole": {
 			"Type": "AWS::IAM::Role",
 			"Properties": {
-				"RoleName": "demoappLambdaRolebfec3421",
+				"RoleName": {
+					"Fn::If": [
+						"ShouldNotCreateEnvResources",
+						"demoappLambdaRolebfec3421",
+						{
+							"Fn::Join": [
+								"",
+								[
+									"demoappLambdaRolebfec3421",
+									"-",
+									{
+										"Ref": "env"
+									}
+								]
+							]
+						}
+					]
+				},
 				"AssumeRolePolicyDocument": {
 					"Version": "2012-10-17",
 					"Statement": [
@@ -105,6 +146,21 @@
 			"Value": {
 				"Ref": "AWS::Region"
 			}
+		}
+	},
+	"Parameters": {
+		"env": {
+			"Type": "String"
+		}
+	},
+	"Conditions": {
+		"ShouldNotCreateEnvResources": {
+			"Fn::Equals": [
+				{
+					"Ref": "env"
+				},
+				"NONE"
+			]
 		}
 	}
 }

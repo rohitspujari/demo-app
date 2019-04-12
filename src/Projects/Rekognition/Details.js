@@ -65,7 +65,7 @@ function TabContainer(props) {
   );
 }
 
-function File(props) {
+function Details(props) {
   var classes = useStyles();
   const {
     history,
@@ -106,6 +106,7 @@ function File(props) {
       //console.log();
       const result = JSON.parse(data.getS3Object.analysis.items[0].result);
       setAnalysis(result);
+      console.log(result);
     }
     //console.log(JSON.parse(data.getS3Object.analysis.items[0].result));
   };
@@ -241,7 +242,7 @@ function File(props) {
   );
 }
 
-export default withRouter(File);
+export default withRouter(Details);
 
 function Reko({ analysis }) {
   const [panelExpanded, setPanelExpanded] = useState(false);

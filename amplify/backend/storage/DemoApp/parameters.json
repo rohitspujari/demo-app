@@ -1,9 +1,13 @@
 {
-    "bucketName": "demo-app-storage",
-    "authPolicyName": "s3_amplify_df1119e0",
-    "unauthPolicyName": "s3_amplify_df1119e0",
-    "authRoleName": "demoapp-20181206165647-authRole",
-    "unauthRoleName": "demoapp-20181206165647-unauthRole",
-    "authPermissions": "rw",
-    "unauthPermissions": ""
+	"bucketName": "demo-app-storage",
+	"authPolicyName": "s3_amplify_df1119e0",
+	"unauthPolicyName": "s3_amplify_df1119e0",
+	"authRoleName": {
+		"Ref": "AuthRoleName"
+	},
+	"unauthRoleName": {
+		"Ref": "UnauthRoleName"
+	},
+	"authPermissions": "rw",
+	"unauthPermissions": ""
 }

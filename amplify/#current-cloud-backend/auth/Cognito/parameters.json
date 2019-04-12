@@ -1,4 +1,22 @@
 {
+    "authRoleName": {
+        "Ref": "AuthRoleName"
+    },
+    "unauthRoleName": {
+        "Ref": "UnauthRoleName"
+    },
+    "authRoleArn": {
+        "Fn::GetAtt": [
+            "AuthRole",
+            "Arn"
+        ]
+    },
+    "unauthRoleArn": {
+        "Fn::GetAtt": [
+            "UnauthRole",
+            "Arn"
+        ]
+    },
     "identityPoolName": "CognitoIdentityPool",
     "allowUnauthenticatedIdentities": false,
     "thirdPartyAuth": true,
@@ -49,11 +67,7 @@
         "graph.facebook.com",
         "accounts.google.com"
     ],
-    "facebookAppId": "133718410632322",
-    "googleClientId": "277830869306-2c0r1esgjnjauug9koe5sodvh97uv419.apps.googleusercontent.com",
     "selectedParties": "{\"graph.facebook.com\":\"133718410632322\",\"accounts.google.com\":\"277830869306-2c0r1esgjnjauug9koe5sodvh97uv419.apps.googleusercontent.com\"}",
     "unAuthRoleName": "demoapp-20181206165647-unauthRole",
-    "authRoleName": "demoapp-20181206165647-authRole",
-    "unAuthRoleArn": "arn:aws:iam::465541050084:role/demoapp-20181206165647-unauthRole",
-    "authRoleArn": "arn:aws:iam::465541050084:role/demoapp-20181206165647-authRole"
+    "unAuthRoleArn": "arn:aws:iam::465541050084:role/demoapp-20181206165647-unauthRole"
 }

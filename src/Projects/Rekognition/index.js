@@ -58,7 +58,7 @@ function Rekognition() {
     uploadFiles,
     progress
   } = useUserFiles(user.id);
-  console.log(' --- render ----', S3Files.length);
+  //console.log(' --- render ----', S3Files.length);
 
   const handleUpload = async e => {
     uploadFiles(e);

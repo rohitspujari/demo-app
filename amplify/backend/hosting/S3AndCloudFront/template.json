@@ -6,7 +6,28 @@
             "Type": "AWS::S3::Bucket",
             "DeletionPolicy": "Retain",
             "Properties": {
-                "BucketName": "demoapp-20181207231438-hostingbucket",
+                "BucketName": {
+                    "Fn::If": [
+                        "ShouldNotCreateEnvResources",
+                        {
+                            "Ref": "bucketName"
+                        },
+                        {
+                            "Fn::Join": [
+                                "",
+                                [
+                                    {
+                                        "Ref": "bucketName"
+                                    },
+                                    "-",
+                                    {
+                                        "Ref": "env"
+                                    }
+                                ]
+                            ]
+                        }
+                    ]
+                },
                 "WebsiteConfiguration": {
                     "IndexDocument": "index.html",
                     "ErrorDocument": "index.html"
@@ -222,6 +243,24 @@
                     ]
                 ]
             }
+        }
+    },
+    "Parameters": {
+        "env": {
+            "Type": "String"
+        },
+        "bucketName": {
+            "Type": "String"
+        }
+    },
+    "Conditions": {
+        "ShouldNotCreateEnvResources": {
+            "Fn::Equals": [
+                {
+                    "Ref": "env"
+                },
+                "NONE"
+            ]
         }
     }
 }

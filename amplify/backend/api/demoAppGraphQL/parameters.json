@@ -1,15 +1,12 @@
 {
+    "DynamoDBBillingMode": "PROVISIONED",
     "AppSyncApiName": "demoAppGraphQL",
+    "ElasticSearchStreamingLambdaCodeS3Bucket": "demoapp-20181206165647-deployment",
+    "ElasticSearchStreamingLambdaCodeS3Key": "amplify-appsync-files/python_streaming_function.zip",
     "AuthCognitoUserPoolId": {
         "Fn::GetAtt": [
             "authCognito",
             "Outputs.UserPoolId"
         ]
-    },
-    "ElasticSearchStreamingLambdaCodeS3Key": "amplify-appsync-files/python_streaming_function.zip",
-    "ElasticSearchStreamingLambdaCodeS3Bucket": "demoapp-20181206165647-deployment",
-    "schemaGraphql": "s3://demoapp-20181206165647-deployment/amplify-appsync-files/schema.graphql.1549505081521",
-    "ResolverBucket": "demoapp-20181206165647-deployment",
-    "ResolverRootKey": "amplify-appsync-files",
-    "DeploymentTimestamp": "1549505081521"
+    }
 }

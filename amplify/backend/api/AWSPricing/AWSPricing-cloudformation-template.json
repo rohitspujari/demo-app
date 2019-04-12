@@ -4,7 +4,15 @@
     
     
     "Parameters": {
-        
+        "authRoleName": {
+            "Type":  "String"
+        },
+        "unauthRoleName": {
+            "Type":  "String"
+        },
+        "env": {
+            "Type": "String"
+        },
     
     
           "functionAWSPricingName": {
@@ -20,8 +28,18 @@
         
           
           
-        },
     
+    },
+     "Conditions": {
+        "ShouldNotCreateEnvResources": {
+            "Fn::Equals": [
+                {
+                    "Ref": "env"
+                },
+                "NONE"
+            ]
+        }
+    },
     "Resources": {
         
         
@@ -33,7 +51,7 @@
             "Properties": {
               "PolicyName": "PolicyAPIGWdemoapp9a976e36auth",
               "Roles": [
-                "demoapp-20181206165647-authRole"
+                {"Ref": "authRoleName"}
               ],
               "PolicyDocument": {
                 "Version": "2012-10-17",
@@ -63,7 +81,17 @@
                             {
                               "Ref": "demoapp9a976e36"
                             },
-                            "/Prod/*",
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                            "/*",
                             "/products/*"
                           ]
                         ]
@@ -84,7 +112,17 @@
                             {
                               "Ref": "demoapp9a976e36"
                             },
-                            "/Prod/*",
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                            "/*",
                             "/products"
                           ]
                         ]
@@ -115,7 +153,17 @@
                             {
                               "Ref": "demoapp9a976e36"
                             },
-                            "/Prod/*",
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                            "/*",
                             "/attributes/*"
                           ]
                         ]
@@ -136,7 +184,17 @@
                             {
                               "Ref": "demoapp9a976e36"
                             },
-                            "/Prod/*",
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                            "/*",
                             "/attributes"
                           ]
                         ]
@@ -167,7 +225,17 @@
                             {
                               "Ref": "demoapp9a976e36"
                             },
-                            "/Prod/*",
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                            "/*",
                             "/services/*"
                           ]
                         ]
@@ -188,7 +256,17 @@
                             {
                               "Ref": "demoapp9a976e36"
                             },
-                            "/Prod/*",
+                            "/",
+                            {
+                              "Fn::If": [
+                                "ShouldNotCreateEnvResources",
+                                "Prod", 
+                                {
+                                  "Ref": "env"
+                                } 
+                              ]
+                            },
+                            "/*",
                             "/services"
                           ]
                         ]
@@ -230,7 +308,23 @@
                   ]
                 ]
               },
-            "basePath": "/Prod",
+            "basePath": {
+              "Fn::If": [
+                "ShouldNotCreateEnvResources",
+                "/Prod",
+                {
+                  "Fn::Join": [
+                      "",
+                      [
+                          "/",
+                          {
+                              "Ref": "env"
+                          }
+                      ]
+                  ]
+                } 
+              ]
+            },
             "schemes": [
               "https"
             ],
@@ -947,13 +1041,19 @@
         
         
         
-        
-        
       "DeploymentAPIGWdemoapp9a976e36": {
         "Type": "AWS::ApiGateway::Deployment",
         "Properties": {
           "Description": "The Development stage deployment of your API.",
-          "StageName": "Prod",
+          "StageName": {
+            "Fn::If": [
+              "ShouldNotCreateEnvResources",
+              "Prod", 
+              {
+                "Ref": "env"
+              } 
+            ]
+          },
           "RestApiId": {
             "Ref": "demoapp9a976e36"
           }
@@ -963,7 +1063,7 @@
     "Outputs": {
         "RootUrl": {
             "Description": "Root URL of the API gateway",
-            "Value": {"Fn::Join": ["", ["https://", {"Ref": "demoapp9a976e36"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/Prod"]]}
+            "Value": {"Fn::Join": ["", ["https://", {"Ref": "demoapp9a976e36"}, ".execute-api.", {"Ref": "AWS::Region"}, ".amazonaws.com/", {"Fn::If": ["ShouldNotCreateEnvResources","Prod", {"Ref": "env"} ]}]]}
         },
         "ApiName": {
           "Description": "API Friendly name",

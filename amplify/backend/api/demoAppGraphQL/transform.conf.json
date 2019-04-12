@@ -1,0 +1,13 @@
+{
+    "Migration": {
+        "V1": {
+            "Resources": [
+                "S3ObjectTable",
+                "UserTable",
+                "AnalysisTable",
+                "ElasticSearchAccessIAMRole",
+                "ElasticSearchDomain"
+            ]
+        }
+    }
+}

@@ -22,6 +22,9 @@
 		},
 		"authPermissions": {
 			"Type": "String"
+		},
+		"env": {
+			"Type": "String"
 		}
 	},
 	"Conditions": {
@@ -72,15 +75,42 @@
 				},
 				"w"
 			]
+		},
+		"ShouldNotCreateEnvResources": {
+			"Fn::Equals": [
+				{
+					"Ref": "env"
+				},
+				"NONE"
+			]
 		}
 	},
 	"Resources": {
 		"S3Bucket": {
 			"Type": "AWS::S3::Bucket",
-			"DeletionPolicy" : "Retain",
+			"DeletionPolicy": "Retain",
 			"Properties": {
 				"BucketName": {
-					"Ref": "bucketName"
+					"Fn::If": [
+						"ShouldNotCreateEnvResources",
+						{
+							"Ref": "bucketName"
+						},
+						{
+							"Fn::Join": [
+								"",
+								[
+									{
+										"Ref": "bucketName"
+									},
+									"-",
+									{
+										"Ref": "env"
+									}
+								]
+							]
+						}
+					]
 				},
 				"CorsConfiguration": {
 					"CorsRules": [
