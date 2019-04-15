@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+
 //mport ReactDOM from 'react-dom';
 import { API, graphqlOperation } from 'aws-amplify';
 import * as queries from '../../graphql/queries';

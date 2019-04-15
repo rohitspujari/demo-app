@@ -1,4 +1,5 @@
 import React, { useState, useContext, useRef } from 'react';
+import { withRouter } from 'react-router-dom';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Button from '@material-ui/core/Button';
 import TextField from '@material-ui/core/TextField';
@@ -25,8 +26,8 @@ function SaveShareDialog(props) {
   //   '[Customer] Splunk Deployment on AWS'
   // );
 
-  const { params, changeDescription } = props;
-  //console.log(params);
+  const { params, changeDescription, history, location } = props;
+  console.log('logging history and location', history, location, window);
 
   //console.log('logging user context', user);
   async function handleClickOpen() {
@@ -51,7 +52,7 @@ function SaveShareDialog(props) {
     setOpen(false);
   }
 
-  const link = `http://localhost:3000/splunkpricing?quote=${quoteId}`;
+  const link = `http://aws.sonasher.com/splunkpricing?quote=${quoteId}`;
 
   return (
     <div>
@@ -137,80 +138,4 @@ function SaveShareDialog(props) {
   );
 }
 
-export default SaveShareDialog;
-
-// handleClickOpen = () => {
-//     this.setState({ open: true });
-//     const { params } = this.props;
-
-//     console.log(params);
-//   };
-
-// <Grid container justify="center" alignItems="center" spacing={24}>
-//         {/* <Grid item xs={12}> */}
-//         <Divider />
-//         {/* </Grid> */}
-//         <Grid item xs={9}>
-//           <TextField
-//             required
-//             fullWidth
-//             id="outlined-required"
-//             label="Description"
-//             value={'[Customer] Splunk on AWS Deployment'}
-//             // onChange={handleChange('searchFactor')}
-//             //onFocus={e => (this.onFocusText = e.target.value)}
-//             // onBlur={this.handleRefresh}
-//             //defaultValue="30 days"
-//             //className={classes.textField}
-//             //margin="normal"
-//             //variant="outlined"
-//           />
-//         </Grid>
-//         <Grid item xs={3}>
-//           {/* <Badge color="primary" badgeContent={4} className={classes.margin}>
-//               <Button variant="contained" fullWidth>
-//                 Button
-//               </Button>
-//             </Badge> */}
-//           <Button
-//             className={{ flex: 1 }}
-//             variant="outlined"
-//             color="primary"
-//             fullwidth
-//             size="large"
-//             onClick={this.handleClickOpen}
-//           >
-//             Save and Share
-//           </Button>
-//         </Grid>
-//         <Dialog
-//           open={this.state.open}
-//           onClose={this.handleClose}
-//           aria-labelledby="form-dialog-title"
-//         >
-//           <DialogTitle id="form-dialog-title">Save and Share</DialogTitle>
-//           <DialogContent>
-//             <DialogContentText>
-//               <a href="https://www.w3schools.com/html/">
-//                 http://localhost:3000/splunkpricing#32923u4904u23
-//               </a>
-//             </DialogContentText>
-//             <TextField
-//               autoFocus
-//               margin="dense"
-//               id="name"
-//               label="Email Address"
-//               type="email"
-//               fullWidth
-//             />
-//           </DialogContent>
-//           <DialogActions>
-//             <Button onClick={this.handleClose} color="primary">
-//               Cancel
-//             </Button>
-//             <Button onClick={this.handleClose} color="primary">
-//               Send
-//             </Button>
-//           </DialogActions>
-//         </Dialog>
-//       </Grid>
+export default withRouter(SaveShareDialog);
