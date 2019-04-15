@@ -15,6 +15,9 @@ export const createS3Object = `mutation CreateS3Object($input: CreateS3ObjectInp
       type
       sub
       createdAt
+      objects {
+        nextToken
+      }
     }
     analysis {
       items {
@@ -44,6 +47,9 @@ export const updateS3Object = `mutation UpdateS3Object($input: UpdateS3ObjectInp
       type
       sub
       createdAt
+      objects {
+        nextToken
+      }
     }
     analysis {
       items {
@@ -73,6 +79,9 @@ export const deleteS3Object = `mutation DeleteS3Object($input: DeleteS3ObjectInp
       type
       sub
       createdAt
+      objects {
+        nextToken
+      }
     }
     analysis {
       items {
@@ -160,6 +169,17 @@ export const createAnalysis = `mutation CreateAnalysis($input: CreateAnalysisInp
       name
       prefix
       createdAt
+      createdBy {
+        id
+        name
+        email
+        type
+        sub
+        createdAt
+      }
+      analysis {
+        nextToken
+      }
     }
     category
     type
@@ -172,6 +192,9 @@ export const createAnalysis = `mutation CreateAnalysis($input: CreateAnalysisInp
       type
       sub
       createdAt
+      objects {
+        nextToken
+      }
     }
     createdAt
   }
@@ -186,6 +209,17 @@ export const updateAnalysis = `mutation UpdateAnalysis($input: UpdateAnalysisInp
       name
       prefix
       createdAt
+      createdBy {
+        id
+        name
+        email
+        type
+        sub
+        createdAt
+      }
+      analysis {
+        nextToken
+      }
     }
     category
     type
@@ -198,6 +232,9 @@ export const updateAnalysis = `mutation UpdateAnalysis($input: UpdateAnalysisInp
       type
       sub
       createdAt
+      objects {
+        nextToken
+      }
     }
     createdAt
   }
@@ -212,6 +249,17 @@ export const deleteAnalysis = `mutation DeleteAnalysis($input: DeleteAnalysisInp
       name
       prefix
       createdAt
+      createdBy {
+        id
+        name
+        email
+        type
+        sub
+        createdAt
+      }
+      analysis {
+        nextToken
+      }
     }
     category
     type
@@ -224,6 +272,9 @@ export const deleteAnalysis = `mutation DeleteAnalysis($input: DeleteAnalysisInp
       type
       sub
       createdAt
+      objects {
+        nextToken
+      }
     }
     createdAt
   }

@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
 
 import * as utils from './utils.js';
+import { withRouter } from 'react-router';
+import queryString from 'query-string';
 import Grid from '@material-ui/core/Grid';
 import Hidden from '@material-ui/core/Hidden';
 //import Paper from '@material-ui/core/Paper';
@@ -29,6 +31,7 @@ import { Auth } from 'aws-amplify';
 import CostSummary from './components/CostSummary.js';
 import ArchitecturePanel from './components/ArchitecturePanel.js';
 import ContactForm from './components/ContactForm.js';
+import SaveShareDialog from './components/SaveShareDialog.js';
 
 const BILLING_OPTIONS = [
   {
@@ -232,11 +235,25 @@ class SplunkPricing extends Component {
   };
 
   async componentDidMount() {
+    const values = queryString.parse(this.props.location.search);
+    console.log('querystring', values);
+    var params = {};
+    if (values.quote) {
+      params = {
+        volumePerDay: 5000
+      };
+
+      this.setState({
+        ...this.state,
+        ...params
+      });
+    }
+
     this.setState({
       user: await Auth.currentAuthenticatedUser({
         bypassCache: true // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
       }),
-      result: await utils.priceSplunkDeployment(this.state),
+      result: await utils.priceSplunkDeployment({ ...this.state, ...params }),
       locations: await utils.getAttributes('location', 'AmazonS3', '100'),
       operatingSystems: await utils.getAttributes(
         'operatingSystem',
@@ -444,11 +461,22 @@ class SplunkPricing extends Component {
 
     return (
       <div className={classes.root}>
-        <Grid container spacing={24}>
-          <Grid item xs={12}>
+        <Grid container alignItems="center" spacing={24}>
+          <Grid item xs={10}>
             <Typography variant="h5" gutterBottom className={classes.heading}>
               AWS Infrastructure Costs for Splunk
             </Typography>
+          </Grid>
+          <Grid item xs={2}>
+            <Button
+              variant="outlined"
+              color="primary"
+              fullWidth
+              size="large"
+              //onClick={handleClickOpen}
+            >
+              My Quotes
+            </Button>
           </Grid>
 
           <Grid item xs={12} sm={6}>
@@ -491,7 +519,7 @@ class SplunkPricing extends Component {
 
             <TextField
               id="outlined-uncontrolled"
-              label="Cold Retention / Total Retention"
+              label="Cold Retention (IDR) / Total Retention (S2)"
               value={this.state.retentionCold}
               onChange={handleChange('retentionCold')}
               onFocus={e => (this.onFocusText = e.target.value)}
@@ -569,7 +597,21 @@ class SplunkPricing extends Component {
               }
               label="IT Service Intelligence"
             />
+
             {/* <Paper className={classes.paper}>ES or ITSI</Paper> */}
+          </Grid>
+
+          <Grid item xs={12}>
+            {/* <Button
+              //href={quickStartURL}
+              target="_blank"
+              variant="contained"
+              className={classes.button}
+            >
+              Save and Share
+            </Button> */}
+
+            <SaveShareDialog params={this.state} />
           </Grid>
           <Grid item xs={12}>
             <ExpansionPanel>
@@ -1092,4 +1134,4 @@ class SplunkPricing extends Component {
     );
   }
 }
-export default withStyles(styles)(SplunkPricing);
+export default withStyles(styles)(withRouter(SplunkPricing));

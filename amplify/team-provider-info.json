@@ -9,6 +9,13 @@
             "UnauthRoleName": "demoapp-20181206165647-unauthRole",
             "StackName": "demoapp-20181206165647",
             "StackId": "arn:aws:cloudformation:us-east-1:465541050084:stack/demoapp-20181206165647/3c024b60-f9aa-11e8-83b5-500abe228429"
+        },
+        "categories": {
+            "auth": {
+                "Cognito": {
+                    "googleClientId": "277830869306-2c0r1esgjnjauug9koe5sodvh97uv419.apps.googleusercontent.com"
+                }
+            }
         }
     }
 }

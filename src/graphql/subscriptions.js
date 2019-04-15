@@ -15,6 +15,9 @@ export const onCreateS3Object = `subscription OnCreateS3Object {
       type
       sub
       createdAt
+      objects {
+        nextToken
+      }
     }
     analysis {
       items {
@@ -44,6 +47,9 @@ export const onUpdateS3Object = `subscription OnUpdateS3Object {
       type
       sub
       createdAt
+      objects {
+        nextToken
+      }
     }
     analysis {
       items {
@@ -73,6 +79,9 @@ export const onDeleteS3Object = `subscription OnDeleteS3Object {
       type
       sub
       createdAt
+      objects {
+        nextToken
+      }
     }
     analysis {
       items {
@@ -160,6 +169,17 @@ export const onCreateAnalysis = `subscription OnCreateAnalysis {
       name
       prefix
       createdAt
+      createdBy {
+        id
+        name
+        email
+        type
+        sub
+        createdAt
+      }
+      analysis {
+        nextToken
+      }
     }
     category
     type
@@ -172,6 +192,9 @@ export const onCreateAnalysis = `subscription OnCreateAnalysis {
       type
       sub
       createdAt
+      objects {
+        nextToken
+      }
     }
     createdAt
   }
@@ -186,6 +209,17 @@ export const onUpdateAnalysis = `subscription OnUpdateAnalysis {
       name
       prefix
       createdAt
+      createdBy {
+        id
+        name
+        email
+        type
+        sub
+        createdAt
+      }
+      analysis {
+        nextToken
+      }
     }
     category
     type
@@ -198,6 +232,9 @@ export const onUpdateAnalysis = `subscription OnUpdateAnalysis {
       type
       sub
       createdAt
+      objects {
+        nextToken
+      }
     }
     createdAt
   }
@@ -212,6 +249,17 @@ export const onDeleteAnalysis = `subscription OnDeleteAnalysis {
       name
       prefix
       createdAt
+      createdBy {
+        id
+        name
+        email
+        type
+        sub
+        createdAt
+      }
+      analysis {
+        nextToken
+      }
     }
     category
     type
@@ -224,6 +272,9 @@ export const onDeleteAnalysis = `subscription OnDeleteAnalysis {
       type
       sub
       createdAt
+      objects {
+        nextToken
+      }
     }
     createdAt
   }

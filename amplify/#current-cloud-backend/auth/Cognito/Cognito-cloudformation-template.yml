@@ -117,7 +117,7 @@ Parameters:
               
   userpoolClientSetAttributes:
     Type: String
-          
+                                                  
   useDefault:
     Type: String
             
@@ -130,12 +130,6 @@ Parameters:
   authProviders:
     Type: CommaDelimitedList
       
-  facebookAppId:
-    Type: String
-            
-  googleClientId:
-    Type: String
-            
   selectedParties:
     Type: String
             
@@ -143,6 +137,9 @@ Parameters:
     Type: String
             
   unAuthRoleArn:
+    Type: String
+            
+  googleClientId:
     Type: String
           
 Conditions:
@@ -486,9 +483,6 @@ Resources:
       SupportedLoginProviders: 
         
           
-          graph.facebook.com: '133718410632322'
-                  
-          
           accounts.google.com: '277830869306-2c0r1esgjnjauug9koe5sodvh97uv419.apps.googleusercontent.com'
                    
       
@@ -543,8 +537,5 @@ Outputs :
    
    
   
-  
-  FacebookWebClient:
-    Value: 133718410632322
    
   

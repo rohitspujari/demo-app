@@ -93,24 +93,6 @@
 			"Properties": {
 				"TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/auth/Cognito-cloudformation-template.yml",
 				"Parameters": {
-					"authRoleName": {
-						"Ref": "AuthRoleName"
-					},
-					"unauthRoleName": {
-						"Ref": "UnauthRoleName"
-					},
-					"authRoleArn": {
-						"Fn::GetAtt": [
-							"AuthRole",
-							"Arn"
-						]
-					},
-					"unauthRoleArn": {
-						"Fn::GetAtt": [
-							"UnauthRole",
-							"Arn"
-						]
-					},
 					"identityPoolName": "CognitoIdentityPool",
 					"allowUnauthenticatedIdentities": false,
 					"thirdPartyAuth": true,
@@ -146,14 +128,31 @@
 					"userpoolClientLogPolicy": "Cognito_userpoolclient_lambda_log_policy",
 					"userpoolClientLambdaPolicy": "Cognito_userpoolclient_lambda_iam_policy",
 					"userpoolClientSetAttributes": false,
+					"authRoleName": {
+						"Ref": "AuthRoleName"
+					},
+					"unauthRoleName": {
+						"Ref": "UnauthRoleName"
+					},
+					"authRoleArn": {
+						"Fn::GetAtt": [
+							"AuthRole",
+							"Arn"
+						]
+					},
+					"unauthRoleArn": {
+						"Fn::GetAtt": [
+							"UnauthRole",
+							"Arn"
+						]
+					},
 					"useDefault": "manual",
 					"authSelections": "identityPoolAndUserPool",
 					"resourceName": "Cognito",
-					"authProviders": "graph.facebook.com,accounts.google.com",
-					"selectedParties": "{\"graph.facebook.com\":\"133718410632322\",\"accounts.google.com\":\"277830869306-2c0r1esgjnjauug9koe5sodvh97uv419.apps.googleusercontent.com\"}",
+					"authProviders": "accounts.google.com",
+					"selectedParties": "{\"accounts.google.com\":\"277830869306-2c0r1esgjnjauug9koe5sodvh97uv419.apps.googleusercontent.com\"}",
 					"unAuthRoleName": "demoapp-20181206165647-unauthRole",
 					"unAuthRoleArn": "arn:aws:iam::465541050084:role/demoapp-20181206165647-unauthRole",
-					"facebookAppId": "133718410632322",
 					"googleClientId": "277830869306-2c0r1esgjnjauug9koe5sodvh97uv419.apps.googleusercontent.com",
 					"env": "NONE"
 				}
@@ -233,22 +232,15 @@
 				}
 			}
 		},
-		"apidemoAppGraphQL": {
+		"apidemoappGraphQL": {
 			"Type": "AWS::CloudFormation::Stack",
 			"Properties": {
 				"TemplateURL": "https://s3.amazonaws.com/demoapp-20181206165647-deployment/amplify-cfn-templates/api/cloudformation-template.json",
 				"Parameters": {
-					"APIKeyExpirationEpoch": -1,
-					"DynamoDBBillingMode": "PROVISIONED",
-					"AppSyncApiName": "demoAppGraphQL",
-					"AuthCognitoUserPoolId": {
-						"Fn::GetAtt": [
-							"authCognito",
-							"Outputs.UserPoolId"
-						]
-					},
+					"AppSyncApiName": "demoappGraphQL",
+					"DynamoDBBillingMode": "PAY_PER_REQUEST",
 					"S3DeploymentBucket": "demoapp-20181206165647-deployment",
-					"S3DeploymentRootKey": "amplify-appsync-files/c7c76de25c5ea3b70cf5c59c9e34d7a04ea84930",
+					"S3DeploymentRootKey": "amplify-appsync-files/ba43365e2b82465ab9d9c9e028d385b8cd188fad",
 					"env": "NONE"
 				}
 			}

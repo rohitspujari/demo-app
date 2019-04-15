@@ -15,6 +15,9 @@ export const getS3Object = `query GetS3Object($id: ID!) {
       type
       sub
       createdAt
+      objects {
+        nextToken
+      }
     }
     analysis {
       items {
@@ -51,14 +54,6 @@ export const listS3Objects = `query ListS3Objects(
         createdAt
       }
       analysis {
-        items {
-          id
-          category
-          type
-          params
-          result
-          createdAt
-        }
         nextToken
       }
     }
@@ -101,13 +96,6 @@ export const listUsers = `query ListUsers(
       sub
       createdAt
       objects {
-        items {
-          id
-          key
-          name
-          prefix
-          createdAt
-        }
         nextToken
       }
     }
@@ -124,6 +112,17 @@ export const getAnalysis = `query GetAnalysis($id: ID!) {
       name
       prefix
       createdAt
+      createdBy {
+        id
+        name
+        email
+        type
+        sub
+        createdAt
+      }
+      analysis {
+        nextToken
+      }
     }
     category
     type
@@ -136,6 +135,9 @@ export const getAnalysis = `query GetAnalysis($id: ID!) {
       type
       sub
       createdAt
+      objects {
+        nextToken
+      }
     }
     createdAt
   }
@@ -201,14 +203,6 @@ export const searchS3Objects = `query SearchS3Objects(
         createdAt
       }
       analysis {
-        items {
-          id
-          category
-          type
-          params
-          result
-          createdAt
-        }
         nextToken
       }
     }
@@ -236,13 +230,6 @@ export const searchUsers = `query SearchUsers(
       sub
       createdAt
       objects {
-        items {
-          id
-          key
-          name
-          prefix
-          createdAt
-        }
         nextToken
       }
     }
