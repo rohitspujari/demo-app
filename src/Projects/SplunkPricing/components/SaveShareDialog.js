@@ -97,7 +97,7 @@ function SaveShareDialog(props) {
         <DialogContent>
           <DialogContentText>
             Your preferences have been saved. You can share this link with
-            another person.
+            another user.
           </DialogContentText>
 
           {/* <DialogContentText>
