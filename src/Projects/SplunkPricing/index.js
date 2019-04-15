@@ -462,12 +462,12 @@ class SplunkPricing extends Component {
     return (
       <div className={classes.root}>
         <Grid container alignItems="center" spacing={24}>
-          <Grid item xs={10}>
+          <Grid item xs={12}>
             <Typography variant="h5" gutterBottom className={classes.heading}>
               AWS Infrastructure Costs for Splunk
             </Typography>
           </Grid>
-          <Grid item xs={2}>
+          {/* <Grid item xs={2}>
             <Button
               variant="outlined"
               color="primary"
@@ -477,7 +477,7 @@ class SplunkPricing extends Component {
             >
               My Quotes
             </Button>
-          </Grid>
+          </Grid> */}
 
           <Grid item xs={12} sm={6}>
             <TextField
@@ -611,7 +611,7 @@ class SplunkPricing extends Component {
               Save and Share
             </Button> */}
 
-            <SaveShareDialog params={this.state} />
+            {/* <SaveShareDialog params={this.state} /> */}
           </Grid>
           <Grid item xs={12}>
             <ExpansionPanel>
