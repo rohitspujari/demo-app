@@ -240,7 +240,7 @@
 					"AppSyncApiName": "demoappGraphQL",
 					"DynamoDBBillingMode": "PAY_PER_REQUEST",
 					"S3DeploymentBucket": "demoapp-20181206165647-deployment",
-					"S3DeploymentRootKey": "amplify-appsync-files/ba43365e2b82465ab9d9c9e028d385b8cd188fad",
+					"S3DeploymentRootKey": "amplify-appsync-files/40f69d77d622714f9844337c4c86772abe6cedd5",
 					"env": "NONE"
 				}
 			}

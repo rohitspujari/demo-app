@@ -128,12 +128,14 @@ class ContactForm extends React.Component {
     const { reason, customer, message } = this.state;
     const { user } = this.props;
 
-    const contact = `From: ${
-      user.attributes.email
-    }, Phone: ${user.attributes.phone_number.replace(
-      /(\+\d)(\d\d\d)(\d\d\d)(\d\d\d\d)/,
-      '$1-$2.$3.$4'
-    )}`;
+    // const contact = `From: ${
+    //   user.attributes.email
+    // }, Phone: ${user.attributes.phone_number.replace(
+    //   /(\+\d)(\d\d\d)(\d\d\d)(\d\d\d\d)/,
+    //   '$1-$2.$3.$4'
+    // )}`;
+
+    const contact = `From: ${user.email}`;
 
     var params = {
       contact,

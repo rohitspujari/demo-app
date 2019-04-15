@@ -18,6 +18,9 @@ export const onCreateS3Object = `subscription OnCreateS3Object {
       objects {
         nextToken
       }
+      quotes {
+        nextToken
+      }
     }
     analysis {
       items {
@@ -50,6 +53,9 @@ export const onUpdateS3Object = `subscription OnUpdateS3Object {
       objects {
         nextToken
       }
+      quotes {
+        nextToken
+      }
     }
     analysis {
       items {
@@ -80,6 +86,9 @@ export const onDeleteS3Object = `subscription OnDeleteS3Object {
       sub
       createdAt
       objects {
+        nextToken
+      }
+      quotes {
         nextToken
       }
     }
@@ -115,6 +124,15 @@ export const onCreateUser = `subscription OnCreateUser {
       }
       nextToken
     }
+    quotes {
+      items {
+        id
+        description
+        params
+        createdAt
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -132,6 +150,15 @@ export const onUpdateUser = `subscription OnUpdateUser {
         key
         name
         prefix
+        createdAt
+      }
+      nextToken
+    }
+    quotes {
+      items {
+        id
+        description
+        params
         createdAt
       }
       nextToken
@@ -156,6 +183,84 @@ export const onDeleteUser = `subscription OnDeleteUser {
         createdAt
       }
       nextToken
+    }
+    quotes {
+      items {
+        id
+        description
+        params
+        createdAt
+      }
+      nextToken
+    }
+  }
+}
+`;
+export const onCreateQuote = `subscription OnCreateQuote {
+  onCreateQuote {
+    id
+    description
+    params
+    createdAt
+    user {
+      id
+      name
+      email
+      type
+      sub
+      createdAt
+      objects {
+        nextToken
+      }
+      quotes {
+        nextToken
+      }
+    }
+  }
+}
+`;
+export const onUpdateQuote = `subscription OnUpdateQuote {
+  onUpdateQuote {
+    id
+    description
+    params
+    createdAt
+    user {
+      id
+      name
+      email
+      type
+      sub
+      createdAt
+      objects {
+        nextToken
+      }
+      quotes {
+        nextToken
+      }
+    }
+  }
+}
+`;
+export const onDeleteQuote = `subscription OnDeleteQuote {
+  onDeleteQuote {
+    id
+    description
+    params
+    createdAt
+    user {
+      id
+      name
+      email
+      type
+      sub
+      createdAt
+      objects {
+        nextToken
+      }
+      quotes {
+        nextToken
+      }
     }
   }
 }
@@ -193,6 +298,9 @@ export const onCreateAnalysis = `subscription OnCreateAnalysis {
       sub
       createdAt
       objects {
+        nextToken
+      }
+      quotes {
         nextToken
       }
     }
@@ -235,6 +343,9 @@ export const onUpdateAnalysis = `subscription OnUpdateAnalysis {
       objects {
         nextToken
       }
+      quotes {
+        nextToken
+      }
     }
     createdAt
   }
@@ -273,6 +384,9 @@ export const onDeleteAnalysis = `subscription OnDeleteAnalysis {
       sub
       createdAt
       objects {
+        nextToken
+      }
+      quotes {
         nextToken
       }
     }

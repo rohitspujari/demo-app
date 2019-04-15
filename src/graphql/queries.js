@@ -18,6 +18,9 @@ export const getS3Object = `query GetS3Object($id: ID!) {
       objects {
         nextToken
       }
+      quotes {
+        nextToken
+      }
     }
     analysis {
       items {
@@ -79,6 +82,15 @@ export const getUser = `query GetUser($id: ID!) {
       }
       nextToken
     }
+    quotes {
+      items {
+        id
+        description
+        params
+        createdAt
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -97,6 +109,56 @@ export const listUsers = `query ListUsers(
       createdAt
       objects {
         nextToken
+      }
+      quotes {
+        nextToken
+      }
+    }
+    nextToken
+  }
+}
+`;
+export const getQuote = `query GetQuote($id: ID!) {
+  getQuote(id: $id) {
+    id
+    description
+    params
+    createdAt
+    user {
+      id
+      name
+      email
+      type
+      sub
+      createdAt
+      objects {
+        nextToken
+      }
+      quotes {
+        nextToken
+      }
+    }
+  }
+}
+`;
+export const listQuotes = `query ListQuotes(
+  $filter: ModelQuoteFilterInput
+  $limit: Int
+  $nextToken: String
+) {
+  listQuotes(filter: $filter, limit: $limit, nextToken: $nextToken) {
+    items {
+      id
+      description
+      params
+      createdAt
+      user {
+        id
+        name
+        email
+        type
+        sub
+        createdAt
       }
     }
     nextToken
@@ -136,6 +198,9 @@ export const getAnalysis = `query GetAnalysis($id: ID!) {
       sub
       createdAt
       objects {
+        nextToken
+      }
+      quotes {
         nextToken
       }
     }
@@ -231,6 +296,39 @@ export const searchUsers = `query SearchUsers(
       createdAt
       objects {
         nextToken
+      }
+      quotes {
+        nextToken
+      }
+    }
+    nextToken
+  }
+}
+`;
+export const searchQuotes = `query SearchQuotes(
+  $filter: SearchableQuoteFilterInput
+  $sort: SearchableQuoteSortInput
+  $limit: Int
+  $nextToken: Int
+) {
+  searchQuotes(
+    filter: $filter
+    sort: $sort
+    limit: $limit
+    nextToken: $nextToken
+  ) {
+    items {
+      id
+      description
+      params
+      createdAt
+      user {
+        id
+        name
+        email
+        type
+        sub
+        createdAt
       }
     }
     nextToken

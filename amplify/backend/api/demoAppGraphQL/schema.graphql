@@ -16,6 +16,15 @@ type User @model @searchable {
   sub: String
   createdAt: String
   objects: [S3Object] @connection(name: "UserS3Objects", sortField: "createdAt")
+  quotes: [Quote] @connection(name: "UserQuotes", sortField: "createdAt")
+}
+
+type Quote @model @searchable {
+  id: ID!
+  description: String!
+  params: String!
+  createdAt: String
+  user: User @connection(name: "UserQuotes")
 }
 
 type Analysis @model @searchable {

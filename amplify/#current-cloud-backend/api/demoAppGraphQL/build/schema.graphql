@@ -16,6 +16,15 @@ type User {
   sub: String
   createdAt: String
   objects(filter: ModelS3ObjectFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelS3ObjectConnection
+  quotes(filter: ModelQuoteFilterInput, sortDirection: ModelSortDirection, limit: Int, nextToken: String): ModelQuoteConnection
+}
+
+type Quote {
+  id: ID!
+  description: String!
+  params: String!
+  createdAt: String
+  user: User
 }
 
 type Analysis {
@@ -110,10 +119,13 @@ type Query {
   listS3Objects(filter: ModelS3ObjectFilterInput, limit: Int, nextToken: String): ModelS3ObjectConnection
   getUser(id: ID!): User
   listUsers(filter: ModelUserFilterInput, limit: Int, nextToken: String): ModelUserConnection
+  getQuote(id: ID!): Quote
+  listQuotes(filter: ModelQuoteFilterInput, limit: Int, nextToken: String): ModelQuoteConnection
   getAnalysis(id: ID!): Analysis
   listAnalysiss(filter: ModelAnalysisFilterInput, limit: Int, nextToken: String): ModelAnalysisConnection
   searchS3Objects(filter: SearchableS3ObjectFilterInput, sort: SearchableS3ObjectSortInput, limit: Int, nextToken: Int): SearchableS3ObjectConnection
   searchUsers(filter: SearchableUserFilterInput, sort: SearchableUserSortInput, limit: Int, nextToken: Int): SearchableUserConnection
+  searchQuotes(filter: SearchableQuoteFilterInput, sort: SearchableQuoteSortInput, limit: Int, nextToken: Int): SearchableQuoteConnection
   searchAnalysiss(filter: SearchableAnalysisFilterInput, sort: SearchableAnalysisSortInput, limit: Int, nextToken: Int): SearchableAnalysisConnection
 }
 
@@ -146,6 +158,9 @@ type Mutation {
   createUser(input: CreateUserInput!): User
   updateUser(input: UpdateUserInput!): User
   deleteUser(input: DeleteUserInput!): User
+  createQuote(input: CreateQuoteInput!): Quote
+  updateQuote(input: UpdateQuoteInput!): Quote
+  deleteQuote(input: DeleteQuoteInput!): Quote
   createAnalysis(input: CreateAnalysisInput!): Analysis
   updateAnalysis(input: UpdateAnalysisInput!): Analysis
   deleteAnalysis(input: DeleteAnalysisInput!): Analysis
@@ -158,6 +173,9 @@ type Subscription {
   onCreateUser: User @aws_subscribe(mutations: ["createUser"])
   onUpdateUser: User @aws_subscribe(mutations: ["updateUser"])
   onDeleteUser: User @aws_subscribe(mutations: ["deleteUser"])
+  onCreateQuote: Quote @aws_subscribe(mutations: ["createQuote"])
+  onUpdateQuote: Quote @aws_subscribe(mutations: ["updateQuote"])
+  onDeleteQuote: Quote @aws_subscribe(mutations: ["deleteQuote"])
   onCreateAnalysis: Analysis @aws_subscribe(mutations: ["createAnalysis"])
   onUpdateAnalysis: Analysis @aws_subscribe(mutations: ["updateAnalysis"])
   onDeleteAnalysis: Analysis @aws_subscribe(mutations: ["deleteAnalysis"])
@@ -199,6 +217,41 @@ input UpdateUserInput {
 }
 
 input DeleteUserInput {
+  id: ID
+}
+
+type ModelQuoteConnection {
+  items: [Quote]
+  nextToken: String
+}
+
+input ModelQuoteFilterInput {
+  id: ModelIDFilterInput
+  description: ModelStringFilterInput
+  params: ModelStringFilterInput
+  createdAt: ModelStringFilterInput
+  and: [ModelQuoteFilterInput]
+  or: [ModelQuoteFilterInput]
+  not: ModelQuoteFilterInput
+}
+
+input CreateQuoteInput {
+  id: ID
+  description: String!
+  params: String!
+  createdAt: String
+  quoteUserId: ID
+}
+
+input UpdateQuoteInput {
+  id: ID!
+  description: String
+  params: String
+  createdAt: String
+  quoteUserId: ID
+}
+
+input DeleteQuoteInput {
   id: ID
 }
 
@@ -356,6 +409,33 @@ input SearchableUserSortInput {
 
 type SearchableUserConnection {
   items: [User]
+  nextToken: String
+}
+
+input SearchableQuoteFilterInput {
+  id: SearchableIDFilterInput
+  description: SearchableStringFilterInput
+  params: SearchableStringFilterInput
+  createdAt: SearchableStringFilterInput
+  and: [SearchableQuoteFilterInput]
+  or: [SearchableQuoteFilterInput]
+  not: SearchableQuoteFilterInput
+}
+
+enum SearchableQuoteSortableFields {
+  id
+  description
+  params
+  createdAt
+}
+
+input SearchableQuoteSortInput {
+  field: SearchableQuoteSortableFields
+  direction: SearchableSortDirection
+}
+
+type SearchableQuoteConnection {
+  items: [Quote]
   nextToken: String
 }
 

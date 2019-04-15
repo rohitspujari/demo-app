@@ -18,6 +18,9 @@ export const createS3Object = `mutation CreateS3Object($input: CreateS3ObjectInp
       objects {
         nextToken
       }
+      quotes {
+        nextToken
+      }
     }
     analysis {
       items {
@@ -50,6 +53,9 @@ export const updateS3Object = `mutation UpdateS3Object($input: UpdateS3ObjectInp
       objects {
         nextToken
       }
+      quotes {
+        nextToken
+      }
     }
     analysis {
       items {
@@ -80,6 +86,9 @@ export const deleteS3Object = `mutation DeleteS3Object($input: DeleteS3ObjectInp
       sub
       createdAt
       objects {
+        nextToken
+      }
+      quotes {
         nextToken
       }
     }
@@ -115,6 +124,15 @@ export const createUser = `mutation CreateUser($input: CreateUserInput!) {
       }
       nextToken
     }
+    quotes {
+      items {
+        id
+        description
+        params
+        createdAt
+      }
+      nextToken
+    }
   }
 }
 `;
@@ -132,6 +150,15 @@ export const updateUser = `mutation UpdateUser($input: UpdateUserInput!) {
         key
         name
         prefix
+        createdAt
+      }
+      nextToken
+    }
+    quotes {
+      items {
+        id
+        description
+        params
         createdAt
       }
       nextToken
@@ -156,6 +183,84 @@ export const deleteUser = `mutation DeleteUser($input: DeleteUserInput!) {
         createdAt
       }
       nextToken
+    }
+    quotes {
+      items {
+        id
+        description
+        params
+        createdAt
+      }
+      nextToken
+    }
+  }
+}
+`;
+export const createQuote = `mutation CreateQuote($input: CreateQuoteInput!) {
+  createQuote(input: $input) {
+    id
+    description
+    params
+    createdAt
+    user {
+      id
+      name
+      email
+      type
+      sub
+      createdAt
+      objects {
+        nextToken
+      }
+      quotes {
+        nextToken
+      }
+    }
+  }
+}
+`;
+export const updateQuote = `mutation UpdateQuote($input: UpdateQuoteInput!) {
+  updateQuote(input: $input) {
+    id
+    description
+    params
+    createdAt
+    user {
+      id
+      name
+      email
+      type
+      sub
+      createdAt
+      objects {
+        nextToken
+      }
+      quotes {
+        nextToken
+      }
+    }
+  }
+}
+`;
+export const deleteQuote = `mutation DeleteQuote($input: DeleteQuoteInput!) {
+  deleteQuote(input: $input) {
+    id
+    description
+    params
+    createdAt
+    user {
+      id
+      name
+      email
+      type
+      sub
+      createdAt
+      objects {
+        nextToken
+      }
+      quotes {
+        nextToken
+      }
     }
   }
 }
@@ -193,6 +298,9 @@ export const createAnalysis = `mutation CreateAnalysis($input: CreateAnalysisInp
       sub
       createdAt
       objects {
+        nextToken
+      }
+      quotes {
         nextToken
       }
     }
@@ -235,6 +343,9 @@ export const updateAnalysis = `mutation UpdateAnalysis($input: UpdateAnalysisInp
       objects {
         nextToken
       }
+      quotes {
+        nextToken
+      }
     }
     createdAt
   }
@@ -273,6 +384,9 @@ export const deleteAnalysis = `mutation DeleteAnalysis($input: DeleteAnalysisInp
       sub
       createdAt
       objects {
+        nextToken
+      }
+      quotes {
         nextToken
       }
     }

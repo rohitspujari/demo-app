@@ -14,6 +14,7 @@
     "material-ui-image": "^3.1.0",
     "query-string": "^6.4.2",
     "react": "^16.8.0-alpha.1",
+    "react-copy-to-clipboard": "^5.0.1",
     "react-dom": "^16.8.0-alpha.1",
     "react-images-extended": "^0.6.4",
     "react-lightbox-component": "^1.2.1",

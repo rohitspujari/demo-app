@@ -180,7 +180,11 @@ function App() {
             <Route path="/comprehend" component={Comprehend} />
             <Route path="/sagemaker" component={Sagemaker} />
             {/* <Route path="/graphqldemo" component={GraphQLDemo} /> */}
-            <Route path="/splunkpricing" component={SplunkPricing} />
+            {/* <Route path="/splunkpricing" component={SplunkPricing} /> */}
+            <Route
+              path="/splunkpricing"
+              render={props => <SplunkPricing user={user} />}
+            />
             <Route exact path="/rekognition" component={Rekognition} />
             <Route exact path="/rekognition/details" component={Details} />
             <Route exact path="/test" component={Test} />

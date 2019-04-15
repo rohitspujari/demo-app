@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 //mport ReactDOM from 'react-dom';
-
+import { API, graphqlOperation } from 'aws-amplify';
+import * as queries from '../../graphql/queries';
 import * as utils from './utils.js';
 import { withRouter } from 'react-router';
 import queryString from 'query-string';
@@ -189,6 +190,7 @@ class SplunkPricing extends Component {
   //this.onFocusText = '';
 
   state = {
+    quoteDescription: '[Customer] Splunk Deployment on AWS',
     awsSupportTier: 'Business',
     billingOptions: BILLING_OPTIONS,
     billingOption: BILLING_OPTIONS[6],
@@ -239,10 +241,19 @@ class SplunkPricing extends Component {
     console.log('querystring', values);
     var params = {};
     if (values.quote) {
-      params = {
-        volumePerDay: 5000
-      };
+      const savedQuote = await API.graphql(
+        graphqlOperation(queries.getQuote, { id: values.quote })
+      );
+      console.log(savedQuote);
+      if (savedQuote) {
+        params = JSON.parse(savedQuote.data.getQuote.params);
+        console.log('printing params', params);
+      }
+      // params = {
+      //   volumePerDay: 5000
+      // };
 
+      //console.log('printing params', params);
       this.setState({
         ...this.state,
         ...params
@@ -250,9 +261,9 @@ class SplunkPricing extends Component {
     }
 
     this.setState({
-      user: await Auth.currentAuthenticatedUser({
-        bypassCache: true // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
-      }),
+      // user: await Auth.currentAuthenticatedUser({
+      //   bypassCache: true // Optional, By default is false. If set to true, this call will send a request to Cognito to get the latest user data
+      // }),
       result: await utils.priceSplunkDeployment({ ...this.state, ...params }),
       locations: await utils.getAttributes('location', 'AmazonS3', '100'),
       operatingSystems: await utils.getAttributes(
@@ -445,7 +456,7 @@ class SplunkPricing extends Component {
 
   render() {
     // console.log(this.state);
-    const { classes } = this.props;
+    const { classes, user } = this.props;
     const { handleChange, toggleChange } = this;
     const {
       splunkArchitecture,
@@ -565,7 +576,7 @@ class SplunkPricing extends Component {
               </Grid>
             </Hidden>
             <Grid container justify="center" alignItems="center" item sm={12}>
-              <ContactForm user={this.state.user} />
+              <ContactForm user={this.props.user} />
             </Grid>
           </Grid>
           {/* </Hidden> */}
@@ -611,7 +622,10 @@ class SplunkPricing extends Component {
               Save and Share
             </Button> */}
 
-            {/* <SaveShareDialog params={this.state} /> */}
+            <SaveShareDialog
+              params={this.state}
+              changeDescription={this.handleChange('quoteDescription')}
+            />
           </Grid>
           <Grid item xs={12}>
             <ExpansionPanel>
