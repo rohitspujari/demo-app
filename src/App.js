@@ -11,13 +11,19 @@ import Amplify, {
 } from 'aws-amplify';
 import aws_exports from './aws-exports';
 import { withStyles } from '@material-ui/core/styles';
-import { withAuthenticator, Authenticator, Greetings } from 'aws-amplify-react';
+import {
+  withAuthenticator,
+  Authenticator,
+  Greetings,
+  SignIn
+} from 'aws-amplify-react';
 
 import { ThemeProvider } from '@material-ui/styles';
 import { MuiThemeProvider, createMuiTheme } from '@material-ui/core/styles';
 //import orange from '@material-ui/core/colors/orange';
 
 import AppBar from './Components/NavigationBar';
+import Button from '@material-ui/core/Button';
 import ProjectGrid from './Components/ProjectGrid';
 import * as queries from './graphql/queries';
 import * as mutations from './graphql/mutations';
@@ -36,7 +42,23 @@ import Rekognition from './Projects/Rekognition';
 import Details from './Projects/Rekognition/Details';
 import Test from './Projects/Rekognition/Test';
 
+const oauth = {
+  domain: 'buildon.auth.us-east-1.amazoncognito.com',
+  scope: [
+    'phone',
+    'email',
+    'profile',
+    'openid',
+    'aws.cognito.signin.user.admin'
+  ],
+  redirectSignIn: 'http://localhost:3000/',
+  redirectSignOut: 'http://localhost:3000/',
+  responseType: 'code' // or token
+};
+
 Amplify.configure(aws_exports);
+Auth.configure({ oauth });
+
 let appSyncConfig = {
   aws_appsync_authenticationType: 'AWS_IAM'
 };
@@ -150,11 +172,20 @@ function App() {
   }, []);
 
   return !user ? (
-    <Authenticator
-      theme={authenticatorTheme}
-      federated={federated}
-      hide={[Greetings]}
-    />
+    <div>
+      {/* <Button onClick={() => Auth.federatedSignIn({ provider: 'Google' })}>
+        Open Google
+      </Button>
+      <Button onClick={() => Auth.federatedSignIn()}>Open Hosted UI</Button> */}
+      <Authenticator
+        //hideDefault={true}
+        theme={authenticatorTheme}
+        federated={federated}
+        hide={[Greetings]}
+      >
+        {/* <SignIn federated={false} /> */}
+      </Authenticator>
+    </div>
   ) : (
     <UserContext.Provider value={user}>
       <div className="App">

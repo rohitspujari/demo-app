@@ -18,6 +18,8 @@ import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import FolderIcon from '@material-ui/icons/Folder';
 import DeleteIcon from '@material-ui/icons/Delete';
+import FileCopy from '@material-ui/icons/FileCopy';
+import Divider from '@material-ui/core/Divider';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -58,12 +60,28 @@ function ListComponent({ files, fetchMoreData, hasMore, deleteItem, history }) {
               });
             }}
           >
-            <ListItemAvatar>
-              <Avatar>
-                <FolderIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={f.name} secondary={f.prefix} />
+            <Grid container>
+              <Grid item xs={1}>
+                <ListItemAvatar>
+                  <Avatar>
+                    <FolderIcon />
+                  </Avatar>
+                </ListItemAvatar>
+              </Grid>
+              <Grid item xs={6}>
+                <ListItemText primary={f.name} secondary={f.prefix} />
+              </Grid>
+              <Grid item xs={4}>
+                <ListItemText primary={f.createdAt} />
+              </Grid>
+              <Grid item xs={1}>
+                {/* <ListItemSecondaryAction> */}
+                <IconButton aria-label="Delete" onClick={() => {}}>
+                  <FileCopy />
+                </IconButton>
+                {/* </ListItemSecondaryAction> */}
+              </Grid>
+            </Grid>
 
             <ListItemSecondaryAction>
               <IconButton
@@ -78,6 +96,7 @@ function ListComponent({ files, fetchMoreData, hasMore, deleteItem, history }) {
           </ListItem>
         ))}
       </List>
+
       {!hasMore || (
         <Grid container justify="center">
           <Button onClick={fetchMoreData} variant="outlined">

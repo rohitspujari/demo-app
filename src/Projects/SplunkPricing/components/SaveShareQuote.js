@@ -17,7 +17,7 @@ import { UserContext } from '../../../App.js';
 import * as mutations from '../../../graphql/mutations';
 import { v4 as uuid } from 'uuid';
 
-function SaveShareDialog(props) {
+function SaveShareQuote(props) {
   const user = useContext(UserContext);
   const [open, setOpen] = useState(false);
   const [quoteId, setQuoteId] = useState(null);
@@ -56,44 +56,22 @@ function SaveShareDialog(props) {
 
   return (
     <div>
-      <Grid container alignItems="center" spacing={24}>
-        <Grid item xs={12}>
-          <Divider />
-        </Grid>
-        <Grid item xs={2}>
-          <Button
-            variant="outlined"
-            color="primary"
-            fullWidth
-            size="large"
-            onClick={handleClickOpen}
-          >
-            Save Quote
-          </Button>
-        </Grid>
-        <Grid item xs={10}>
-          <TextField
-            required
-            fullWidth
-            id="outlined-required"
-            label="Description"
-            value={params.quoteDescription}
-            onChange={changeDescription}
-            //onFocus={e => (this.onFocusText = e.target.value)}
-            // onBlur={this.handleRefresh}
-            //defaultValue="30 days"
-            //className={classes.textField}
-            //margin="normal"
-            variant="outlined"
-          />
-        </Grid>
-      </Grid>
+      <Button
+        variant="outlined"
+        color="primary"
+        fullWidth
+        //size="large"
+        onClick={handleClickOpen}
+      >
+        Save Quote
+      </Button>
       <Dialog
         open={open}
         onClose={handleClose}
         aria-labelledby="form-dialog-title"
       >
         <DialogTitle id="form-dialog-title">Save and Share</DialogTitle>
+        {/* <Divider /> */}
         <DialogContent>
           <DialogContentText>
             Your preferences have been saved. You can share this link with
@@ -125,8 +103,9 @@ function SaveShareDialog(props) {
             fullWidth
           /> */}
         </DialogContent>
+        <Divider />
         <DialogActions>
-          <Button variant="outlined" onClick={handleClose} color="primary">
+          <Button onClick={handleClose} color="primary">
             OK
           </Button>
           {/* <Button onClick={handleClose} color="primary">
@@ -138,4 +117,4 @@ function SaveShareDialog(props) {
   );
 }
 
-export default withRouter(SaveShareDialog);
+export default withRouter(SaveShareQuote);

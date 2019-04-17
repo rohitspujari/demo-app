@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-
 //mport ReactDOM from 'react-dom';
 import { API, graphqlOperation } from 'aws-amplify';
 import * as queries from '../../graphql/queries';
@@ -33,7 +32,8 @@ import { Auth } from 'aws-amplify';
 import CostSummary from './components/CostSummary.js';
 import ArchitecturePanel from './components/ArchitecturePanel.js';
 import ContactForm from './components/ContactForm.js';
-import SaveShareDialog from './components/SaveShareDialog.js';
+import SaveShareQuote from './components/SaveShareQuote.js';
+import OpenQuotes from './components/OpenQuotes.js';
 
 const BILLING_OPTIONS = [
   {
@@ -479,18 +479,6 @@ class SplunkPricing extends Component {
               AWS Infrastructure Costs for Splunk
             </Typography>
           </Grid>
-          {/* <Grid item xs={2}>
-            <Button
-              variant="outlined"
-              color="primary"
-              fullWidth
-              size="large"
-              //onClick={handleClickOpen}
-            >
-              My Quotes
-            </Button>
-          </Grid> */}
-
           <Grid item xs={12} sm={6}>
             <TextField
               required
@@ -547,7 +535,6 @@ class SplunkPricing extends Component {
               }}
             />
           </Grid>
-          {/* <Hidden smDown> */}
           <Grid
             item
             container
@@ -558,16 +545,12 @@ class SplunkPricing extends Component {
           >
             <Hidden smDown>
               <Grid item>
-                {/* <Grid container> */}
-                {/* <Grid item xs={12}> */}
                 <img
                   src={require('./awslogo.jpg')}
                   height="150"
                   width="250"
                   alt="aws logo"
                 />
-                {/* </Grid> */}
-                {/* <Grid item xs={12}> */}
                 <img
                   src={require('./splunklogo.png')}
                   height="150"
@@ -580,8 +563,6 @@ class SplunkPricing extends Component {
               <ContactForm user={this.props.user} />
             </Grid>
           </Grid>
-          {/* </Hidden> */}
-
           <Grid item xs={6} sm={3}>
             <FormControlLabel
               control={
@@ -612,20 +593,33 @@ class SplunkPricing extends Component {
 
             {/* <Paper className={classes.paper}>ES or ITSI</Paper> */}
           </Grid>
-
-          <Grid item xs={12}>
-            {/* <Button
-              //href={quickStartURL}
-              target="_blank"
-              variant="contained"
-              className={classes.button}
-            >
-              Save and Share
-            </Button> */}
-
-            <SaveShareDialog
+          <Grid item sm={9} />
+          <Grid item sm={2}>
+            <OpenQuotes
               params={this.state}
-              changeDescription={this.handleChange('quoteDescription')}
+              //changeDescription={this.handleChange('quoteDescription')}
+            />
+          </Grid>
+          <Grid item sm={2}>
+            <SaveShareQuote
+              params={this.state}
+              //changeDescription={this.handleChange('quoteDescription')}
+            />
+          </Grid>
+          <Grid item sm={8}>
+            <TextField
+              required
+              fullWidth
+              id="outlined-required"
+              label="Description"
+              value={this.state.quoteDescription}
+              onChange={this.handleChange('quoteDescription')}
+              //onFocus={e => (this.onFocusText = e.target.value)}
+              // onBlur={this.handleRefresh}
+              //defaultValue="30 days"
+              //className={classes.textField}
+              //margin="normal"
+              variant="outlined"
             />
           </Grid>
           <Grid item xs={12}>

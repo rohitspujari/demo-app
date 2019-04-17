@@ -312,18 +312,14 @@ function CostSummary(props) {
             <CustomTableCell rowSpan={3} />
             <CustomTableCell rowSpan={3} />
             <CustomTableCell rowSpan={3} />
+            <CustomTableCell>Subtotal</CustomTableCell>
             <CustomTableCell>
-              <b>Subtotal</b>
+              {upfront === 0 ? '-' : formatter.format(upfront)}
             </CustomTableCell>
             <CustomTableCell>
-              <b>{upfront === 0 ? '-' : formatter.format(upfront)}</b>
+              {ec2Monthly === 0 ? '-' : formatter.format(ec2Monthly)}
             </CustomTableCell>
-            <CustomTableCell>
-              <b>{ec2Monthly === 0 ? '-' : formatter.format(ec2Monthly)}</b>
-            </CustomTableCell>
-            <CustomTableCell>
-              <b>{formatter.format(ec2Cost3Years)}</b>
-            </CustomTableCell>
+            <CustomTableCell>{formatter.format(ec2Cost3Years)}</CustomTableCell>
           </TableRow>
         </TableBody>
       </Table>
@@ -363,14 +359,12 @@ function CostSummary(props) {
             <CustomTableCell rowSpan={3} />
             <CustomTableCell rowSpan={3} />
 
+            <CustomTableCell>Subtotal</CustomTableCell>
             <CustomTableCell>
-              <b>Subtotal</b>
+              {formatter.format(storageMonthly)}
             </CustomTableCell>
             <CustomTableCell>
-              <b>{formatter.format(storageMonthly)}</b>
-            </CustomTableCell>
-            <CustomTableCell>
-              <b>{formatter.format(storageCost3Years)}</b>
+              {formatter.format(storageCost3Years)}
             </CustomTableCell>
           </TableRow>
         </TableBody>
