@@ -20,6 +20,7 @@ import LinkIcon from '@material-ui/icons/Link';
 import DeleteIcon from '@material-ui/icons/Delete';
 import FileCopy from '@material-ui/icons/FileCopy';
 import CopyToClipboard from 'react-copy-to-clipboard';
+import Tooltip from '@material-ui/core/Tooltip';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -80,23 +81,27 @@ function QuoteListComponent({
                 <Grid item xs={1}>
                   {/* <ListItemSecondaryAction> */}
                   <CopyToClipboard text={link}>
-                    <IconButton aria-label="Delete" onClick={() => {}}>
-                      <FileCopy />
-                    </IconButton>
+                    <Tooltip placement="left" title="Copy Link">
+                      <IconButton onClick={() => {}}>
+                        <FileCopy />
+                      </IconButton>
+                    </Tooltip>
                   </CopyToClipboard>
                   {/* </ListItemSecondaryAction> */}
                 </Grid>
               </Grid>
 
               <ListItemSecondaryAction>
-                <IconButton
-                  aria-label="Delete"
-                  onClick={() => {
-                    deleteItem(f.id, f.key);
-                  }}
-                >
-                  <DeleteIcon />
-                </IconButton>
+                <Tooltip placement="top-start" title="Delete">
+                  <IconButton
+                    aria-label="Delete"
+                    onClick={() => {
+                      deleteItem(f.id, f.key);
+                    }}
+                  >
+                    <DeleteIcon />
+                  </IconButton>
+                </Tooltip>
               </ListItemSecondaryAction>
             </ListItem>
           );

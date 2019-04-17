@@ -57,7 +57,7 @@ const oauth = {
 };
 
 Amplify.configure(aws_exports);
-Auth.configure({ oauth });
+//Auth.configure({ oauth });
 
 let appSyncConfig = {
   aws_appsync_authenticationType: 'AWS_IAM'

@@ -11,6 +11,7 @@ import DialogContentText from '@material-ui/core/DialogContentText';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import Grid from '@material-ui/core/Grid';
 import Divider from '@material-ui/core/Divider';
+import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import CopyIcon from '@material-ui/icons/FileCopy';
 import { UserContext } from '../../../App.js';
@@ -88,9 +89,11 @@ function SaveShareQuote(props) {
               {link}
             </a>
             <CopyToClipboard text={link}>
-              <IconButton style={{ marginLeft: 10 }} aria-label="Copy">
-                <CopyIcon />
-              </IconButton>
+              <Tooltip placement="right" title="Copy Link">
+                <IconButton style={{ marginLeft: 10 }} aria-label="Copy">
+                  <CopyIcon />
+                </IconButton>
+              </Tooltip>
             </CopyToClipboard>
           </DialogContentText>
 
