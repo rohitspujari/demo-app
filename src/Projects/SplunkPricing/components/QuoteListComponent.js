@@ -13,7 +13,7 @@ import Avatar from '@material-ui/core/Avatar';
 import IconButton from '@material-ui/core/IconButton';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
-import Checkbox from '@material-ui/core/Checkbox';
+
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 import LinkIcon from '@material-ui/icons/Link';
@@ -21,6 +21,7 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import FileCopy from '@material-ui/icons/FileCopy';
 import CopyToClipboard from 'react-copy-to-clipboard';
 import Tooltip from '@material-ui/core/Tooltip';
+import Hidden from '@material-ui/core/Hidden';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -61,13 +62,15 @@ function QuoteListComponent({
           return (
             <ListItem key={f.id}>
               <Grid container alignItems="center">
-                <Grid item xs={1}>
-                  <ListItemAvatar>
-                    <Avatar>
-                      <LinkIcon />
-                    </Avatar>
-                  </ListItemAvatar>
-                </Grid>
+                <Hidden smDown>
+                  <Grid item xs={1}>
+                    <ListItemAvatar>
+                      <Avatar>
+                        <LinkIcon />
+                      </Avatar>
+                    </ListItemAvatar>
+                  </Grid>
+                </Hidden>
                 <Grid item xs={6}>
                   <a target="_blank" href={link}>
                     {f.description}
@@ -78,17 +81,20 @@ function QuoteListComponent({
                 <Grid item xs={4}>
                   <ListItemText primary={date} />
                 </Grid>
-                <Grid item xs={1}>
-                  {/* <ListItemSecondaryAction> */}
-                  <CopyToClipboard text={link}>
-                    <Tooltip placement="left" title="Copy Link">
-                      <IconButton onClick={() => {}}>
-                        <FileCopy />
-                      </IconButton>
-                    </Tooltip>
-                  </CopyToClipboard>
-                  {/* </ListItemSecondaryAction> */}
-                </Grid>
+
+                <Hidden smDown>
+                  <Grid item xs={1}>
+                    {/* <ListItemSecondaryAction> */}
+                    <CopyToClipboard text={link}>
+                      <Tooltip placement="left" title="Copy Link">
+                        <IconButton onClick={() => {}}>
+                          <FileCopy />
+                        </IconButton>
+                      </Tooltip>
+                    </CopyToClipboard>
+                    {/* </ListItemSecondaryAction> */}
+                  </Grid>
+                </Hidden>
               </Grid>
 
               <ListItemSecondaryAction>

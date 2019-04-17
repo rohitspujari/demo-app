@@ -594,19 +594,19 @@ class SplunkPricing extends Component {
             {/* <Paper className={classes.paper}>ES or ITSI</Paper> */}
           </Grid>
           <Grid item sm={9} />
-          <Grid item sm={2}>
+          <Grid item sm={2} xs={12}>
             <OpenQuotes
               params={this.state}
               //changeDescription={this.handleChange('quoteDescription')}
             />
           </Grid>
-          <Grid item sm={2}>
+          <Grid item sm={2} xs={12}>
             <SaveShareQuote
               params={this.state}
               //changeDescription={this.handleChange('quoteDescription')}
             />
           </Grid>
-          <Grid item sm={8}>
+          <Grid item sm={8} xs={12}>
             <TextField
               required
               fullWidth
